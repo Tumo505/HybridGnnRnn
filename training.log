@@ -1,0 +1,16 @@
+2025-09-05 21:14:55,702 - INFO - Starting experiment: hybrid_gnn_rnn
+2025-09-05 21:14:55,703 - INFO - Experiment directory: checkpoints/hybrid_gnn_rnn_20250905_211455
+2025-09-05 21:14:55,703 - INFO - Using specified device: cpu
+2025-09-05 21:14:55,703 - INFO - Loading datasets...
+2025-09-05 21:14:55,732 - INFO - MemoryMonitor initialized for mps with 12.0GB limit
+2025-09-05 21:14:55,732 - INFO - Creating dummy datasets for testing...
+2025-09-05 21:14:55,740 - ERROR - Error loading datasets: Location based indexing can only have [integer, integer slice (START point is INCLUDED, END point is EXCLUDED), listlike of integers, boolean array] types
+2025-09-05 21:14:55,740 - ERROR - Training failed with error: Location based indexing can only have [integer, integer slice (START point is INCLUDED, END point is EXCLUDED), listlike of integers, boolean array] types
+2025-09-05 21:15:32,664 - INFO - Starting experiment: hybrid_gnn_rnn
+2025-09-05 21:15:32,664 - INFO - Experiment directory: checkpoints/hybrid_gnn_rnn_20250905_211532
+2025-09-05 21:15:32,664 - INFO - Using specified device: cpu
+2025-09-05 21:15:32,664 - INFO - Loading datasets...
+2025-09-05 21:15:32,681 - INFO - MemoryMonitor initialized for mps with 12.0GB limit
+2025-09-05 21:15:32,681 - INFO - Creating dummy datasets for testing...
+2025-09-05 21:15:32,712 - ERROR - Error loading datasets: min() arg is an empty sequence
+2025-09-05 21:15:32,712 - ERROR - Training failed with error: min() arg is an empty sequence

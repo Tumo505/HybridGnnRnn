@@ -86,16 +86,13 @@ class HybridGNNRNN(nn.Module):
         
         # Initialize spatial encoder (GNN)
         self.spatial_encoder = SpatialGNNEncoder(
-            node_feature_dim=node_feature_dim,
-            edge_feature_dim=edge_feature_dim,
+            input_dim=node_feature_dim,
             hidden_dim=gnn_hidden_dim,
             output_dim=gnn_hidden_dim,
             num_layers=num_gnn_layers,
             gnn_type=gnn_type,
             dropout=dropout,
-            use_positional_encoding=use_positional_encoding,
-            spatial_dim=spatial_dim,
-            memory_efficient=memory_efficient
+            use_positional_encoding=use_positional_encoding
         )
         
         # Initialize temporal encoder (RNN)
@@ -108,19 +105,20 @@ class HybridGNNRNN(nn.Module):
             bidirectional=bidirectional,
             dropout=dropout,
             use_attention=use_temporal_attention,
-            sequence_length=sequence_length
+            use_cell_type_embedding=False  # Disable for now
         )
         
         # Initialize fusion module
         spatial_out_dim = gnn_hidden_dim
-        temporal_out_dim = rnn_hidden_dim * (2 if bidirectional else 1)
+        # The temporal encoder outputs to output_dim (same as rnn_hidden_dim), not the internal RNN dimension
+        temporal_out_dim = rnn_hidden_dim
         
         self.fusion_module = SpatioTemporalFusion(
             spatial_dim=spatial_out_dim,
             temporal_dim=temporal_out_dim,
             fusion_dim=fusion_dim,
-            fusion_type=fusion_type,
-            dropout=dropout
+            dropout=dropout,
+            fusion_strategy=fusion_type if fusion_type in ["concat", "add", "multiply", "gated"] else "concat"
         )
         
         # Initialize prediction heads
@@ -246,7 +244,7 @@ class HybridGNNRNN(nn.Module):
         
         # Spatial encoding
         if self.use_checkpoint and self.training:
-            spatial_output = torch.utils.checkpoint.checkpoint(
+            spatial_embeddings = torch.utils.checkpoint.checkpoint(
                 self._forward_spatial,
                 node_features,
                 edge_index,
@@ -255,39 +253,32 @@ class HybridGNNRNN(nn.Module):
                 batch
             )
         else:
-            spatial_output = self._forward_spatial(
+            spatial_embeddings = self._forward_spatial(
                 node_features, edge_index, edge_attr, pos, batch
             )
-        
-        spatial_embeddings = spatial_output["embeddings"]
         
         # Temporal encoding (if temporal data provided)
         if temporal_features is not None:
             if self.use_checkpoint and self.training:
-                temporal_output = torch.utils.checkpoint.checkpoint(
+                temporal_embeddings = torch.utils.checkpoint.checkpoint(
                     self._forward_temporal,
                     temporal_features,
                     temporal_mask,
                     cell_types
                 )
             else:
-                temporal_output = self._forward_temporal(
+                temporal_embeddings = self._forward_temporal(
                     temporal_features, temporal_mask, cell_types
                 )
-            
-            temporal_embeddings = temporal_output["embeddings"]
         else:
             # Use spatial embeddings as temporal if no temporal data
             temporal_embeddings = spatial_embeddings
-            temporal_output = {"embeddings": temporal_embeddings}
         
         # Fusion
-        fusion_output = self.fusion_module(
+        fused_embeddings = self.fusion_module(
             spatial_embeddings, 
-            temporal_embeddings,
-            return_attention=return_attention
+            temporal_embeddings
         )
-        fused_embeddings = fusion_output["fused_embeddings"]
         
         # Store intermediate embeddings if requested
         if return_embeddings:
@@ -296,15 +287,6 @@ class HybridGNNRNN(nn.Module):
                 "temporal_embeddings": temporal_embeddings,
                 "fused_embeddings": fused_embeddings
             })
-        
-        # Store attention weights if requested
-        if return_attention:
-            if "attention_weights" in spatial_output:
-                outputs["spatial_attention"] = spatial_output["attention_weights"]
-            if "attention_weights" in temporal_output:
-                outputs["temporal_attention"] = temporal_output["attention_weights"]
-            if "attention_weights" in fusion_output:
-                outputs["fusion_attention"] = fusion_output["attention_weights"]
         
         # Predictions
         for task_name, head in self.prediction_heads.items():
@@ -338,12 +320,11 @@ class HybridGNNRNN(nn.Module):
         edge_attr: Optional[torch.Tensor] = None,
         pos: Optional[torch.Tensor] = None,
         batch: Optional[torch.Tensor] = None
-    ) -> Dict[str, torch.Tensor]:
+    ) -> torch.Tensor:
         """Forward pass through spatial encoder."""
         return self.spatial_encoder(
             x=node_features,
             edge_index=edge_index,
-            edge_attr=edge_attr,
             pos=pos,
             batch=batch
         )
@@ -353,11 +334,12 @@ class HybridGNNRNN(nn.Module):
         temporal_features: torch.Tensor,
         temporal_mask: Optional[torch.Tensor] = None,
         cell_types: Optional[torch.Tensor] = None
-    ) -> Dict[str, torch.Tensor]:
+    ) -> torch.Tensor:
         """Forward pass through temporal encoder."""
+        lengths = temporal_mask.sum(-1) if temporal_mask is not None else None
         return self.temporal_encoder(
-            sequences=temporal_features,
-            lengths=temporal_mask.sum(-1) if temporal_mask is not None else None,
+            x=temporal_features,
+            lengths=lengths,
             cell_types=cell_types
         )
     
