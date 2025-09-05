@@ -65,9 +65,27 @@ Thumbs.db
 # Large model files
 *.h5
 *.hdf5
+*.h5ad
 *.npz
+*.pt
+*.pth
 models/*.pth
+models/*.pt
 checkpoints/*.pth
+checkpoints/*.pt
+best_*.pth
+
+# Large data files
+*.tar
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Processed data
+processed_*/
+processed_heart_data/
+processed_training_data/
 
 # Temporary files
 *.tmp
