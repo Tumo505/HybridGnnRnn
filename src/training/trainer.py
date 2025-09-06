@@ -5,6 +5,7 @@ Handles training loop, validation, and model evaluation for cardiomyocyte differ
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 from torch_geometric.data import Data
 from torch_geometric.loader import DataLoader
@@ -81,7 +82,7 @@ class GNNTrainer:
         # Setup tensorboard
         self.writer = SummaryWriter(self.log_dir / 'tensorboard')
         
-        # Training history
+        # Training history with additional metrics
         self.train_history = {
             'epoch': [],
             'train_loss': [],
@@ -90,8 +91,17 @@ class GNNTrainer:
             'val_loss': [],
             'val_acc': [],
             'val_r2': [],
-            'learning_rate': []
+            'learning_rate': [],
+            'train_class_loss': [],  # Separate classification loss
+            'train_reg_loss': [],    # Separate regression loss
+            'val_class_loss': [],
+            'val_reg_loss': []
         }
+        
+        # Early stopping parameters
+        self.best_val_loss = float('inf')
+        self.patience_counter = 0
+        self.early_stop = False
         
         self.logger.info(f"Trainer initialized on {self.device}")
         self.logger.info(f"Model parameters: {sum(p.numel() for p in self.model.parameters()):,}")
@@ -100,44 +110,71 @@ class GNNTrainer:
         
     def setup_training(self,
                       learning_rate: float = 1e-3,
-                      weight_decay: float = 1e-4,
-                      classification_weight: float = 0.5,
-                      regression_weight: float = 0.5):
+                      weight_decay: float = 5e-4,  # Increased L2 regularization
+                      classification_weight: float = 0.7,  # Adjusted weights
+                      regression_weight: float = 0.3,
+                      use_focal_loss: bool = True):  # Added focal loss option
         """
-        Setup optimizers and loss functions.
+        Setup optimizers and loss functions with enhanced regularization.
         
         Args:
             learning_rate: Learning rate for optimizer
-            weight_decay: Weight decay for regularization
+            weight_decay: Weight decay for L2 regularization (increased)
             classification_weight: Weight for classification loss
             regression_weight: Weight for regression loss
+            use_focal_loss: Whether to use focal loss for imbalanced classes
         """
         
-        # Optimizer
-        self.optimizer = optim.Adam(
+        # Enhanced optimizer with stronger regularization
+        self.optimizer = optim.AdamW(  # Changed to AdamW for better regularization
             self.model.parameters(),
             lr=learning_rate,
-            weight_decay=weight_decay
+            weight_decay=weight_decay,
+            betas=(0.9, 0.999),
+            eps=1e-8
         )
         
-        # Loss functions
-        self.classification_criterion = nn.CrossEntropyLoss()
-        self.regression_criterion = nn.MSELoss()
+        # Enhanced loss functions
+        if use_focal_loss:
+            # Focal loss for handling class imbalance
+            self.classification_criterion = self._focal_loss
+        else:
+            # Add label smoothing for regularization
+            self.classification_criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
+        
+        self.regression_criterion = nn.SmoothL1Loss()  # More robust than MSE
         
         # Loss weights
         self.classification_weight = classification_weight
         self.regression_weight = regression_weight
         
-        # Learning rate scheduler
+        # Enhanced learning rate scheduler with early stopping
         self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(
             self.optimizer,
             mode='min',
-            factor=0.5,
-            patience=10,
+            factor=0.7,  # Less aggressive reduction
+            patience=5,   # More responsive
+            min_lr=1e-6,
             verbose=True
         )
         
-        self.logger.info(f"Training setup complete - LR: {learning_rate}, WD: {weight_decay}")
+        # Add cosine annealing for better convergence
+        self.cosine_scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(
+            self.optimizer,
+            T_0=10,
+            T_mult=2,
+            eta_min=1e-6
+        )
+        
+        self.logger.info(f"Enhanced training setup complete - LR: {learning_rate}, WD: {weight_decay}")
+        self.logger.info(f"Using AdamW optimizer with stronger regularization")
+        
+    def _focal_loss(self, pred, target, alpha=1.0, gamma=2.0):
+        """Focal loss for handling class imbalance."""
+        ce_loss = F.cross_entropy(pred, target, reduction='none')
+        pt = torch.exp(-ce_loss)
+        focal_loss = alpha * (1 - pt) ** gamma * ce_loss
+        return focal_loss.mean()
         
     def compute_loss(self, 
                     classification_pred: torch.Tensor,
@@ -157,8 +194,18 @@ class GNNTrainer:
             Combined loss and individual loss components
         """
         
-        # Classification loss
+        # Classification loss - handle shape mismatch
         if classification_pred.size(0) > 0 and classification_target.size(0) > 0:
+            # If we have node-level predictions but graph-level targets, aggregate
+            if classification_pred.size(0) != classification_target.size(0):
+                if hasattr(data, 'batch'):
+                    # Use batch pooling to aggregate node predictions to graph level
+                    from torch_geometric.utils import global_mean_pool
+                    classification_pred = global_mean_pool(classification_pred, data.batch)
+                else:
+                    # For single graph, use mean pooling
+                    classification_pred = classification_pred.mean(dim=0, keepdim=True)
+                    
             class_loss = self.classification_criterion(classification_pred, classification_target)
         else:
             class_loss = torch.tensor(0.0, device=self.device)
@@ -211,15 +258,12 @@ class GNNTrainer:
             self.optimizer.zero_grad()
             classification_pred, regression_pred = self.model(data)
             
-            # Create dummy targets if not available
-            if not hasattr(data, 'y') or data.y is None:
-                # Graph-level classification target (1 target per graph)
-                classification_target = torch.randint(0, self.model.num_classes, 
-                                                    (1,), 
-                                                    device=self.device)
-                # Graph-level regression target (1 target per graph)
-                regression_target = torch.rand(1, device=self.device)
-            else:
+            # Create targets from batch data
+            if hasattr(data, 'y_class') and hasattr(data, 'y_reg'):
+                # Use enhanced targets from our data loader
+                classification_target = data.y_class
+                regression_target = data.y_reg
+            elif hasattr(data, 'y') and data.y is not None:
                 # Use the first element as graph-level target
                 if data.y.dim() > 0 and data.y.numel() > 1:
                     classification_target = data.y[:1]  # Take first element as graph label
@@ -227,6 +271,13 @@ class GNNTrainer:
                     classification_target = data.y
                     
                 # Create regression target as random efficiency scores for now
+                regression_target = torch.rand(1, device=self.device)
+            else:
+                # Graph-level classification target (1 target per graph)
+                classification_target = torch.randint(0, self.model.num_classes, 
+                                                    (1,), 
+                                                    device=self.device)
+                # Graph-level regression target (1 target per graph)
                 regression_target = torch.rand(1, device=self.device)
             
             # Compute loss
@@ -318,15 +369,12 @@ class GNNTrainer:
                 # Forward pass
                 classification_pred, regression_pred = self.model(data)
                 
-                # Create dummy targets if not available
-                if not hasattr(data, 'y') or data.y is None:
-                    # Graph-level classification target (1 target per graph)
-                    classification_target = torch.randint(0, self.model.num_classes, 
-                                                        (1,), 
-                                                        device=self.device)
-                    # Graph-level regression target (1 target per graph)
-                    regression_target = torch.rand(1, device=self.device)
-                else:
+                # Create targets from batch data
+                if hasattr(data, 'y_class') and hasattr(data, 'y_reg'):
+                    # Use enhanced targets from our data loader
+                    classification_target = data.y_class
+                    regression_target = data.y_reg
+                elif hasattr(data, 'y') and data.y is not None:
                     # Use the first element as graph-level target
                     if data.y.dim() > 0 and data.y.numel() > 1:
                         classification_target = data.y[:1]  # Take first element as graph label
@@ -334,6 +382,13 @@ class GNNTrainer:
                         classification_target = data.y
                         
                     # Create regression target as random efficiency scores for now
+                    regression_target = torch.rand(1, device=self.device)
+                else:
+                    # Graph-level classification target (1 target per graph)
+                    classification_target = torch.randint(0, self.model.num_classes, 
+                                                        (1,), 
+                                                        device=self.device)
+                    # Graph-level regression target (1 target per graph)
                     regression_target = torch.rand(1, device=self.device)
                 
                 # Compute loss
@@ -395,22 +450,20 @@ class GNNTrainer:
              val_loader: Optional[DataLoader] = None,
              num_epochs: int = 100,
              save_every: int = 10,
-             early_stopping_patience: int = 20):
+             early_stopping_patience: int = 15):  # Reduced patience
         """
-        Main training loop.
+        Enhanced training loop with early stopping and regularization.
         
         Args:
             train_loader: Training data loader
             val_loader: Validation data loader (optional)
             num_epochs: Number of training epochs
             save_every: Save checkpoint every N epochs
-            early_stopping_patience: Early stopping patience
+            early_stopping_patience: Early stopping patience (reduced)
         """
         
-        self.logger.info(f"Starting training for {num_epochs} epochs...")
-        
-        best_val_loss = float('inf')
-        patience_counter = 0
+        self.logger.info(f"Starting enhanced training for {num_epochs} epochs...")
+        self.logger.info(f"Early stopping patience: {early_stopping_patience}")
         
         for epoch in range(num_epochs):
             start_time = time.time()
@@ -423,22 +476,35 @@ class GNNTrainer:
                 val_metrics = self.validate_epoch(val_loader)
                 val_loss = val_metrics['loss']
                 
-                # Learning rate scheduling
+                # Learning rate scheduling (both schedulers)
                 self.scheduler.step(val_loss)
+                self.cosine_scheduler.step()
                 
-                # Early stopping check
-                if val_loss < best_val_loss:
-                    best_val_loss = val_loss
-                    patience_counter = 0
-                    # Save best model
-                    self.save_checkpoint(epoch, is_best=True)
+                # Enhanced early stopping check
+                if val_loss < self.best_val_loss:
+                    improvement = (self.best_val_loss - val_loss) / self.best_val_loss
+                    if improvement > 0.01:  # Require 1% improvement
+                        self.best_val_loss = val_loss
+                        self.patience_counter = 0
+                        self.save_checkpoint(epoch, is_best=True)
+                        self.logger.info(f"New best validation loss: {val_loss:.6f} (improvement: {improvement:.2%})")
+                    else:
+                        self.patience_counter += 1
                 else:
-                    patience_counter += 1
+                    self.patience_counter += 1
+                    
+                # Check for early stopping
+                if self.patience_counter >= early_stopping_patience:
+                    self.logger.info(f"Early stopping triggered after {epoch+1} epochs")
+                    self.logger.info(f"Best validation loss: {self.best_val_loss:.6f}")
+                    self.early_stop = True
+                    break
                     
             else:
                 val_metrics = None
                 val_loss = train_metrics['loss']
                 self.scheduler.step(val_loss)
+                self.cosine_scheduler.step()
             
             # Log metrics
             self._log_epoch_metrics(epoch, train_metrics, val_metrics)
@@ -446,11 +512,6 @@ class GNNTrainer:
             # Save regular checkpoint
             if (epoch + 1) % save_every == 0:
                 self.save_checkpoint(epoch)
-                
-            # Early stopping
-            if patience_counter >= early_stopping_patience:
-                self.logger.info(f"Early stopping at epoch {epoch}")
-                break
                 
             epoch_time = time.time() - start_time
             self.logger.info(f"Epoch {epoch+1}/{num_epochs} completed in {epoch_time:.2f}s")
