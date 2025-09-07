@@ -47,6 +47,22 @@ outputs/
 wandb/
 lightning_logs/
 
+# Training log files
+*.log
+*_training.log
+*_training_*.log
+enhanced_gnn_training_*.log
+improved_gnn_training_*.log
+simple_gnn_training_*.log
+anti_overfitting_rnn_training.log
+comprehensive_rnn_training.log
+temporal_rnn_training.log
+
+# Training curves and plots
+*training_curves.png
+*_curves.png
+training_plots/
+
 # IDE
 .vscode/
 .idea/
