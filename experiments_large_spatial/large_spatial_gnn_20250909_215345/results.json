@@ -1,0 +1,14 @@
+[
+  {
+    "best_val_accuracy":0.1459459459,
+    "best_val_loss":null,
+    "test_accuracy":0.1458333333,
+    "test_f1_macro":0.0254545455,
+    "test_f1_weighted":0.0371212121,
+    "epochs_trained":16,
+    "experiment_name":"large_spatial_gnn_20250909_215345",
+    "dataset_size":8634,
+    "num_features":2784,
+    "num_classes":10
+  }
+]

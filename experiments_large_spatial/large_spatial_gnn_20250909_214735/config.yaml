@@ -1,0 +1,70 @@
+data:
+  data_path: data/combined_large_spatial_dataset.h5ad
+  n_top_genes: 3000
+experiment:
+  name: large_spatial_gnn_combined_dataset
+  notes: Training on combined 8,634-cell spatial dataset for enhanced cardiomyocyte
+    differentiation prediction
+  tags:
+  - spatial
+  - combined
+  - large_scale
+  - cardiomyocyte
+graph:
+  coordinate_system: normalized
+  edge_features: true
+  k_neighbors:
+  - 3
+  - 6
+  - 12
+  - 24
+  spatial_key: spatial
+hardware:
+  device: cuda
+  num_workers: 4
+  pin_memory: true
+  prefetch_factor: 2
+model:
+  architecture: enhanced_gat
+  attention_heads: 4
+  dropout: 0.3
+  edge_dim: 8
+  hidden_dims:
+  - 1024
+  - 512
+  - 256
+  - 128
+  input_dim: 2782
+  num_classes: 10
+  output_dim: 64
+spatial_features:
+  neighborhood_radius: 100.0
+  use_angles: true
+  use_coordinates: true
+  use_density: true
+  use_distances: true
+splits:
+  stratify: true
+  test_ratio: 0.15
+  train_ratio: 0.7
+  val_ratio: 0.15
+training:
+  batch_size: 512
+  early_stopping_min_delta: 0.001
+  early_stopping_patience: 15
+  epochs: 100
+  gradient_clip_norm: 1.0
+  learning_rate: 0.0003
+  mixed_precision: true
+  scheduler_factor: 0.7
+  scheduler_patience: 8
+  scheduler_type: reduce_on_plateau
+  weight_decay: 1.0e-05
+validation:
+  checkpoint_every: 10
+  metrics:
+  - accuracy
+  - f1_macro
+  - f1_weighted
+  save_best_model: true
+  save_checkpoints: true

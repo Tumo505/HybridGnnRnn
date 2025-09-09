@@ -1,0 +1,9 @@
+{
+  "best_val_accuracy": 0.13166667520999908,
+  "best_val_loss": 2.283487558364868,
+  "test_accuracy": 0.12833333015441895,
+  "test_f1_score": 0.02919251600196947,
+  "test_classification_loss": 2.241657257080078,
+  "experiment_name": "spatial_gnn_20250909_195810",
+  "wandb_url": "https://wandb.ai/tumokgabeng-university-of-south-africa/hybrid-gnn-rnn-cardiac-spatial/runs/70pgjfk5"
+}
