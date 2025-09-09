@@ -12,12 +12,17 @@ import numpy as np
 import pandas as pd
 import logging
 import time
+import json
 from pathlib import Path
 import argparse
-from sklearn.metrics import accuracy_score, f1_score, classification_report
+from datetime import datetime
+from sklearn.metrics import accuracy_score, f1_score, classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split
 import warnings
 warnings.filterwarnings('ignore')
+
+# Wandb for experiment tracking
+import wandb
 
 # Import our enhanced spatial GNN
 from enhanced_spatial_gnn import EnhancedSpatialGNN
@@ -38,9 +43,14 @@ class LargeScaleSpatialGNNTrainer:
             torch.backends.cudnn.benchmark = True
             torch.backends.cudnn.deterministic = False
         
-        # Create experiment directory
-        self.exp_dir = Path('experiments_large_pseudo_spatial') / f"large_pseudo_spatial_gnn_{time.strftime('%Y%m%d_%H%M%S')}"
+        # Create experiment directory with timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.exp_name = f"large_pseudo_spatial_gnn_{timestamp}"
+        self.exp_dir = Path('experiments_large_pseudo_spatial') / self.exp_name
         self.exp_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Initialize Wandb
+        self.setup_wandb()
         
         logger.info(f"Using device: {self.device}")
         if torch.cuda.is_available():
@@ -48,6 +58,28 @@ class LargeScaleSpatialGNNTrainer:
             logger.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
         
         logger.info(f"Experiment directory: {self.exp_dir}")
+        logger.info(f"Wandb run: {wandb.run.url}")
+    
+    def setup_wandb(self):
+        """Initialize Wandb experiment tracking"""
+        wandb.init(
+            project="hybrid-gnn-rnn-cardiac-spatial",
+            name=self.exp_name,
+            config=self.config,
+            tags=["spatial-gnn", "cardiomyocyte", "large-scale", "pseudo-spatial"],
+            notes="Large-scale pseudo-spatial GNN training for cardiomyocyte differentiation efficiency prediction",
+            save_code=True
+        )
+        
+        # Log system info
+        wandb.config.update({
+            "device": str(self.device),
+            "gpu_name": torch.cuda.get_device_name() if torch.cuda.is_available() else "CPU",
+            "gpu_memory_gb": torch.cuda.get_device_properties(0).total_memory / 1e9 if torch.cuda.is_available() else 0,
+            "experiment_name": self.exp_name,
+            "cuda_version": torch.version.cuda if torch.cuda.is_available() else "N/A"
+        })
+        logger.info(f"Wandb run: {wandb.run.url}")
     
     def load_data(self):
         """Load the large-scale pseudo-spatial dataset"""
@@ -66,6 +98,15 @@ class LargeScaleSpatialGNNTrainer:
         logger.info(f"Classes: {data.num_classes}")
         logger.info(f"Edges: {data.edge_index.shape[1]:,}")
         logger.info(f"Cell types: {', '.join(data.cell_types)}")
+        
+        # Log dataset info to Wandb
+        wandb.config.update({
+            "num_nodes": data.num_nodes,
+            "num_features": data.num_features,
+            "num_classes": data.num_classes,
+            "num_edges": data.edge_index.shape[1],
+            "cell_types": data.cell_types
+        })
         
         return data
     
@@ -107,9 +148,19 @@ class LargeScaleSpatialGNNTrainer:
         train_labels = data.y[data.train_mask]
         unique_labels, counts = torch.unique(train_labels, return_counts=True)
         logger.info("Training set class distribution:")
+        class_distribution = {}
         for label, count in zip(unique_labels, counts):
             cell_type = data.cell_types[label.item()]
             logger.info(f"  {cell_type}: {count.item():,} cells")
+            class_distribution[cell_type] = count.item()
+        
+        # Log to Wandb
+        wandb.log({
+            "train_size": len(train_idx),
+            "val_size": len(val_idx), 
+            "test_size": len(test_idx),
+            "class_distribution": class_distribution
+        })
         
         return data
     
@@ -140,6 +191,13 @@ class LargeScaleSpatialGNNTrainer:
         logger.info(f"Enhanced SpatialGNN initialized")
         logger.info(f"Architecture: {data.num_features} -> {model_config['hidden_dims']} -> {model_config['output_dim']} -> {data.num_classes}")
         logger.info(f"Model parameters: {total_params:,} total, {trainable_params:,} trainable")
+        
+        # Log model info to Wandb
+        wandb.config.update({
+            "model_config": model_config,
+            "total_parameters": total_params,
+            "trainable_parameters": trainable_params
+        })
         
         return model_config
     
@@ -334,6 +392,19 @@ class LargeScaleSpatialGNNTrainer:
                     f"Val Loss: {val_loss:.4f} Acc: {val_acc:.4f} F1: {val_f1:.4f} | "
                     f"Time: {epoch_time:.2f}s"
                 )
+                
+                # Log to Wandb
+                wandb.log({
+                    'epoch': epoch,
+                    'train/loss': train_loss,
+                    'train/accuracy': train_acc,
+                    'train/f1': train_f1,
+                    'val/loss': val_loss,
+                    'val/accuracy': val_acc,
+                    'val/f1': val_f1,
+                    'learning_rate': self.optimizer.param_groups[0]['lr'],
+                    'epoch_time': epoch_time
+                })
             else:
                 logger.warning(
                     f"Epoch {epoch:3d}/{epochs} | "
@@ -370,6 +441,10 @@ class LargeScaleSpatialGNNTrainer:
                     'model_config': model_config
                 }, self.exp_dir / 'best_model.pth')
                 
+                # Log best model to Wandb
+                wandb.run.summary["best_val_accuracy"] = best_val_acc
+                wandb.run.summary["best_epoch"] = best_epoch
+                
             else:
                 patience_counter += 1
                 
@@ -397,11 +472,41 @@ class LargeScaleSpatialGNNTrainer:
             'dataset_size': data.num_nodes,
             'num_features': data.num_features,
             'num_classes': data.num_classes,
-            'detailed_classification_report': detailed_report
+            'detailed_classification_report': detailed_report,
+            'experiment_name': self.exp_name,
+            'wandb_url': wandb.run.url
         }
         
+        # Log final results to Wandb
+        wandb.log({
+            'final/test_accuracy': test_acc,
+            'final/test_f1_macro': test_f1,
+            'final/test_f1_weighted': test_f1_weighted,
+            'final/best_val_accuracy': best_val_acc
+        })
+        
+        # Create classification report table for Wandb
+        cell_types = [data.cell_types[i] for i in range(data.num_classes)]
+        report_data = []
+        for cell_type in cell_types:
+            if cell_type in detailed_report:
+                report_data.append([
+                    cell_type,
+                    detailed_report[cell_type]['precision'],
+                    detailed_report[cell_type]['recall'],
+                    detailed_report[cell_type]['f1-score'],
+                    detailed_report[cell_type]['support']
+                ])
+        
+        if report_data:
+            wandb.log({"classification_report": wandb.Table(
+                columns=["Cell Type", "Precision", "Recall", "F1-Score", "Support"],
+                data=report_data
+            )})
+        
         # Save results
-        pd.DataFrame([results]).to_json(self.exp_dir / "results.json", orient='records', indent=2)
+        with open(self.exp_dir / "results.json", 'w') as f:
+            json.dump(results, f, indent=2)
         pd.DataFrame(training_history).to_json(self.exp_dir / "training_history.json", orient='records', indent=2)
         
         logger.info(f"🎉 Training completed!")
@@ -410,6 +515,10 @@ class LargeScaleSpatialGNNTrainer:
         logger.info(f"Test F1 (macro): {test_f1:.4f}")
         logger.info(f"Test F1 (weighted): {test_f1_weighted:.4f}")
         logger.info(f"Results saved to: {self.exp_dir}")
+        logger.info(f"Wandb run: {wandb.run.url}")
+        
+        # Close Wandb
+        wandb.finish()
         
         return results
 
@@ -431,6 +540,7 @@ def main():
     print(f"Test Accuracy: {results['test_accuracy']:.4f}")
     print(f"Test F1 Score (macro): {results['test_f1_macro']:.4f}")
     print(f"Test F1 Score (weighted): {results['test_f1_weighted']:.4f}")
+    print(f"Wandb URL: {results['wandb_url']}")
     
     # Comparison with previous results
     print(f"\n📊 Performance Comparison:")

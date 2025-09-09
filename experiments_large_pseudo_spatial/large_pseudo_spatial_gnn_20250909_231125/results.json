@@ -1,0 +1,94 @@
+{
+  "best_val_accuracy": 0.9854666666666667,
+  "best_epoch": 14,
+  "test_accuracy": 0.9849333333333333,
+  "test_f1_macro": 0.9227128582090773,
+  "test_f1_weighted": 0.9853710930308577,
+  "epochs_trained": 24,
+  "dataset_size": 50000,
+  "num_features": 28991,
+  "num_classes": 11,
+  "detailed_classification_report": {
+    "Adipocyte": {
+      "precision": 1.0,
+      "recall": 0.9285714285714286,
+      "f1-score": 0.9629629629629629,
+      "support": 14.0
+    },
+    "Cardiomyocyte": {
+      "precision": 0.9970666666666667,
+      "recall": 0.9970666666666667,
+      "f1-score": 0.9970666666666667,
+      "support": 3750.0
+    },
+    "Cycling cells": {
+      "precision": 0.8875,
+      "recall": 0.8255813953488372,
+      "f1-score": 0.8554216867469879,
+      "support": 86.0
+    },
+    "Endothelial": {
+      "precision": 0.9865841073271414,
+      "recall": 0.9886246122026887,
+      "f1-score": 0.987603305785124,
+      "support": 967.0
+    },
+    "Fibroblast": {
+      "precision": 0.9802399435426958,
+      "recall": 0.9879089615931721,
+      "f1-score": 0.9840595111583422,
+      "support": 1406.0
+    },
+    "Lymphoid": {
+      "precision": 0.9781021897810219,
+      "recall": 0.9241379310344827,
+      "f1-score": 0.950354609929078,
+      "support": 145.0
+    },
+    "Mast": {
+      "precision": 0.425,
+      "recall": 0.8095238095238095,
+      "f1-score": 0.5573770491803278,
+      "support": 21.0
+    },
+    "Myeloid": {
+      "precision": 0.9722222222222222,
+      "recall": 0.9612277867528272,
+      "f1-score": 0.966693744922827,
+      "support": 619.0
+    },
+    "Neuronal": {
+      "precision": 1.0,
+      "recall": 0.9855072463768116,
+      "f1-score": 0.9927007299270073,
+      "support": 69.0
+    },
+    "Pericyte": {
+      "precision": 0.9852507374631269,
+      "recall": 0.9737609329446064,
+      "f1-score": 0.9794721407624634,
+      "support": 343.0
+    },
+    "vSMCs": {
+      "precision": 0.9466666666666667,
+      "recall": 0.8875,
+      "f1-score": 0.9161290322580645,
+      "support": 80.0
+    },
+    "accuracy": 0.9849333333333333,
+    "macro avg": {
+      "precision": 0.923512048515413,
+      "recall": 0.93358279736503,
+      "f1-score": 0.9227128582090773,
+      "support": 7500.0
+    },
+    "weighted avg": {
+      "precision": 0.9862398535684488,
+      "recall": 0.9849333333333333,
+      "f1-score": 0.9853710930308577,
+      "support": 7500.0
+    }
+  },
+  "experiment_name": "large_pseudo_spatial_gnn_20250909_231125",
+  "wandb_url": "https://wandb.ai/tumokgabeng-university-of-south-africa/hybrid-gnn-rnn-cardiac-spatial/runs/4nwe1rn5"
+}
