@@ -339,7 +339,7 @@ def create_temporal_dataloaders(
         shuffle=True,
         num_workers=num_workers,
         pin_memory=pin_memory,
-        drop_last=True,
+        drop_last=False,
         collate_fn=collate_temporal_batch
     )
     
@@ -349,6 +349,7 @@ def create_temporal_dataloaders(
         shuffle=False,
         num_workers=num_workers,
         pin_memory=pin_memory,
+        drop_last=False,
         collate_fn=collate_temporal_batch
     )
     
@@ -358,6 +359,7 @@ def create_temporal_dataloaders(
         shuffle=False,
         num_workers=num_workers,
         pin_memory=pin_memory,
+        drop_last=False,
         collate_fn=collate_temporal_batch
     )
     
@@ -376,11 +378,17 @@ def collate_temporal_batch(batch):
     cell_types = torch.stack([item['cell_type'] for item in batch])
     lengths = torch.stack([item['sequence_length'] for item in batch])
     
+    # Ensure lengths is always 1D, even for batch size 1
+    if lengths.dim() == 0:
+        lengths = lengths.unsqueeze(0)
+    elif lengths.dim() > 1:
+        lengths = lengths.squeeze(-1)  # Only squeeze the last dimension if needed
+    
     return {
         'sequences': sequences,
         'differentiation_efficiency': diff_efficiencies,
         'cell_type': cell_types,
-        'lengths': lengths.squeeze()
+        'lengths': lengths
     }
 
 

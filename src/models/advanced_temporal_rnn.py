@@ -333,9 +333,15 @@ class AdvancedTemporalRNN(nn.Module):
         for i, (lstm_layer, layer_norm) in enumerate(zip(self.lstm_layers, self.layer_norms)):
             # LSTM forward pass
             if lengths is not None:
+                # Ensure lengths is the correct format for pack_padded_sequence
+                lengths_cpu = lengths.cpu()
+                if lengths_cpu.dim() == 0:
+                    lengths_cpu = lengths_cpu.unsqueeze(0)
+                lengths_cpu = lengths_cpu.long()  # Ensure int64 type
+                
                 # Pack sequences for variable length
                 packed_input = nn.utils.rnn.pack_padded_sequence(
-                    lstm_output, lengths.cpu(), batch_first=True, enforce_sorted=False
+                    lstm_output, lengths_cpu, batch_first=True, enforce_sorted=False
                 )
                 packed_output, _ = lstm_layer(packed_input)
                 lstm_output, _ = nn.utils.rnn.pad_packed_sequence(
@@ -368,6 +374,11 @@ class AdvancedTemporalRNN(nn.Module):
         
         # Global average pooling across time dimension
         if lengths is not None:
+            # Ensure lengths is properly formatted
+            if lengths.dim() == 0:
+                lengths = lengths.unsqueeze(0)
+            lengths = lengths.to(x.device)
+            
             # Masked average pooling
             mask = torch.arange(seq_len, device=x.device).expand(
                 batch_size, seq_len

@@ -22,6 +22,9 @@ from typing import Dict, List, Tuple, Optional
 import warnings
 warnings.filterwarnings('ignore')
 
+# Weights & Biases for experiment tracking
+import wandb
+
 # Import our custom modules
 import sys
 sys.path.append(str(Path(__file__).parent))
@@ -43,7 +46,8 @@ class AdvancedRNNTrainer:
         val_loader,
         test_loader,
         config: Dict,
-        device: torch.device
+        device: torch.device,
+        use_wandb: bool = True
     ):
         self.model = model.to(device)
         self.train_loader = train_loader
@@ -51,6 +55,7 @@ class AdvancedRNNTrainer:
         self.test_loader = test_loader
         self.config = config
         self.device = device
+        self.use_wandb = use_wandb
         
         # Initialize training components
         self._setup_training()
@@ -166,6 +171,28 @@ class AdvancedRNNTrainer:
         self.log_dir = Path(self.config['log_dir']) / self.experiment_name
         self.log_dir.mkdir(parents=True, exist_ok=True)
         
+        # Initialize Weights & Biases
+        if self.use_wandb:
+            # Count model parameters
+            total_params = sum(p.numel() for p in self.model.parameters())
+            trainable_params = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
+            
+            wandb.init(
+                project="hybrid-gnn-rnn-cardiac",
+                name=self.experiment_name,
+                config={
+                    **self.config,
+                    'model_params': total_params,
+                    'trainable_params': trainable_params,
+                    'device': str(self.device),
+                    'gpu_name': torch.cuda.get_device_name() if torch.cuda.is_available() else 'CPU'
+                },
+                tags=["temporal-rnn", "cardiomyocyte", "rtx-5070"]
+            )
+            
+            # Watch model for gradient and parameter tracking
+            wandb.watch(self.model, log="all", log_freq=100)
+        
         # Tensorboard logging
         self.writer = SummaryWriter(log_dir=self.log_dir)
         
@@ -175,6 +202,8 @@ class AdvancedRNNTrainer:
         
         print(f"Experiment: {self.experiment_name}")
         print(f"Log directory: {self.log_dir}")
+        if self.use_wandb:
+            print(f"Wandb run: {wandb.run.url}")
         
     def train_epoch(self) -> Dict[str, float]:
         """Train for one epoch."""
@@ -201,7 +230,7 @@ class AdvancedRNNTrainer:
                     
                     targets = {
                         'differentiation_efficiency': diff_targets,
-                        'cell_type': cell_targets.squeeze()
+                        'cell_type': cell_targets.flatten()  # Use flatten instead of squeeze
                     }
                     
                     losses = self.criterion(predictions, targets)
@@ -222,7 +251,7 @@ class AdvancedRNNTrainer:
                 
                 targets = {
                     'differentiation_efficiency': diff_targets,
-                    'cell_type': cell_targets.squeeze()
+                    'cell_type': cell_targets.flatten()  # Use flatten instead of squeeze
                 }
                 
                 losses = self.criterion(predictions, targets)
@@ -283,7 +312,7 @@ class AdvancedRNNTrainer:
                 
                 targets = {
                     'differentiation_efficiency': diff_targets,
-                    'cell_type': cell_targets.squeeze()
+                    'cell_type': cell_targets.flatten()  # Use flatten instead of squeeze
                 }
                 
                 losses = self.criterion(predictions, targets)
@@ -375,6 +404,21 @@ class AdvancedRNNTrainer:
             self.writer.add_scalar('Val/R2', val_metrics['r2'], epoch)
             self.writer.add_scalar('Learning_Rate', current_lr, epoch)
             
+            # Wandb logging
+            if self.use_wandb:
+                wandb.log({
+                    'epoch': epoch + 1,
+                    'train/loss': train_metrics['loss'],
+                    'train/diff_loss': train_metrics['diff_loss'],
+                    'train/cell_loss': train_metrics['cell_loss'],
+                    'val/loss': val_metrics['loss'],
+                    'val/diff_loss': val_metrics['diff_loss'],
+                    'val/cell_loss': val_metrics['cell_loss'],
+                    'val/r2': val_metrics['r2'],
+                    'learning_rate': current_lr,
+                    'epoch_time': epoch_time
+                }, step=epoch)
+            
             # Save best model
             if val_metrics['r2'] > self.best_val_r2:
                 self.best_val_r2 = val_metrics['r2']
@@ -407,9 +451,23 @@ class AdvancedRNNTrainer:
         print(f"Test R²: {test_metrics['r2']:.4f}")
         print(f"Test Loss: {test_metrics['loss']:.4f}")
         
+        # Log final test results to wandb
+        if self.use_wandb:
+            wandb.log({
+                'test/r2': test_metrics['r2'],
+                'test/loss': test_metrics['loss'],
+                'training/best_val_r2': self.best_val_r2,
+                'training/best_val_loss': self.best_val_loss,
+                'training/total_epochs': self.current_epoch + 1,
+                'training/total_time_hours': (time.time() - start_time) / 3600
+            })
+        
         # Save training history
         self.save_training_history()
         self.writer.close()
+        
+        if self.use_wandb:
+            wandb.finish()
         
     def test(self) -> Dict[str, float]:
         """Test the model on the test set."""
@@ -430,7 +488,7 @@ class AdvancedRNNTrainer:
                 
                 targets = {
                     'differentiation_efficiency': diff_targets,
-                    'cell_type': cell_targets.squeeze()
+                    'cell_type': cell_targets.flatten()
                 }
                 
                 losses = self.criterion(predictions, targets)
@@ -548,6 +606,10 @@ def main():
                        help='Path to custom config JSON file')
     parser.add_argument('--gpu_id', type=int, default=0,
                        help='GPU ID to use')
+    parser.add_argument('--no_wandb', action='store_true',
+                       help='Disable Weights & Biases logging')
+    parser.add_argument('--wandb_project', type=str, default='hybrid-gnn-rnn-cardiac',
+                       help='Wandb project name')
     
     args = parser.parse_args()
     
@@ -581,8 +643,18 @@ def main():
     )
     
     # Get input dimension from first batch
-    sample_batch = next(iter(train_loader))
-    input_dim = sample_batch['sequences'].shape[-1]
+    if len(train_loader) > 0:
+        sample_batch = next(iter(train_loader))
+        input_dim = sample_batch['sequences'].shape[-1]
+    elif len(val_loader) > 0:
+        sample_batch = next(iter(val_loader))
+        input_dim = sample_batch['sequences'].shape[-1]
+    elif len(test_loader) > 0:
+        sample_batch = next(iter(test_loader))
+        input_dim = sample_batch['sequences'].shape[-1]
+    else:
+        raise ValueError("All data loaders are empty!")
+    
     print(f"Input dimension: {input_dim}")
     
     # Create model
@@ -597,7 +669,8 @@ def main():
         val_loader=val_loader,
         test_loader=test_loader,
         config=config,
-        device=device
+        device=device,
+        use_wandb=not args.no_wandb
     )
     
     # Start training
