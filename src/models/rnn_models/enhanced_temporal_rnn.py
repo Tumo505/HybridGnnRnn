@@ -262,11 +262,17 @@ class EnhancedTemporalRNN(nn.Module):
                 x_with_conv, lengths.cpu(), batch_first=True, enforce_sorted=False
             )
             packed_output, hidden = self.rnn(packed_input)
-            rnn_output, _ = pad_packed_sequence(packed_output, batch_first=True)
+            rnn_output, output_lengths = pad_packed_sequence(packed_output, batch_first=True)
+            
+            # Adjust residual to match RNN output dimensions
+            batch_size, max_seq_len = rnn_output.shape[:2]
+            if residual.shape[1] != max_seq_len:
+                # Truncate residual to match RNN output length
+                residual = residual[:, :max_seq_len, :]
         else:
             rnn_output, hidden = self.rnn(x_with_conv)
         
-        # Add residual connection
+        # Add residual connection (dimensions should now match)
         rnn_output = rnn_output + residual
         
         # Attention mechanism
@@ -490,51 +496,3 @@ def generate_cardiac_temporal_pattern(
             sequence[t, f] = value
     
     return sequence
-
-if __name__ == "__main__":
-    # Test the enhanced temporal RNN
-    logging.basicConfig(level=logging.INFO)
-    
-    # Create synthetic data
-    sequences, labels, names = create_synthetic_temporal_data(
-        num_sequences=100,
-        min_length=20,
-        max_length=100,
-        num_features=50,
-        num_classes=5
-    )
-    
-    # Create dataset
-    dataset = CardiacTemporalDataset(sequences, labels, names, max_length=100)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=8, shuffle=True)
-    
-    # Create model
-    model = EnhancedTemporalRNN(
-        input_dim=50,
-        hidden_dim=128,
-        num_layers=2,
-        num_classes=5,
-        rnn_type='LSTM',
-        bidirectional=True,
-        use_attention=True
-    )
-    
-    print(f"Model parameters: {sum(p.numel() for p in model.parameters()):,}")
-    
-    # Test forward pass
-    batch = next(iter(dataloader))
-    sequences = batch['sequence']
-    lengths = batch['length']
-    labels = batch['label']
-    
-    print(f"Input shape: {sequences.shape}")
-    print(f"Lengths: {lengths}")
-    
-    logits = model(sequences, lengths)
-    print(f"Output shape: {logits.shape}")
-    
-    # Test pattern extraction
-    patterns = model.get_temporal_patterns(sequences[:2], lengths[:2])
-    print(f"Extracted patterns: {list(patterns.keys())}")
-    for key, value in patterns.items():
-        print(f"  {key}: {value.shape}")

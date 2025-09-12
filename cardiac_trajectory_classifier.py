@@ -7,11 +7,13 @@ Predicts UP/DOWN/STABLE changes in gene expression over time.
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 import numpy as np
 import json
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.utils.class_weight import compute_class_weight
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -19,47 +21,68 @@ from real_cardiac_temporal_processor import RealCardiacTemporalDataset
 import os
 from datetime import datetime
 
+class FocalLoss(nn.Module):
+    """
+    Focal Loss for addressing severe class imbalance in UP/DOWN vs STABLE.
+    Focuses learning on hard-to-classify examples.
+    """
+    
+    def __init__(self, alpha=1, gamma=2, reduction='mean'):
+        super(FocalLoss, self).__init__()
+        self.alpha = alpha
+        self.gamma = gamma
+        self.reduction = reduction
+    
+    def forward(self, inputs, targets):
+        ce_loss = F.cross_entropy(inputs, targets, reduction='none')
+        pt = torch.exp(-ce_loss)
+        focal_loss = self.alpha * (1-pt)**self.gamma * ce_loss
+        
+        if self.reduction == 'mean':
+            return focal_loss.mean()
+        elif self.reduction == 'sum':
+            return focal_loss.sum()
+        else:
+            return focal_loss
+
 class CardiacTrajectoryClassifier(nn.Module):
     """
     Neural network to predict gene expression trajectory directions.
     Classifies each gene as UP/DOWN/STABLE between timepoints.
     """
     
-    def __init__(self, input_size, hidden_size=256, num_layers=2, dropout=0.3):
+    def __init__(self, input_size, hidden_size=128, num_layers=1, dropout=0.5):
         super(CardiacTrajectoryClassifier, self).__init__()
         
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         
-        # Input processing layers
+        # Reduced input processing layers
         self.input_projection = nn.Sequential(
-            nn.Linear(input_size, 1024),
+            nn.Linear(input_size, 512),
             nn.ReLU(),
             nn.Dropout(dropout),
-            nn.Linear(1024, 512),
+            nn.Linear(512, 256),
             nn.ReLU(),
             nn.Dropout(dropout)
         )
         
-        # LSTM for temporal pattern recognition
+        # Smaller LSTM
         self.lstm = nn.LSTM(
-            input_size=512,
+            input_size=256,
             hidden_size=hidden_size,
             num_layers=num_layers,
             dropout=dropout if num_layers > 1 else 0,
             batch_first=True
         )
         
-        # Classification head - predicts 3 classes for each gene
+        # Simplified classification head
         self.classifier = nn.Sequential(
-            nn.Linear(hidden_size, 256),
+            nn.Linear(hidden_size, 64),
             nn.ReLU(),
             nn.Dropout(dropout),
-            nn.Linear(256, 128),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(128, input_size * 3)  # 3 classes per gene
+            nn.Linear(64, input_size * 3)  # 3 classes per gene
         )
         
     def forward(self, x):
@@ -83,27 +106,66 @@ class CardiacTrajectoryClassifier(nn.Module):
         
         return logits
 
-def create_trajectory_labels(X, y, up_threshold=1.2, down_threshold=0.8):
+def create_trajectory_labels_gpu_optimized(X_normalized, y_normalized, scaler, target_scaler, up_threshold=1.5, down_threshold=0.67, device='cuda', chunk_size=1000):
     """
-    Convert expression values to trajectory direction labels.
+    GPU-optimized trajectory label creation with memory management.
     
     Args:
-        X: Current timepoint expression
-        y: Next timepoint expression
+        X_normalized: Normalized current timepoint expression (numpy array)
+        y_normalized: Normalized next timepoint expression (numpy array)
+        scaler: StandardScaler for X
+        target_scaler: StandardScaler for y
         up_threshold: Fold-change threshold for UP class
         down_threshold: Fold-change threshold for DOWN class
+        device: GPU device
+        chunk_size: Number of samples to process at once
     
     Returns:
-        labels: 0=DOWN, 1=STABLE, 2=UP
+        labels: 0=DOWN, 1=STABLE, 2=UP (as numpy array)
     """
-    epsilon = 1e-8
-    fold_changes = (y + epsilon) / (X + epsilon)
+    total_samples = X_normalized.shape[0]
+    print(f"   Processing {total_samples:,} samples in chunks of {chunk_size:,} on GPU...")
     
-    labels = np.ones_like(fold_changes, dtype=np.long)  # Default: STABLE
-    labels[fold_changes > up_threshold] = 2  # UP
-    labels[fold_changes < down_threshold] = 0  # DOWN
+    # Convert scaler parameters to GPU tensors
+    X_mean_gpu = torch.FloatTensor(scaler.mean_).to(device)
+    X_scale_gpu = torch.FloatTensor(scaler.scale_).to(device)
+    y_mean_gpu = torch.FloatTensor(target_scaler.mean_).to(device)
+    y_scale_gpu = torch.FloatTensor(target_scaler.scale_).to(device)
     
-    return labels
+    all_labels = []
+    
+    for start_idx in range(0, total_samples, chunk_size):
+        end_idx = min(start_idx + chunk_size, total_samples)
+        
+        # Move chunk to GPU
+        X_norm_chunk = torch.FloatTensor(X_normalized[start_idx:end_idx]).to(device)
+        y_norm_chunk = torch.FloatTensor(y_normalized[start_idx:end_idx]).to(device)
+        
+        # Denormalize on GPU (inverse transform)
+        X_orig_chunk = X_norm_chunk * X_scale_gpu + X_mean_gpu
+        y_orig_chunk = y_norm_chunk * y_scale_gpu + y_mean_gpu
+        
+        # Compute fold changes on GPU
+        epsilon = 1e-8
+        fold_changes = (y_orig_chunk + epsilon) / (X_orig_chunk + epsilon)
+        
+        # Create labels on GPU
+        labels_chunk = torch.ones_like(fold_changes, dtype=torch.long)  # Default: STABLE
+        labels_chunk[fold_changes > up_threshold] = 2  # UP
+        labels_chunk[fold_changes < down_threshold] = 0  # DOWN
+        
+        # Move labels back to CPU and store
+        all_labels.append(labels_chunk.cpu().numpy())
+        
+        # Clear GPU memory for this chunk
+        del X_norm_chunk, y_norm_chunk, X_orig_chunk, y_orig_chunk, fold_changes, labels_chunk
+        torch.cuda.empty_cache()
+    
+    # Clean up scaler tensors
+    del X_mean_gpu, X_scale_gpu, y_mean_gpu, y_scale_gpu
+    torch.cuda.empty_cache()
+    
+    return np.concatenate(all_labels, axis=0)
 
 def train_model():
     """
@@ -136,20 +198,18 @@ def train_model():
     
     # Convert to trajectory labels
     print("\n2. Converting to trajectory direction labels...")
+    print("   Using GPU-optimized processing...")
     
-    # Denormalize for fold-change calculation
-    X_train_orig = dataset['scaler'].inverse_transform(dataset['X_train'])
-    X_val_orig = dataset['scaler'].inverse_transform(dataset['X_val'])
-    X_test_orig = dataset['scaler'].inverse_transform(dataset['X_test'])
-    
-    y_train_orig = dataset['target_scaler'].inverse_transform(dataset['y_train'])
-    y_val_orig = dataset['target_scaler'].inverse_transform(dataset['y_val'])
-    y_test_orig = dataset['target_scaler'].inverse_transform(dataset['y_test'])
-    
-    # Create labels
-    train_labels = create_trajectory_labels(X_train_orig, y_train_orig)
-    val_labels = create_trajectory_labels(X_val_orig, y_val_orig)
-    test_labels = create_trajectory_labels(X_test_orig, y_test_orig)
+    # Create labels using GPU-optimized processing (no CPU denormalization needed)
+    train_labels = create_trajectory_labels_gpu_optimized(
+        dataset['X_train'], dataset['y_train'], 
+        dataset['scaler'], dataset['target_scaler'], device=device)
+    val_labels = create_trajectory_labels_gpu_optimized(
+        dataset['X_val'], dataset['y_val'], 
+        dataset['scaler'], dataset['target_scaler'], device=device)
+    test_labels = create_trajectory_labels_gpu_optimized(
+        dataset['X_test'], dataset['y_test'], 
+        dataset['scaler'], dataset['target_scaler'], device=device)
     
     # Analyze distribution
     unique, counts = np.unique(train_labels, return_counts=True)
@@ -158,9 +218,9 @@ def train_model():
     for label, count in zip(unique, counts):
         print(f"     {class_names[label]}: {count:,} ({count/train_labels.size*100:.1f}%)")
     
-    # Create data loaders
+    # Create data loaders with smaller batch size for larger dataset
     print("\n3. Creating data loaders...")
-    batch_size = 32
+    batch_size = 16  # Reduced from 32 for memory efficiency
     
     train_loader = DataLoader(
         TensorDataset(torch.FloatTensor(dataset['X_train']), torch.LongTensor(train_labels)),
@@ -191,13 +251,35 @@ def train_model():
     
     # Training setup
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', patience=5)
+    
+    # Compute class weights for UP/DOWN improvement
+    unique_classes = np.unique(train_labels)
+    if len(unique_classes) > 1:
+        class_weights = compute_class_weight('balanced', classes=unique_classes, y=train_labels.flatten())
+        
+        # Create full class weight tensor (ensure all 3 classes are represented)
+        full_class_weights = np.ones(3)  # Default weight of 1 for missing classes
+        for i, cls in enumerate(unique_classes):
+            full_class_weights[cls] = class_weights[i]
+        
+        class_weights_tensor = torch.FloatTensor(full_class_weights).to(device)
+        print(f"   Class weights: DOWN={class_weights_tensor[0]:.2f}, STABLE={class_weights_tensor[1]:.2f}, UP={class_weights_tensor[2]:.2f}")
+        
+        # Enhanced loss functions for UP/DOWN improvement
+        focal_criterion = FocalLoss(alpha=1, gamma=2)
+        weighted_criterion = nn.CrossEntropyLoss(weight=class_weights_tensor)
+    else:
+        # Fallback to standard loss if only one class present
+        focal_criterion = FocalLoss(alpha=1, gamma=2)
+        weighted_criterion = nn.CrossEntropyLoss()
+    
+    optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=1e-3)  # Strong L2 regularization
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', patience=3)
     
     # Training loop
     epochs = 30
     best_val_acc = 0.0
-    patience = 10
+    patience = 5  # Reduced patience
     patience_counter = 0
     
     history = {
@@ -224,7 +306,11 @@ def train_model():
             logits_flat = logits.view(-1, 3)
             labels_flat = batch_labels.view(-1)
             
-            loss = criterion(logits_flat, labels_flat)
+            # Combined loss for UP/DOWN improvement
+            focal_loss = focal_criterion(logits_flat, labels_flat)
+            weighted_loss = weighted_criterion(logits_flat, labels_flat)
+            loss = 0.7 * focal_loss + 0.3 * weighted_loss  # 70% focal, 30% weighted
+            
             loss.backward()
             optimizer.step()
             
@@ -246,7 +332,8 @@ def train_model():
                 logits_flat = logits.view(-1, 3)
                 labels_flat = batch_labels.view(-1)
                 
-                loss = criterion(logits_flat, labels_flat)
+                # Use weighted loss for validation
+                loss = weighted_criterion(logits_flat, labels_flat)
                 val_loss += loss.item()
                 
                 preds = torch.argmax(logits_flat, dim=1)

@@ -160,8 +160,8 @@ class RealCardiacTemporalDataset:
             current_cells = individual_data[individual_data['diffday'] == current_timepoint]
             next_cells = individual_data[individual_data['diffday'] == next_timepoint]
             
-            # Sample cells to create balanced sequences
-            n_sequences = min(len(current_cells), len(next_cells), 1000)  # Limit for computational efficiency
+            # Sample cells to create balanced sequences (removed artificial limit)
+            n_sequences = min(len(current_cells), len(next_cells))  # Use all available data
             
             current_sample = current_cells.sample(n=n_sequences, random_state=42)
             next_sample = next_cells.sample(n=n_sequences, random_state=42)
