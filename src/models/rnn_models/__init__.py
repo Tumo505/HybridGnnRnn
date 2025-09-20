@@ -1,14 +1,13 @@
 """
 RNN Models for Temporal Gene Expression Analysis
+==============================================
+Main temporal RNN model for cardiomyocyte differentiation prediction.
 """
 
-from .enhanced_temporal_rnn import EnhancedTemporalRNN, AttentionLayer, PositionalEncoding
-from .advanced_temporal_rnn import AdvancedTemporalRNN, AdvancedLSTMCell
+from .temporal_cardiac_rnn import TemporalCardiacRNN, FocalLoss, create_temporal_cardiac_rnn
 
 __all__ = [
-    'EnhancedTemporalRNN',
-    'AdvancedTemporalRNN', 
-    'AttentionLayer',
-    'PositionalEncoding',
-    'AdvancedLSTMCell'
+    'TemporalCardiacRNN',
+    'FocalLoss', 
+    'create_temporal_cardiac_rnn'
 ]

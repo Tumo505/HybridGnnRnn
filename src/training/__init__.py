@@ -2,9 +2,8 @@
 Training modules for GNN and RNN models
 """
 
-from .cardiomyocyte_trainer import CardiomyocyteTrainer, train_enhanced_cardiomyocyte_classifier
+from .temporal_trainer import TemporalRNNTrainer
 
 __all__ = [
-    'CardiomyocyteTrainer',
-    'train_enhanced_cardiomyocyte_classifier'
+    'TemporalRNNTrainer'
 ]

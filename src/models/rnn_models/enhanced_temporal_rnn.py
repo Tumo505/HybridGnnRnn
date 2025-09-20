@@ -339,6 +339,48 @@ class EnhancedTemporalRNN(nn.Module):
             }
             
             return patterns
+    
+    def get_model_info(self) -> Dict[str, Union[int, str, List[str]]]:
+        """Get comprehensive model information"""
+        total_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+        
+        # Calculate memory usage (approximate)
+        param_size = sum(p.numel() * p.element_size() for p in self.parameters())
+        memory_mb = param_size / (1024 * 1024)
+        
+        # Architecture details
+        rnn_output_dim = self.hidden_dim * (2 if self.bidirectional else 1)
+        
+        features = []
+        if self.use_attention:
+            features.append("Multi-Head Attention")
+        if self.use_positional_encoding:
+            features.append("Positional Encoding")
+        if self.bidirectional:
+            features.append("Bidirectional RNN")
+        if len(self.temporal_convs) > 0:
+            features.append("Multi-Scale Temporal Convolution")
+        features.append("Residual Connections")
+        features.append("Cardiac Pattern Detection")
+        features.append("Adaptive Pooling")
+        
+        return {
+            'model_name': 'Enhanced Temporal RNN',
+            'total_parameters': total_params,
+            'trainable_parameters': trainable_params,
+            'memory_usage_mb': round(memory_mb, 2),
+            'architecture': f"{self.rnn_type}({self.num_layers} layers, {self.hidden_dim} hidden)",
+            'input_dim': self.input_dim,
+            'output_dim': self.num_classes,
+            'rnn_output_dim': rnn_output_dim,
+            'features': features,
+            'bidirectional': self.bidirectional,
+            'attention': self.use_attention,
+            'positional_encoding': self.use_positional_encoding,
+            'temporal_conv_layers': len(self.temporal_convs),
+            'dropout': True
+        }
 
 class CardiacTemporalDataset(torch.utils.data.Dataset):
     """Dataset for cardiac temporal sequences"""
