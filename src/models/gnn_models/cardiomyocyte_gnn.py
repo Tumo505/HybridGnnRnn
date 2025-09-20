@@ -29,64 +29,87 @@ class AdvancedCardiomyocyteGNN(torch.nn.Module):
         self.dropout = dropout
         self.num_classes = num_classes
         
-        # Multi-scale feature extraction
-        self.gat1 = GATConv(num_features, hidden_dim, heads=6, dropout=dropout, concat=False)
+        # Input feature normalization
+        self.input_norm = torch.nn.BatchNorm1d(num_features)
+        
+        # Multi-scale feature extraction with reduced complexity
+        self.gat1 = GATConv(num_features, hidden_dim, heads=4, dropout=dropout, concat=False)  # Reduced heads from 6 to 4
         self.gcn1 = GCNConv(hidden_dim, hidden_dim)
         
-        self.gat2 = GATConv(hidden_dim, hidden_dim, heads=4, dropout=dropout, concat=False)
-        self.gcn2 = GCNConv(hidden_dim, hidden_dim//2)
+        self.gat2 = GATConv(hidden_dim, hidden_dim//2, heads=2, dropout=dropout, concat=False)  # Reduced heads from 4 to 2
+        self.gcn2 = GCNConv(hidden_dim//2, hidden_dim//2)  # Reduced output dim
         
         # Skip connections and feature fusion
         self.skip_projection = torch.nn.Linear(num_features, hidden_dim//2)
         self.feature_fusion = torch.nn.Linear(hidden_dim + hidden_dim//2, hidden_dim//2)
         
-        # Advanced classifier with residual connections
+        # Simplified classifier with batch norm
         self.classifier = torch.nn.Sequential(
             torch.nn.Linear(hidden_dim//2, hidden_dim//4),
+            torch.nn.BatchNorm1d(hidden_dim//4),  # Added batch norm
             torch.nn.ReLU(),
             torch.nn.Dropout(dropout),
-            torch.nn.Linear(hidden_dim//4, hidden_dim//8),
-            torch.nn.ReLU(),
-            torch.nn.Dropout(dropout//2),
-            torch.nn.Linear(hidden_dim//8, num_classes)
+            torch.nn.Linear(hidden_dim//4, num_classes)  # Removed extra layer
         )
         
         # Layer normalization
         self.norm1 = torch.nn.LayerNorm(hidden_dim)
-        self.norm2 = torch.nn.LayerNorm(hidden_dim)
+        self.norm2 = torch.nn.LayerNorm(hidden_dim//2)
         self.norm3 = torch.nn.LayerNorm(hidden_dim//2)
         
-    def forward(self, data):
+        # Learnable dropout rates
+        self.adaptive_dropout1 = torch.nn.Dropout(dropout)
+        self.adaptive_dropout2 = torch.nn.Dropout(dropout * 0.8)  # Reduced dropout in later layers
+        
+    def forward(self, data, return_attention=False):
         """Forward pass through the network.
         
         Args:
             data: PyTorch Geometric data object with x (node features) and edge_index
+            return_attention: Whether to return attention weights for visualization
             
         Returns:
-            torch.Tensor: Logits for cardiomyocyte subtype classification
+            torch.Tensor or tuple: Logits for cardiomyocyte subtype classification
+                                  If return_attention=True, returns (logits, attention_dict)
         """
         x, edge_index = data.x, data.edge_index
         original_x = x
+        attention_weights = {}
+        
+        # Input normalization
+        x = self.input_norm(x)
         
         # Add self loops for better connectivity
         edge_index, _ = add_self_loops(edge_index, num_nodes=x.size(0))
         
-        # First layer: GAT + GCN combination
-        x1_gat = F.relu(self.norm1(self.gat1(x, edge_index)))
-        x1_gat = F.dropout(x1_gat, p=self.dropout, training=self.training)
+        # First layer: GAT + GCN combination with improved regularization
+        if return_attention:
+            x1_gat, (edge_index_gat1, alpha1) = self.gat1(x, edge_index, return_attention_weights=True)
+            attention_weights['gat1'] = self._edge_attention_to_matrix(alpha1, edge_index_gat1, x.size(0))
+        else:
+            x1_gat = self.gat1(x, edge_index)
+        
+        x1_gat = F.relu(self.norm1(x1_gat))
+        x1_gat = self.adaptive_dropout1(x1_gat)  # Use adaptive dropout
         
         x1_gcn = F.relu(self.gcn1(x1_gat, edge_index))
-        x1_gcn = F.dropout(x1_gcn, p=self.dropout, training=self.training)
+        x1_gcn = self.adaptive_dropout1(x1_gcn)
         
         # Second layer: Another GAT + GCN combination  
-        x2_gat = F.relu(self.norm2(self.gat2(x1_gcn, edge_index)))
-        x2_gat = F.dropout(x2_gat, p=self.dropout, training=self.training)
+        if return_attention:
+            x2_gat, (edge_index_gat2, alpha2) = self.gat2(x1_gcn, edge_index, return_attention_weights=True)
+            attention_weights['gat2'] = self._edge_attention_to_matrix(alpha2, edge_index_gat2, x1_gcn.size(0))
+        else:
+            x2_gat = self.gat2(x1_gcn, edge_index)
+        
+        x2_gat = F.relu(self.norm2(x2_gat))
+        x2_gat = self.adaptive_dropout2(x2_gat)  # Reduced dropout
         
         x2_gcn = F.relu(self.gcn2(x2_gat, edge_index))
-        x2_gcn = F.dropout(x2_gcn, p=self.dropout//2, training=self.training)
+        x2_gcn = self.adaptive_dropout2(x2_gcn)
         
-        # Skip connection from input
-        skip_features = F.relu(self.skip_projection(original_x))
+        # Skip connection from normalized input
+        skip_features = F.relu(self.skip_projection(x))  # Use normalized input
         
         # Feature fusion
         combined_features = torch.cat([x1_gcn, x2_gcn], dim=1)
@@ -97,7 +120,30 @@ class AdvancedCardiomyocyteGNN(torch.nn.Module):
         
         # Classification
         out = self.classifier(final_features)
+        
+        if return_attention:
+            return out, attention_weights
         return out
+    
+    def _edge_attention_to_matrix(self, edge_attention, edge_index, num_nodes):
+        """Convert edge-wise attention weights to adjacency matrix format.
+        
+        Args:
+            edge_attention: Attention weights for each edge [num_edges]
+            edge_index: Edge indices [2, num_edges]
+            num_nodes: Number of nodes
+            
+        Returns:
+            torch.Tensor: Attention matrix [num_nodes, num_nodes]
+        """
+        attention_matrix = torch.zeros(num_nodes, num_nodes, device=edge_attention.device)
+        
+        # Handle multi-head attention by taking mean if needed
+        if edge_attention.dim() > 1:
+            edge_attention = edge_attention.mean(dim=1)
+        
+        attention_matrix[edge_index[0], edge_index[1]] = edge_attention
+        return attention_matrix
     
     def get_model_info(self):
         """Get information about the model architecture.

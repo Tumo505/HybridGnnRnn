@@ -43,18 +43,18 @@ class Authentic10XProcessor:
                 "Run the data processing pipeline first."
             )
         
-        logger.info("📦 Loading cached cardiomyocyte subtype data...")
+        logger.info("Loading cached cardiomyocyte subtype data...")
         with open(self.cache_file, 'rb') as f:
             data = pickle.load(f)
         
         data = data.to(device)
         
-        logger.info(f"✅ Dataset loaded: {data.x.shape[0]} cardiomyocytes, {data.x.shape[1]} genes")
-        logger.info(f"📊 Cardiomyocyte subtypes: {data.num_classes}")
+        logger.info(f"Dataset loaded: {data.x.shape[0]} cardiomyocytes, {data.x.shape[1]} genes")
+        logger.info(f"Cardiomyocyte subtypes: {data.num_classes}")
         
         # Log class distribution
         class_counts = torch.bincount(data.y)
-        logger.info(f"📈 Subtype distribution: {class_counts.tolist()}")
+        logger.info(f"Subtype distribution: {class_counts.tolist()}")
         for i, count in enumerate(class_counts):
             percentage = 100 * count / len(data.y)
             logger.info(f"  Subtype {i}: {count} cells ({percentage:.1f}%)")

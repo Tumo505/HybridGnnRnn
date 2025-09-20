@@ -149,12 +149,6 @@ class CardiomyocyteTrainer:
         out = model(data)
         train_loss = criterion(out[train_mask], data.y[train_mask])
         
-        # Add L2 regularization
-        l2_reg = torch.tensor(0., device=self.device)
-        for param in model.parameters():
-            l2_reg += torch.norm(param)
-        train_loss += self.config['l2_reg'] * l2_reg
-        
         train_loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), self.config['grad_clip'])
         optimizer.step()
