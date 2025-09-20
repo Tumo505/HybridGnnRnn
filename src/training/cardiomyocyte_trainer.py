@@ -339,9 +339,13 @@ class CardiomyocyteTrainer:
             logger.info("\n🧬 ENHANCED CARDIOMYOCYTE SUBTYPE CLASSIFICATION RESULTS:")
             logger.info(f"  Overall Test Accuracy: {test_acc:.4f}")
             
+            # Get biological cell type names
+            cell_type_names = self.data_processor.get_cell_type_names()
+            
             logger.info(f"\n📊 Confusion Matrix:")
             for i in range(data.num_classes):
-                logger.info(f"  True Subtype {i}: {confusion_matrix[i].tolist()}")
+                cell_type = cell_type_names[i] if i < len(cell_type_names) else f"Unknown Type {i}"
+                logger.info(f"  True {cell_type}: {confusion_matrix[i].tolist()}")
             
             # Per-class metrics
             per_class_metrics = {}
@@ -354,14 +358,17 @@ class CardiomyocyteTrainer:
                 recall = tp / (tp + fn) if (tp + fn) > 0 else 0
                 f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
                 
-                per_class_metrics[f'subtype_{class_id}'] = {
+                cell_type = cell_type_names[class_id] if class_id < len(cell_type_names) else f"Unknown Type {class_id}"
+                key = cell_type.lower().replace(' ', '_')
+                
+                per_class_metrics[key] = {
                     'precision': precision,
                     'recall': recall,
                     'f1': f1,
                     'support': int(np.sum(confusion_matrix[class_id, :]))
                 }
                 
-                logger.info(f"  Subtype {class_id}: P={precision:.3f}, R={recall:.3f}, F1={f1:.3f} ({int(np.sum(confusion_matrix[class_id, :]))} cells)")
+                logger.info(f"  {cell_type}: P={precision:.3f}, R={recall:.3f}, F1={f1:.3f} ({int(np.sum(confusion_matrix[class_id, :]))} cells)")
             
             return {
                 'accuracy': float(test_acc.item()),

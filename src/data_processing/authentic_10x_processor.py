@@ -25,6 +25,23 @@ class Authentic10XProcessor:
         self.cache_dir.mkdir(exist_ok=True)
         self.cache_file = self.cache_dir / "improved_authentic_10x_processed.pkl"
         
+        # Biological cardiomyocyte cell type names
+        self.cell_type_names = [
+            "Atrial Cardiomyocytes",
+            "Ventricular Cardiomyocytes", 
+            "Pacemaker Cells",
+            "Conduction System Cells",
+            "Immature Cardiomyocytes"
+        ]
+    
+    def get_cell_type_names(self):
+        """Get the biological cell type names.
+        
+        Returns:
+            list: List of biological cell type names
+        """
+        return self.cell_type_names
+        
     def load_cached_data(self, device='cpu'):
         """Load cached processed data.
         
@@ -52,12 +69,13 @@ class Authentic10XProcessor:
         logger.info(f"Dataset loaded: {data.x.shape[0]} cardiomyocytes, {data.x.shape[1]} genes")
         logger.info(f"Cardiomyocyte subtypes: {data.num_classes}")
         
-        # Log class distribution
+        # Log class distribution with biological names
         class_counts = torch.bincount(data.y)
-        logger.info(f"Subtype distribution: {class_counts.tolist()}")
+        logger.info(f"Cell type distribution: {class_counts.tolist()}")
         for i, count in enumerate(class_counts):
             percentage = 100 * count / len(data.y)
-            logger.info(f"  Subtype {i}: {count} cells ({percentage:.1f}%)")
+            cell_type = self.cell_type_names[i] if i < len(self.cell_type_names) else f"Unknown Type {i}"
+            logger.info(f"  {cell_type}: {count} cells ({percentage:.1f}%)")
             
         return data
     

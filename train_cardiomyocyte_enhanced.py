@@ -122,9 +122,11 @@ class EnhancedCardiomyocyteTrainer:
         # Normalize confusion matrix
         cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         
-        # Use default class names if none provided
+        # Use biological cell type names
         if class_names is None:
-            class_names = [f'Subtype {i}' for i in range(len(cm))]
+            processor = Authentic10XProcessor()
+            cell_type_names = processor.get_cell_type_names()
+            class_names = [cell_type_names[i] if i < len(cell_type_names) else f'Unknown Type {i}' for i in range(len(cm))]
         
         sns.heatmap(cm_normalized, annot=True, fmt='.2f', cmap='Blues',
                    xticklabels=class_names, yticklabels=class_names)
@@ -149,9 +151,12 @@ class EnhancedCardiomyocyteTrainer:
         """Plot class distribution comparison."""
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
         
-        # Use default class names if none provided
+        # Use biological cell type names
         if class_names is None:
-            class_names = [f'Subtype {i}' for i in range(max(max(y_true), max(y_pred)) + 1)]
+            processor = Authentic10XProcessor()
+            cell_type_names = processor.get_cell_type_names()
+            max_class = max(max(y_true), max(y_pred))
+            class_names = [cell_type_names[i] if i < len(cell_type_names) else f'Unknown Type {i}' for i in range(max_class + 1)]
         
         # True distribution
         unique_true, counts_true = np.unique(y_true, return_counts=True)
@@ -256,8 +261,21 @@ Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 ## Per-Class Performance
 """
         
+        # Get biological cell type names for mapping
+        processor = Authentic10XProcessor()
+        cell_type_names = processor.get_cell_type_names()
+        
         for subtype, metrics in results['per_class_metrics'].items():
-            report += f"- {subtype}:\n"
+            # Convert to readable biological name
+            if subtype.startswith('subtype_'):
+                # Handle old format
+                class_idx = int(subtype.split('_')[1])
+                display_name = cell_type_names[class_idx] if class_idx < len(cell_type_names) else subtype
+            else:
+                # Handle new format - convert key back to readable name
+                display_name = subtype.replace('_', ' ').title()
+                
+            report += f"- {display_name}:\n"
             report += f"  - F1-Score: {metrics['f1']:.3f}\n"
             report += f"  - Precision: {metrics['precision']:.3f}\n"
             report += f"  - Recall: {metrics['recall']:.3f}\n"
@@ -374,8 +392,22 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
         print(f"📁 Results saved to: {self.viz_dir}")
         
         print(f"\n📋 Per-Class Performance:")
+        
+        # Get biological cell type names for mapping
+        processor = Authentic10XProcessor()
+        cell_type_names = processor.get_cell_type_names()
+        
         for subtype, metrics in results['per_class_metrics'].items():
-            print(f"  • {subtype}: F1={metrics['f1']*100:.1f}% | "
+            # Convert back to readable biological name
+            if subtype.startswith('subtype_'):
+                # Handle old format
+                class_idx = int(subtype.split('_')[1])
+                display_name = cell_type_names[class_idx] if class_idx < len(cell_type_names) else subtype
+            else:
+                # Handle new format - convert key back to readable name
+                display_name = subtype.replace('_', ' ').title()
+                
+            print(f"  • {display_name}: F1={metrics['f1']*100:.1f}% | "
                   f"P={metrics['precision']*100:.1f}% | "
                   f"R={metrics['recall']*100:.1f}% | "
                   f"Support={metrics['support']}")

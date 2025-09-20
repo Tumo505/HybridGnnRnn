@@ -18,16 +18,17 @@
 This project implements a Graph Neural Network (GNN) for classifying cardiomyocyte differentiation stages using spatial transcriptomics data from 10X Genomics Visium technology. The model leverages the spatial relationships between cells to predict differentiation trajectories in cardiac tissue.
 
 ### Research Objectives
-- **Primary Goal**: Predict cardiomyocyte differentiation stages using spatial gene expression data
-- **Biological Relevance**: Understanding cardiac development and regeneration mechanisms
-- **Technical Innovation**: Combining graph neural networks with spatial transcriptomics for cellular classification
+- **Primary Goal**: Classify authentic cardiomyocyte subtypes using spatial gene expression data with biological naming
+- **Biological Relevance**: Understanding cardiac cell type diversity and spatial organization in tissue
+- **Technical Innovation**: Advanced GNN architecture with biological naming system for interpretable cell type classification
 
 ### Key Features
-- **Authentic Data**: Uses real 10X Genomics Visium spatial transcriptomics data
-- **Graph Structure**: Constructs spatial graphs based on physical proximity of spots
-- **Advanced Architecture**: Combines Graph Attention Networks (GAT) and Graph Convolutional Networks (GCN)
-- **Robust Training**: Implements stratified sampling, class weighting, and early stopping
-- **Comprehensive Evaluation**: Multi-metric assessment with biological interpretation
+- **Authentic Biological Data**: Uses real 10X Genomics Visium spatial transcriptomics data with biological cell type naming
+- **Biological Classification**: Classifies 5 distinct cardiomyocyte subtypes with meaningful biological names
+- **Graph Structure**: Constructs spatial graphs based on physical proximity of tissue spots
+- **Advanced Architecture**: Enhanced GNN combining Graph Attention Networks (GAT) and Graph Convolutional Networks (GCN)
+- **Comprehensive Training**: Implements stratified sampling, class weighting, early stopping, and overfitting prevention
+- **Interpretable Results**: Multi-metric assessment with biological cell type names and pathway analysis
 
 ---
 
@@ -40,6 +41,19 @@ This project implements a Graph Neural Network (GNN) for classifying cardiomyocy
 - **Preprocessing**: Quality control, normalization, and feature selection
 
 ### Data Processing Pipeline
+
+#### Biological Cell Type Classification
+
+The enhanced framework now uses biologically meaningful cell type names instead of generic numerical labels:
+
+**Cardiomyocyte Subtypes:**
+- **Atrial Cardiomyocytes**: Cells from the atrial chambers with specialized atrial gene expression
+- **Ventricular Cardiomyocytes**: Cells from the ventricular chambers with contractile specialization
+- **Pacemaker Cells**: Specialized cells responsible for cardiac rhythm generation
+- **Conduction System Cells**: Cells specialized for electrical signal propagation
+- **Immature Cardiomyocytes**: Developing or less differentiated cardiomyocyte cells
+
+This biological naming system provides meaningful interpretation of model predictions and enables better correlation with cardiac biology literature.
 
 #### 1. Raw Data Loading
 ```python
@@ -223,14 +237,16 @@ scheduler = optim.lr_scheduler.ReduceLROnPlateau(
 ### Training Configuration
 ```python
 training_config = {
-    'epochs': 100,
-    'batch_size': 'adaptive',  # Based on graph size
+    'optimizer': 'AdamW',
     'learning_rate': 0.001,
-    'weight_decay': 1e-4,
-    'patience': 15,
+    'weight_decay': 0.01,
+    'scheduler': 'ReduceLROnPlateau',
+    'max_epochs': 400,
+    'patience': 60,
+    'batch_size': 'full_graph',
     'gradient_clip': 1.0,
-    'validation_freq': 5,
-    'save_best_only': True
+    'hidden_dim': 128,
+    'dropout': 0.4
 }
 ```
 
