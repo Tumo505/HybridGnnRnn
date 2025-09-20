@@ -40,6 +40,8 @@ This project implements a Graph Neural Network (GNN) for classifying cardiomyocy
 - **Data Format**: Spatial transcriptomics with coordinate information
 - **Preprocessing**: Quality control, normalization, and feature selection
 
+**Dataset Citation**: Kuppe, C., Ramirez Flores, R. O., Li, Z., Hayat, S., Levinson, R. T., Liao, X., Hannani, M. T., Tanevski, J., Wünnemann, F., Nagai, J. S., Halder, M., Schumacher, D., Menzel, S., Schäfer, G., Hoeft, K., Cheng, M., Ziegler, S., Zhang, X., Peisker, F., … Kramann, R. (2022). Spatial multi-omic map of human myocardial infarction. *Nature*, 608, 766–777. https://doi.org/10.1038/s41586-022-05060-x
+
 ### Data Processing Pipeline
 
 #### Biological Cell Type Classification
@@ -806,6 +808,7 @@ torch.cuda.empty_cache()
 3. **Spatial Transcriptomics**: Ståhl et al. (2016). "Visualization and analysis of gene expression in tissue sections by spatial transcriptomics"
 4. **10X Genomics Visium**: Stickels et al. (2021). "Highly sensitive spatial transcriptomics at near-cellular resolution with Visium"
 5. **Cardiomyocyte Development**: Paige et al. (2010). "A temporal chromatin signature in human embryonic stem cells identifies regulators of cardiac development"
+6. **Dataset Source**: Kuppe, C., Ramirez Flores, R. O., Li, Z., Hayat, S., Levinson, R. T., Liao, X., Hannani, M. T., Tanevski, J., Wünnemann, F., Nagai, J. S., Halder, M., Schumacher, D., Menzel, S., Schäfer, G., Hoeft, K., Cheng, M., Ziegler, S., Zhang, X., Peisker, F., … Kramann, R. (2022). Spatial multi-omic map of human myocardial infarction. *Nature*, 608, 766–777. https://doi.org/10.1038/s41586-022-05060-x
 
 ---
 

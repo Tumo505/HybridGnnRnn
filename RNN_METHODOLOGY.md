@@ -41,12 +41,14 @@ Cardiomyocyte differentiation is a complex temporal process involving coordinate
 ## 2. Data Architecture
 
 ### 2.1 Dataset Characteristics
-- **Source**: GSE175634 temporal cardiac differentiation dataset
+- **Source**: GSE175634 temporal cardiac differentiation dataset [1]
 - **Features**: 2,000 gene expression measurements
 - **Samples**: 800 total samples (200 per class)
 - **Time Points**: 5 distinct differentiation stages
 - **Trajectories**: 4 differentiation pathways
 - **Sequence Length**: 10 time steps for temporal modeling
+
+**Dataset Citation**: Elorbany, R., Popp, J. M., Rhodes, K., Strober, B. J., Barr, K., Qi, G., Gilad, Y., & Battle, A. (2022). Single-cell sequencing reveals lineage-specific dynamic genetic regulation of gene expression during human cardiomyocyte differentiation. *PLoS Genetics*, 18(1). https://doi.org/10.1371/journal.pgen.1009666
 
 ### 2.2 Data Processing Pipeline
 
@@ -606,6 +608,12 @@ Key contributions include:
 4. **Practical Implementation**: Reproducible codebase with integrated visualizations
 
 This work establishes a foundation for the hybrid GNN-RNN architecture and demonstrates the power of temporal modeling in understanding biological processes.
+
+---
+
+## References
+
+[1] Elorbany, R., Popp, J. M., Rhodes, K., Strober, B. J., Barr, K., Qi, G., Gilad, Y., & Battle, A. (2022). Single-cell sequencing reveals lineage-specific dynamic genetic regulation of gene expression during human cardiomyocyte differentiation. *PLoS Genetics*, 18(1). https://doi.org/10.1371/journal.pgen.1009666
 
 ---
 
