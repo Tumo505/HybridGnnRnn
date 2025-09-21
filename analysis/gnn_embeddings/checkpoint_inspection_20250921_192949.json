@@ -1,0 +1,459 @@
+{
+  "best_regularized_model.pth": {
+    "layer_shapes": {
+      "classifier.0.weight": [
+        128,
+        128
+      ],
+      "classifier.0.bias": [
+        128
+      ],
+      "classifier.1.weight": [
+        128
+      ],
+      "classifier.1.bias": [
+        128
+      ],
+      "classifier.1.running_mean": [
+        128
+      ],
+      "classifier.1.running_var": [
+        128
+      ],
+      "classifier.1.num_batches_tracked": [],
+      "classifier.4.weight": [
+        64,
+        128
+      ],
+      "classifier.4.bias": [
+        64
+      ],
+      "classifier.5.weight": [
+        64
+      ],
+      "classifier.5.bias": [
+        64
+      ],
+      "classifier.5.running_mean": [
+        64
+      ],
+      "classifier.5.running_var": [
+        64
+      ],
+      "classifier.5.num_batches_tracked": [],
+      "classifier.8.weight": [
+        7,
+        64
+      ],
+      "classifier.8.bias": [
+        7
+      ]
+    },
+    "total_parameters": 25993,
+    "layer_count": 16
+  },
+  "comprehensive_cpu_results_20250921_173835/ablation_GNN_Only/best_model.pth": {
+    "layer_shapes": {
+      "gnn_encoder.0.weight": [
+        256,
+        512
+      ],
+      "gnn_encoder.0.bias": [
+        256
+      ],
+      "gnn_encoder.1.weight": [
+        256
+      ],
+      "gnn_encoder.1.bias": [
+        256
+      ],
+      "gnn_encoder.1.running_mean": [
+        256
+      ],
+      "gnn_encoder.1.running_var": [
+        256
+      ],
+      "gnn_encoder.1.num_batches_tracked": [],
+      "gnn_encoder.4.weight": [
+        128,
+        256
+      ],
+      "gnn_encoder.4.bias": [
+        128
+      ],
+      "gnn_encoder.5.weight": [
+        128
+      ],
+      "gnn_encoder.5.bias": [
+        128
+      ],
+      "gnn_encoder.5.running_mean": [
+        128
+      ],
+      "gnn_encoder.5.running_var": [
+        128
+      ],
+      "gnn_encoder.5.num_batches_tracked": [],
+      "classifier.0.weight": [
+        64,
+        128
+      ],
+      "classifier.0.bias": [
+        64
+      ],
+      "classifier.3.weight": [
+        7,
+        64
+      ],
+      "classifier.3.bias": [
+        7
+      ],
+      "efficiency_predictor.0.weight": [
+        64,
+        128
+      ],
+      "efficiency_predictor.0.bias": [
+        64
+      ],
+      "efficiency_predictor.3.weight": [
+        1,
+        64
+      ],
+      "efficiency_predictor.3.bias": [
+        1
+      ],
+      "projection_head.0.weight": [
+        64,
+        128
+      ],
+      "projection_head.0.bias": [
+        64
+      ],
+      "projection_head.2.weight": [
+        128,
+        64
+      ],
+      "projection_head.2.bias": [
+        128
+      ]
+    },
+    "total_parameters": 199370,
+    "layer_count": 26
+  },
+  "comprehensive_cpu_results_20250921_173835/ablation_Full_Hybrid_Model/best_model.pth": {
+    "layer_shapes": {
+      "gnn_encoder.0.weight": [
+        256,
+        512
+      ],
+      "gnn_encoder.0.bias": [
+        256
+      ],
+      "gnn_encoder.1.weight": [
+        256
+      ],
+      "gnn_encoder.1.bias": [
+        256
+      ],
+      "gnn_encoder.1.running_mean": [
+        256
+      ],
+      "gnn_encoder.1.running_var": [
+        256
+      ],
+      "gnn_encoder.1.num_batches_tracked": [],
+      "gnn_encoder.4.weight": [
+        128,
+        256
+      ],
+      "gnn_encoder.4.bias": [
+        128
+      ],
+      "gnn_encoder.5.weight": [
+        128
+      ],
+      "gnn_encoder.5.bias": [
+        128
+      ],
+      "gnn_encoder.5.running_mean": [
+        128
+      ],
+      "gnn_encoder.5.running_var": [
+        128
+      ],
+      "gnn_encoder.5.num_batches_tracked": [],
+      "temporal_rnn.weight_ih_l0": [
+        512,
+        128
+      ],
+      "temporal_rnn.weight_hh_l0": [
+        512,
+        128
+      ],
+      "temporal_rnn.bias_ih_l0": [
+        512
+      ],
+      "temporal_rnn.bias_hh_l0": [
+        512
+      ],
+      "temporal_rnn.weight_ih_l0_reverse": [
+        512,
+        128
+      ],
+      "temporal_rnn.weight_hh_l0_reverse": [
+        512,
+        128
+      ],
+      "temporal_rnn.bias_ih_l0_reverse": [
+        512
+      ],
+      "temporal_rnn.bias_hh_l0_reverse": [
+        512
+      ],
+      "temporal_rnn.weight_ih_l1": [
+        512,
+        256
+      ],
+      "temporal_rnn.weight_hh_l1": [
+        512,
+        128
+      ],
+      "temporal_rnn.bias_ih_l1": [
+        512
+      ],
+      "temporal_rnn.bias_hh_l1": [
+        512
+      ],
+      "temporal_rnn.weight_ih_l1_reverse": [
+        512,
+        256
+      ],
+      "temporal_rnn.weight_hh_l1_reverse": [
+        512,
+        128
+      ],
+      "temporal_rnn.bias_ih_l1_reverse": [
+        512
+      ],
+      "temporal_rnn.bias_hh_l1_reverse": [
+        512
+      ],
+      "temporal_attention.in_proj_weight": [
+        768,
+        256
+      ],
+      "temporal_attention.in_proj_bias": [
+        768
+      ],
+      "temporal_attention.out_proj.weight": [
+        256,
+        256
+      ],
+      "temporal_attention.out_proj.bias": [
+        256
+      ],
+      "classifier.0.weight": [
+        128,
+        256
+      ],
+      "classifier.0.bias": [
+        128
+      ],
+      "classifier.3.weight": [
+        7,
+        128
+      ],
+      "classifier.3.bias": [
+        7
+      ],
+      "efficiency_predictor.0.weight": [
+        128,
+        256
+      ],
+      "efficiency_predictor.0.bias": [
+        128
+      ],
+      "efficiency_predictor.3.weight": [
+        1,
+        128
+      ],
+      "efficiency_predictor.3.bias": [
+        1
+      ],
+      "projection_head.0.weight": [
+        128,
+        256
+      ],
+      "projection_head.0.bias": [
+        128
+      ],
+      "projection_head.2.weight": [
+        128,
+        128
+      ],
+      "projection_head.2.bias": [
+        128
+      ]
+    },
+    "total_parameters": 1204618,
+    "layer_count": 46
+  },
+  "comprehensive_cpu_results_20250921_173835/fold_1/best_model.pth": {
+    "layer_shapes": {
+      "gnn_encoder.0.weight": [
+        256,
+        512
+      ],
+      "gnn_encoder.0.bias": [
+        256
+      ],
+      "gnn_encoder.1.weight": [
+        256
+      ],
+      "gnn_encoder.1.bias": [
+        256
+      ],
+      "gnn_encoder.1.running_mean": [
+        256
+      ],
+      "gnn_encoder.1.running_var": [
+        256
+      ],
+      "gnn_encoder.1.num_batches_tracked": [],
+      "gnn_encoder.4.weight": [
+        128,
+        256
+      ],
+      "gnn_encoder.4.bias": [
+        128
+      ],
+      "gnn_encoder.5.weight": [
+        128
+      ],
+      "gnn_encoder.5.bias": [
+        128
+      ],
+      "gnn_encoder.5.running_mean": [
+        128
+      ],
+      "gnn_encoder.5.running_var": [
+        128
+      ],
+      "gnn_encoder.5.num_batches_tracked": [],
+      "temporal_rnn.weight_ih_l0": [
+        512,
+        128
+      ],
+      "temporal_rnn.weight_hh_l0": [
+        512,
+        128
+      ],
+      "temporal_rnn.bias_ih_l0": [
+        512
+      ],
+      "temporal_rnn.bias_hh_l0": [
+        512
+      ],
+      "temporal_rnn.weight_ih_l0_reverse": [
+        512,
+        128
+      ],
+      "temporal_rnn.weight_hh_l0_reverse": [
+        512,
+        128
+      ],
+      "temporal_rnn.bias_ih_l0_reverse": [
+        512
+      ],
+      "temporal_rnn.bias_hh_l0_reverse": [
+        512
+      ],
+      "temporal_rnn.weight_ih_l1": [
+        512,
+        256
+      ],
+      "temporal_rnn.weight_hh_l1": [
+        512,
+        128
+      ],
+      "temporal_rnn.bias_ih_l1": [
+        512
+      ],
+      "temporal_rnn.bias_hh_l1": [
+        512
+      ],
+      "temporal_rnn.weight_ih_l1_reverse": [
+        512,
+        256
+      ],
+      "temporal_rnn.weight_hh_l1_reverse": [
+        512,
+        128
+      ],
+      "temporal_rnn.bias_ih_l1_reverse": [
+        512
+      ],
+      "temporal_rnn.bias_hh_l1_reverse": [
+        512
+      ],
+      "temporal_attention.in_proj_weight": [
+        768,
+        256
+      ],
+      "temporal_attention.in_proj_bias": [
+        768
+      ],
+      "temporal_attention.out_proj.weight": [
+        256,
+        256
+      ],
+      "temporal_attention.out_proj.bias": [
+        256
+      ],
+      "classifier.0.weight": [
+        128,
+        256
+      ],
+      "classifier.0.bias": [
+        128
+      ],
+      "classifier.3.weight": [
+        7,
+        128
+      ],
+      "classifier.3.bias": [
+        7
+      ],
+      "efficiency_predictor.0.weight": [
+        128,
+        256
+      ],
+      "efficiency_predictor.0.bias": [
+        128
+      ],
+      "efficiency_predictor.3.weight": [
+        1,
+        128
+      ],
+      "efficiency_predictor.3.bias": [
+        1
+      ],
+      "projection_head.0.weight": [
+        128,
+        256
+      ],
+      "projection_head.0.bias": [
+        128
+      ],
+      "projection_head.2.weight": [
+        128,
+        128
+      ],
+      "projection_head.2.bias": [
+        128
+      ]
+    },
+    "total_parameters": 1204618,
+    "layer_count": 46
+  }
+}

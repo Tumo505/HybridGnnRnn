@@ -1,0 +1,213 @@
+{
+  "GNN_Only": {
+    "model_type": "gnn_only",
+    "accuracy": 0.24067639564512394,
+    "embedding_shape": [
+      8634,
+      128
+    ],
+    "checkpoint_info": {
+      "epoch": 1,
+      "best_val_score": 0.15460335842501446,
+      "config": {
+        "input_dim": 512,
+        "gnn_hidden_dim": 256,
+        "rnn_hidden_dim": 0,
+        "num_classes": 7,
+        "dropout": 0.2,
+        "num_epochs": 30,
+        "batch_size": 32,
+        "early_stopping_patience": 10,
+        "freeze_schedule": [
+          8,
+          15
+        ],
+        "gnn_lr": 0.001,
+        "rnn_lr": 0.001,
+        "classifier_lr": 0.001,
+        "weight_decay": 0.0001,
+        "use_pretraining": true,
+        "pretrain_epochs": 15,
+        "ssl_temperature": 0.1,
+        "ssl_learning_rate": 0.001,
+        "ssl_weight_decay": 0.0001,
+        "classification_weight": 1.0,
+        "efficiency_weight": 1.0,
+        "save_dir": "comprehensive_cpu_results_20250921_173835",
+        "use_temporal": false
+      }
+    },
+    "visualizations": {
+      "tsne": "trained_gnn_embeddings_GNN_Only_tsne_20250921_193303.png",
+      "pca": "trained_gnn_embeddings_GNN_Only_pca_20250921_193304.png"
+    }
+  },
+  "Full_Hybrid": {
+    "model_type": "hybrid",
+    "accuracy": 0.15010423905489922,
+    "embedding_shape": [
+      8634,
+      256
+    ],
+    "checkpoint_info": {
+      "epoch": 0,
+      "best_val_score": 0.14302258251302838,
+      "config": {
+        "input_dim": 512,
+        "gnn_hidden_dim": 256,
+        "rnn_hidden_dim": 128,
+        "num_classes": 7,
+        "dropout": 0.2,
+        "num_epochs": 30,
+        "batch_size": 32,
+        "early_stopping_patience": 10,
+        "freeze_schedule": [
+          8,
+          15
+        ],
+        "gnn_lr": 0.001,
+        "rnn_lr": 0.001,
+        "classifier_lr": 0.001,
+        "weight_decay": 0.0001,
+        "use_pretraining": true,
+        "pretrain_epochs": 15,
+        "ssl_temperature": 0.1,
+        "ssl_learning_rate": 0.001,
+        "ssl_weight_decay": 0.0001,
+        "classification_weight": 1.0,
+        "efficiency_weight": 1.0,
+        "save_dir": "comprehensive_cpu_results_20250921_173835"
+      }
+    },
+    "visualizations": {
+      "tsne": "trained_gnn_embeddings_Full_Hybrid_tsne_20250921_193319.png",
+      "pca": "trained_gnn_embeddings_Full_Hybrid_pca_20250921_193320.png"
+    }
+  },
+  "Fold_1": {
+    "model_type": "hybrid",
+    "accuracy": 0.2422978920546676,
+    "embedding_shape": [
+      8634,
+      256
+    ],
+    "checkpoint_info": {
+      "epoch": 6,
+      "best_val_score": 0.14856646394439618,
+      "config": {
+        "input_dim": 512,
+        "gnn_hidden_dim": 256,
+        "rnn_hidden_dim": 128,
+        "num_classes": 7,
+        "dropout": 0.2,
+        "num_epochs": 30,
+        "batch_size": 32,
+        "early_stopping_patience": 10,
+        "freeze_schedule": [
+          8,
+          15
+        ],
+        "gnn_lr": 0.001,
+        "rnn_lr": 0.001,
+        "classifier_lr": 0.001,
+        "weight_decay": 0.0001,
+        "use_pretraining": true,
+        "pretrain_epochs": 15,
+        "ssl_temperature": 0.1,
+        "ssl_learning_rate": 0.001,
+        "ssl_weight_decay": 0.0001,
+        "classification_weight": 1.0,
+        "efficiency_weight": 1.0,
+        "save_dir": "comprehensive_cpu_results_20250921_173835"
+      }
+    },
+    "visualizations": {
+      "tsne": "trained_gnn_embeddings_Fold_1_tsne_20250921_193335.png",
+      "pca": "trained_gnn_embeddings_Fold_1_pca_20250921_193336.png"
+    }
+  },
+  "Fold_2": {
+    "model_type": "hybrid",
+    "accuracy": 0.1729210099606208,
+    "embedding_shape": [
+      8634,
+      256
+    ],
+    "checkpoint_info": {
+      "epoch": 1,
+      "best_val_score": 0.14765489287782282,
+      "config": {
+        "input_dim": 512,
+        "gnn_hidden_dim": 256,
+        "rnn_hidden_dim": 128,
+        "num_classes": 7,
+        "dropout": 0.2,
+        "num_epochs": 30,
+        "batch_size": 32,
+        "early_stopping_patience": 10,
+        "freeze_schedule": [
+          8,
+          15
+        ],
+        "gnn_lr": 0.001,
+        "rnn_lr": 0.001,
+        "classifier_lr": 0.001,
+        "weight_decay": 0.0001,
+        "use_pretraining": true,
+        "pretrain_epochs": 15,
+        "ssl_temperature": 0.1,
+        "ssl_learning_rate": 0.001,
+        "ssl_weight_decay": 0.0001,
+        "classification_weight": 1.0,
+        "efficiency_weight": 1.0,
+        "save_dir": "comprehensive_cpu_results_20250921_173835"
+      }
+    },
+    "visualizations": {
+      "tsne": "trained_gnn_embeddings_Fold_2_tsne_20250921_193352.png",
+      "pca": "trained_gnn_embeddings_Fold_2_pca_20250921_193353.png"
+    }
+  },
+  "Fold_3": {
+    "model_type": "hybrid",
+    "accuracy": 0.3621728051887885,
+    "embedding_shape": [
+      8634,
+      256
+    ],
+    "checkpoint_info": {
+      "epoch": 24,
+      "best_val_score": 0.15402431962941518,
+      "config": {
+        "input_dim": 512,
+        "gnn_hidden_dim": 256,
+        "rnn_hidden_dim": 128,
+        "num_classes": 7,
+        "dropout": 0.2,
+        "num_epochs": 30,
+        "batch_size": 32,
+        "early_stopping_patience": 10,
+        "freeze_schedule": [
+          8,
+          15
+        ],
+        "gnn_lr": 0.001,
+        "rnn_lr": 0.001,
+        "classifier_lr": 0.001,
+        "weight_decay": 0.0001,
+        "use_pretraining": true,
+        "pretrain_epochs": 15,
+        "ssl_temperature": 0.1,
+        "ssl_learning_rate": 0.001,
+        "ssl_weight_decay": 0.0001,
+        "classification_weight": 1.0,
+        "efficiency_weight": 1.0,
+        "save_dir": "comprehensive_cpu_results_20250921_173835"
+      }
+    },
+    "visualizations": {
+      "tsne": "trained_gnn_embeddings_Fold_3_tsne_20250921_193408.png",
+      "pca": "trained_gnn_embeddings_Fold_3_pca_20250921_193409.png"
+    }
+  }
+}
