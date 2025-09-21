@@ -146,7 +146,7 @@ def load_real_embeddings(embeddings_path):
                 enable_uncertainty=True
             )
             
-            logger.info(f"✅ Model trained - Accuracy: {results['test_accuracy']:.4f}")
+            logger.info(f"✅ Model trained - Accuracy: {results['accuracy']:.4f}")
             
             return model, aligner.gnn_embeddings, aligner.rnn_embeddings, aligner.aligned_targets
         else:
@@ -183,7 +183,9 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
     logger.info(f"   GNN embeddings: {gnn_embeddings.shape}")
     logger.info(f"   RNN embeddings: {rnn_embeddings.shape}")
     logger.info(f"   Targets: {targets.shape}")
-    logger.info(f"   Class distribution: {dict(zip(*np.unique(targets, return_counts=True)))}")
+    classes, counts = np.unique(targets, return_counts=True)
+    class_distribution = {int(cls): int(count) for cls, count in zip(classes, counts)}
+    logger.info(f"   Class distribution: {class_distribution}")
     
     # Initialize XAI framework
     logger.info(f"\n🚀 Initializing XAI framework...")
@@ -216,8 +218,26 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
         
         # 2. Biological Interpretation
         logger.info("\n🧬 Phase 2: Biological Interpretation")
+        
+        # Create processed SHAP results for biological interpretation
+        # Convert raw SHAP values to mean values across samples and classes
+        raw_shap_values = shap_results['shap_values']
+        if isinstance(raw_shap_values, list) and len(raw_shap_values) > 0:
+            # Multi-class format: [classes, samples, features]
+            shap_array = np.array(raw_shap_values)
+            mean_shap_values = np.abs(shap_array).mean(axis=(0, 1))  # Mean over classes and samples
+        else:
+            # Binary format: [samples, features]
+            mean_shap_values = np.abs(np.array(raw_shap_values)).mean(axis=0)
+        
+        # Create processed results for biological interpretation
+        bio_shap_results = {
+            'shap_values': mean_shap_values.tolist(),  # Convert to list for compatibility
+            'feature_names': shap_results['feature_names']
+        }
+        
         biological_interpretations = xai_analyzer.bio_interpreter.interpret_feature_importance(
-            shap_results
+            bio_shap_results
         )
         experimental_suggestions = xai_analyzer.bio_interpreter.suggest_experimental_validation(
             biological_interpretations
@@ -228,7 +248,7 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
         
         # 3. Uncertainty Analysis
         logger.info("\n🎯 Phase 3: Uncertainty Analysis")
-        uncertainty_results = xai_analyzer.uncertainty_analyzer.analyze_prediction_uncertainty(
+        uncertainty_results = xai_analyzer.uncertainty_explainer.explain_with_uncertainty(
             gnn_sample, rnn_sample
         )
         results['uncertainty_analysis'] = uncertainty_results
@@ -239,29 +259,19 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
         
         # Create feature importance plot
         viz_path = xai_analyzer.visualizer.create_feature_importance_plot(
-            biological_interpretations, 
-            output_dir=output_dir
+            biological_interpretations
         )
         logger.info(f"   ✅ Feature importance plot: {viz_path}")
         
-        # Create biological pathway visualization
-        pathway_path = xai_analyzer.visualizer.create_biological_pathway_plot(
-            biological_interpretations,
-            output_dir=output_dir
-        )
-        logger.info(f"   ✅ Biological pathway plot: {pathway_path}")
-        
         # Create uncertainty visualization
-        uncertainty_path = xai_analyzer.visualizer.create_uncertainty_plot(
-            uncertainty_results,
-            output_dir=output_dir
+        uncertainty_path = xai_analyzer.visualizer.create_uncertainty_explanation_plot(
+            uncertainty_results
         )
         logger.info(f"   ✅ Uncertainty plot: {uncertainty_path}")
         
         # Create integrated dashboard
         dashboard_path = xai_analyzer.visualizer.create_integrated_dashboard(
-            results,
-            output_dir=output_dir
+            results
         )
         logger.info(f"   ✅ Integrated dashboard: {dashboard_path}")
         
@@ -283,7 +293,7 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
             'rnn_features': rnn_embeddings.shape[1],
             'n_samples': len(targets),
             'n_classes': len(np.unique(targets)),
-            'class_distribution': dict(zip(*np.unique(targets, return_counts=True)))
+            'class_distribution': class_distribution
         },
         'xai_results': {
             'feature_importance_completed': 'shap_analysis' in results,
@@ -353,18 +363,46 @@ def print_analysis_summary(results, summary):
             print(f"   {i}. {suggestion['marker']}: {suggestion['experiment']}")
     
     if results.get('uncertainty_analysis'):
-        uncertainty = results['uncertainty_analysis']
-        print(f"\n🎯 Uncertainty Analysis:")
-        print(f"   • Mean Prediction Confidence: {uncertainty['mean_confidence']:.4f}")
-        print(f"   • High Uncertainty Samples: {uncertainty['high_uncertainty_count']}")
-        print(f"   • Confidence Threshold: {uncertainty['confidence_threshold']:.4f}")
+        uncertainty_list = results['uncertainty_analysis']
+        if uncertainty_list and len(uncertainty_list) > 0:
+            confidences = [u['confidence'] for u in uncertainty_list]
+            entropies = [u['uncertainty']['predictive_entropy'] for u in uncertainty_list]
+            high_uncertainty_count = sum(1 for e in entropies if e > 0.5)
+            
+            print(f"\n🎯 Uncertainty Analysis:")
+            print(f"   • Mean Prediction Confidence: {np.mean(confidences):.4f}")
+            print(f"   • High Uncertainty Samples: {high_uncertainty_count}/{len(uncertainty_list)}")
+            print(f"   • Mean Predictive Entropy: {np.mean(entropies):.4f}")
+            
+            # Show reliability breakdown
+            high_reliability = sum(1 for u in uncertainty_list if u['reliability'] == 'High')
+            print(f"   • High Reliability Predictions: {high_reliability}/{len(uncertainty_list)}")
     
     print("\n" + "="*80)
 
 def prepare_serializable_results(results, summary):
     """Prepare results for JSON serialization"""
     
-    serializable = {'summary': summary}
+    # Convert numpy objects in summary to JSON-serializable format
+    serializable_summary = {}
+    for key, value in summary.items():
+        if isinstance(value, dict):
+            # Convert numpy keys to strings
+            converted_dict = {}
+            for k, v in value.items():
+                # Convert numpy types to native Python types
+                str_key = k.item() if hasattr(k, 'item') else str(k)
+                converted_value = v.item() if hasattr(v, 'item') else v
+                converted_dict[str_key] = converted_value
+            serializable_summary[key] = converted_dict
+        elif hasattr(value, 'item'):
+            serializable_summary[key] = value.item()
+        elif hasattr(value, 'tolist'):
+            serializable_summary[key] = value.tolist()
+        else:
+            serializable_summary[key] = value
+    
+    serializable = {'summary': serializable_summary}
     
     # Handle biological interpretations
     if results.get('biological_interpretations'):
@@ -386,13 +424,30 @@ def prepare_serializable_results(results, summary):
     
     # Handle uncertainty analysis
     if results.get('uncertainty_analysis'):
-        uncertainty = results['uncertainty_analysis']
-        serializable['uncertainty_analysis'] = {
-            'mean_confidence': float(uncertainty['mean_confidence']),
-            'confidence_threshold': float(uncertainty['confidence_threshold']),
-            'high_uncertainty_count': int(uncertainty['high_uncertainty_count']),
-            'predictions_summary': uncertainty.get('predictions_summary', {})
-        }
+        uncertainty_list = results['uncertainty_analysis']
+        if uncertainty_list and len(uncertainty_list) > 0:
+            confidences = [u['confidence'] for u in uncertainty_list]
+            entropies = [u['uncertainty']['predictive_entropy'] for u in uncertainty_list]
+            high_uncertainty_count = sum(1 for e in entropies if e > 0.5)
+            high_reliability_count = sum(1 for u in uncertainty_list if u['reliability'] == 'High')
+            
+            serializable['uncertainty_analysis'] = {
+                'mean_confidence': float(np.mean(confidences)),
+                'mean_entropy': float(np.mean(entropies)),
+                'high_uncertainty_count': int(high_uncertainty_count),
+                'high_reliability_count': int(high_reliability_count),
+                'total_samples': len(uncertainty_list),
+                'predictions_summary': [
+                    {
+                        'sample_index': int(u['sample_index']) if hasattr(u['sample_index'], 'item') else u['sample_index'],
+                        'prediction': int(u['prediction'].item()) if hasattr(u['prediction'], 'item') else int(u['prediction']),
+                        'confidence': float(u['confidence']),
+                        'reliability': u['reliability']
+                    } for u in uncertainty_list
+                ]
+            }
+    
+    return serializable
     
     return serializable
 

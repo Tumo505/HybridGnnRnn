@@ -374,6 +374,13 @@ class HybridGNNRNN(nn.Module):
         Perform Monte Carlo sampling for uncertainty estimation
         Returns mean predictions and uncertainty measures
         """
+        # Handle single sample by expanding batch if needed
+        original_batch_size = gnn_emb.size(0)
+        if original_batch_size == 1:
+            # Duplicate the sample to avoid BatchNorm issues
+            gnn_emb = gnn_emb.repeat(2, 1)
+            rnn_emb = rnn_emb.repeat(2, 1)
+        
         self.train()  # Enable dropout
         
         predictions = []
@@ -384,6 +391,10 @@ class HybridGNNRNN(nn.Module):
                 predictions.append(pred_probs.cpu().numpy())
         
         predictions = np.array(predictions)  # [n_samples, batch_size, num_classes]
+        
+        # If we duplicated the sample, take only the first one
+        if original_batch_size == 1 and predictions.shape[1] == 2:
+            predictions = predictions[:, :1, :]  # Take only first sample
         
         # Calculate statistics
         mean_pred = np.mean(predictions, axis=0)  # [batch_size, num_classes]
@@ -1090,7 +1101,7 @@ def train_enhanced_hybrid_model(aligner, fusion_strategy='concatenation', epochs
     
     # Create data loaders with class balancing
     train_sampler = train_dataset.get_weighted_sampler()
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, sampler=train_sampler)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, sampler=train_sampler, drop_last=True)
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     

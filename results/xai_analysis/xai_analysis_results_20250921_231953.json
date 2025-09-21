@@ -1,0 +1,10 @@
+{
+  "summary": {
+    "analysis_timestamp": "2025-09-21T23:19:53.527948",
+    "model_type": "Hybrid GNN-RNN",
+    "data_summary": {
+      "gnn_features": 128,
+      "rnn_features": 512,
+      "n_samples": 152,
+      "n_classes": 4,
+      "class_distribution": {
