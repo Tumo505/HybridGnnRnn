@@ -1,0 +1,22 @@
+TEMPORAL CARDIAC RNN PERFORMANCE SUMMARY
+==================================================
+
+Analysis date: 2025-09-21 22:53:30
+
+KEY PERFORMANCE METRICS:
+-------------------------
+Test Accuracy: 0.9062
+Test Loss: 0.1805
+Best Validation Accuracy: 0.9688
+Best Epoch: 27
+Total Training Epochs: 30
+
+MODEL INFORMATION:
+------------------
+Architecture: BiLSTM(3 layers, 256 hidden)
+Total Parameters: 7,344,004
+Memory Usage: 28.02 MB
+
+GENERALIZATION ASSESSMENT:
+--------------------------
+⚠️  Moderate overfitting (train-val gap < 0.2)

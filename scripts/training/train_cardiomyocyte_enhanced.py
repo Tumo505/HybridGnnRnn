@@ -7,6 +7,7 @@ Comprehensive Enhanced Cardiomyocyte Subtype Classifier
 """
 import logging
 import sys
+import os
 import torch
 import wandb
 import numpy as np
@@ -16,12 +17,21 @@ from pathlib import Path
 from datetime import datetime
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent / "src"))
+# Add project root to path for absolute imports
+project_root = Path(__file__).parent.parent.parent  # Go up from scripts/training/ to project root
+sys.path.insert(0, str(project_root))
 
-from src.training import train_enhanced_cardiomyocyte_classifier
-from src.data_processing import Authentic10XProcessor
-from src.models.gnn_models import AdvancedCardiomyocyteGNN
+try:
+    from src.training.cardiomyocyte_trainer import train_enhanced_cardiomyocyte_classifier
+    from src.data_processing.authentic_10x_processor import Authentic10XProcessor  
+    from src.models.gnn_models.cardiomyocyte_gnn import AdvancedCardiomyocyteGNN
+    print("✅ All imports successful")
+except ImportError as e:
+    # Fallback imports if modules don't exist
+    print(f"Warning: Import error - {e}. Will create minimal training.")
+    train_enhanced_cardiomyocyte_classifier = None
+    Authentic10XProcessor = None
+    AdvancedCardiomyocyteGNN = None
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
@@ -339,6 +349,12 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
         # Setup
         wandb_enabled = self.setup_wandb()
         self.setup_visualization_dir()
+        
+        # Check if training function is available
+        if train_enhanced_cardiomyocyte_classifier is None:
+            logger.error("❌ Training function not available due to import error")
+            logger.error("💡 Please fix the import issues in the script")
+            return False
         
         # Train model
         logger.info("🔥 Training model...")

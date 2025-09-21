@@ -12,8 +12,8 @@ from pathlib import Path
 from datetime import datetime
 import numpy as np
 
-from ..models.gnn_models import AdvancedCardiomyocyteGNN
-from ..data_processing import Authentic10XProcessor
+from src.models.gnn_models import AdvancedCardiomyocyteGNN
+from src.data_processing import Authentic10XProcessor
 
 logger = logging.getLogger(__name__)
 

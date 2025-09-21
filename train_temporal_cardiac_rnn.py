@@ -21,18 +21,11 @@ import pandas as pd
 from pathlib import Path
 
 # Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent / 'src'))
+sys.path.append('src')
 
-try:
-    from models.rnn_models.temporal_cardiac_rnn import TemporalCardiacRNN, create_temporal_cardiac_rnn
-    from data_processing.temporal_processor import load_temporal_cardiac_data
-    from training.temporal_trainer import TemporalRNNTrainer
-except ImportError as e:
-    print(f"Warning: Import error - {e}. Will create minimal training.")
-    TemporalCardiacRNN = None
-    create_temporal_cardiac_rnn = None
-    load_temporal_cardiac_data = None
-    TemporalRNNTrainer = None
+from models.rnn_models.temporal_cardiac_rnn import TemporalCardiacRNN, create_temporal_cardiac_rnn
+from data_processing.temporal_processor import load_temporal_cardiac_data
+from training.temporal_trainer import TemporalRNNTrainer
 
 def create_training_curves(results, output_dir):
     """Create training curves visualization"""

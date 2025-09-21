@@ -20,7 +20,7 @@ import sys
 import os
 
 # Add the project root to path for imports
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 sys.path.insert(0, project_root)
 
 # Import the RNN model directly
