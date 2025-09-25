@@ -1,6 +1,7 @@
 # Hybrid GNN-RNN Model for Cardiomyocyte Differentiation Prediction
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17196578.svg)](https://doi.org/10.5281/zenodo.17196578)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.1.0-EE4C2C.svg?style=flat&logo=pytorch)](https://pytorch.org)
 [![PyTorch Geometric](https://img.shields.io/badge/PyG-2.4.0-3C2179.svg)](https://pytorch-geometric.readthedocs.io/)
@@ -36,6 +37,9 @@ A state-of-the-art deep learning framework that combines Graph Neural Networks (
 - **Explainable AI Framework**: SHAP-based interpretability with biological pathway mapping
 
 ## 🧬 Datasets and Data Sources
+
+> **📁 Dataset Repository**: Complete datasets used in this project are available on Zenodo:  
+> **DOI**: [10.5281/zenodo.17196578](https://doi.org/10.5281/zenodo.17196578)
 
 ### Spatial Multi-Omics Data
 

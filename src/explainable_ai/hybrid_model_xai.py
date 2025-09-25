@@ -245,46 +245,45 @@ class FeatureImportanceAnalyzer:
                 return probabilities.cpu().numpy()
         
         return predict_fn
-    
+
     def compute_shap_values(self, gnn_embeddings, rnn_embeddings, max_samples=100):
         """Compute SHAP values for feature importance"""
-        logger.info("🔍 Computing SHAP values for feature importance analysis...")
-        
+        logger.info("Computing SHAP values for feature importance analysis...")
+
         # Concatenate embeddings for SHAP analysis
         combined_data = np.concatenate([gnn_embeddings, rnn_embeddings], axis=1)
-        
+
         # Limit samples for computational efficiency
         if len(combined_data) > max_samples:
             indices = np.random.choice(len(combined_data), max_samples, replace=False)
             combined_data = combined_data[indices]
-        
+
         # Create prediction function
         predict_fn = self.create_prediction_function()
-        
+
         # Use a subset as background for SHAP
         background_size = min(50, len(combined_data) // 2)
         background = combined_data[:background_size]
-        
+
         # Initialize SHAP explainer
         explainer = shap.KernelExplainer(predict_fn, background)
-        
+
         # Compute SHAP values
         sample_size = min(20, len(combined_data) - background_size)
         test_data = combined_data[background_size:background_size + sample_size]
-        
+
         shap_values = explainer.shap_values(test_data)
-        
-        logger.info(f"   ✅ SHAP values computed for {sample_size} samples")
-        logger.info(f"   📊 Shape: {len(shap_values)} classes × {sample_size} samples × {combined_data.shape[1]} features")
-        
+
+        logger.info(f"SHAP values computed for {sample_size} samples")
+        logger.info(f"Shape: {len(shap_values)} classes × {sample_size} samples × {combined_data.shape[1]} features")
+
         return {
             'shap_values': shap_values,
             'test_data': test_data,
             'background': background,
-            'feature_names': [f'GNN_f{i}' for i in range(gnn_embeddings.shape[1])] + 
-                           [f'RNN_f{i}' for i in range(rnn_embeddings.shape[1])]
+            'feature_names': [f'GNN_f{i}' for i in range(gnn_embeddings.shape[1])] +[f'RNN_f{i}' for i in range(rnn_embeddings.shape[1])]
         }
-    
+
     def compute_lime_explanations(self, gnn_embeddings, rnn_embeddings, sample_indices=None, num_samples=10):
         """Compute LIME explanations for individual predictions"""
         logger.info("🔍 Computing LIME explanations for individual predictions...")

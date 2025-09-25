@@ -1,0 +1,345 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% Page setup
+\geometry{margin=1in}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Hybrid GNN-RNN Model - Mathematical Formulas}
+\lhead{T. Kgabeng et al.}
+\cfoot{\thepage}
+
+% Custom commands
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\vecbf}[1]{\mathbf{#1}}
+\newcommand{\relu}{\text{ReLU}}
+\newcommand{\lrelu}{\text{LeakyReLU}}
+\newcommand{\lstm}{\text{LSTM}}
+\newcommand{\softmax}{\text{softmax}}
+\newcommand{\argmax}{\text{argmax}}
+
+\title{Mathematical Formulations for Hybrid GNN-RNN Model\\
+\large{Cardiomyocyte Differentiation Prediction}}
+\author{Tumo Kgabeng \and Lulu Wang \and Harry Ngwangwa \and Thanyani Pandelani}
+\date{September 25, 2025}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+This document presents the complete mathematical formulation of the Hybrid Graph Neural Network and Recurrent Neural Network (GNN-RNN) model for predicting cardiomyocyte differentiation trajectories. The model integrates spatial transcriptomics data through GNN processing and temporal gene expression patterns via RNN processing, achieving superior classification performance through multimodal fusion strategies.
+
+\section{Graph Neural Network (GNN) Component}
+
+\subsection{Graph Attention Network (GAT) Node Update}
+
+The node representation update in the Graph Attention Network follows:
+
+\begin{equation}
+\vecbf{h}_i^{(l+1)} = \sigma\left(\sum_{j \in \mathcal{N}(i)} \alpha_{ij}^{(l)} \vecbf{W}^{(l)} \vecbf{h}_j^{(l)}\right)
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $\vecbf{h}_i^{(l)} \in \Real^{d^{(l)}}$ is the feature vector of node $i$ at layer $l$
+    \item $\mathcal{N}(i)$ denotes the spatial neighborhood of node $i$
+    \item $\alpha_{ij}^{(l)}$ is the attention coefficient between nodes $i$ and $j$ at layer $l$
+    \item $\vecbf{W}^{(l)} \in \Real^{d^{(l+1)} \times d^{(l)}}$ is the learnable weight matrix
+    \item $\sigma(\cdot)$ is the activation function (LeakyReLU)
+\end{itemize}
+
+\subsection{Attention Mechanism}
+
+The attention coefficients are computed using the attention mechanism:
+
+\begin{equation}
+\alpha_{ij} = \frac{\exp\left(\lrelu\left(\vecbf{a}^T[\vecbf{W}\vecbf{h}_i \| \vecbf{W}\vecbf{h}_j]\right)\right)}{\sum_{k \in \mathcal{N}(i)} \exp\left(\lrelu\left(\vecbf{a}^T[\vecbf{W}\vecbf{h}_i \| \vecbf{W}\vecbf{h}_k]\right)\right)}
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $\vecbf{a} \in \Real^{2d'}$ is the learnable attention parameter vector
+    \item $\|$ denotes the concatenation operation
+    \item $\lrelu(x) = \max(0.01x, x)$ is the LeakyReLU activation function
+\end{itemize}
+
+\subsection{Spatial Graph Construction}
+
+The spatial adjacency matrix is constructed based on physical proximity:
+
+\begin{equation}
+A_{ij} = \begin{cases}
+1 & \text{if } d(\vecbf{s}_i, \vecbf{s}_j) \leq \tau \\
+0 & \text{otherwise}
+\end{cases}
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $d(\vecbf{s}_i, \vecbf{s}_j) = \|\vecbf{s}_i - \vecbf{s}_j\|_2$ is the Euclidean distance
+    \item $\vecbf{s}_i, \vecbf{s}_j \in \Real^2$ are spatial coordinates
+    \item $\tau = 55\mu\text{m}$ is the distance threshold for 10X Visium technology
+\end{itemize}
+
+\section{Recurrent Neural Network (RNN) Component}
+
+\subsection{Bidirectional LSTM Architecture}
+
+The BiLSTM processes temporal sequences in both forward and backward directions. The LSTM cell operations are defined by:
+
+\subsubsection{Gate Computations}
+
+\begin{align}
+\vecbf{f}_t &= \sigma(\vecbf{W}_f \cdot [\vecbf{h}_{t-1}, \vecbf{x}_t] + \vecbf{b}_f) \quad \text{(Forget Gate)} \\
+\vecbf{i}_t &= \sigma(\vecbf{W}_i \cdot [\vecbf{h}_{t-1}, \vecbf{x}_t] + \vecbf{b}_i) \quad \text{(Input Gate)} \\
+\tilde{\vecbf{C}}_t &= \tanh(\vecbf{W}_C \cdot [\vecbf{h}_{t-1}, \vecbf{x}_t] + \vecbf{b}_C) \quad \text{(Candidate Values)} \\
+\vecbf{C}_t &= \vecbf{f}_t \odot \vecbf{C}_{t-1} + \vecbf{i}_t \odot \tilde{\vecbf{C}}_t \quad \text{(Cell State)} \\
+\vecbf{o}_t &= \sigma(\vecbf{W}_o \cdot [\vecbf{h}_{t-1}, \vecbf{x}_t] + \vecbf{b}_o) \quad \text{(Output Gate)} \\
+\vecbf{h}_t &= \vecbf{o}_t \odot \tanh(\vecbf{C}_t) \quad \text{(Hidden State)}
+\end{align}
+
+where:
+\begin{itemize}
+    \item $\vecbf{W}_*, \vecbf{b}_*$ are learnable parameters for each gate
+    \item $\sigma(\cdot)$ is the sigmoid function
+    \item $\odot$ denotes element-wise multiplication
+    \item $[\cdot, \cdot]$ represents concatenation
+\end{itemize}
+
+\subsubsection{Bidirectional Processing}
+
+\begin{align}
+\overrightarrow{\vecbf{h}}_t &= \lstm_{\text{forward}}(\vecbf{x}_t, \overrightarrow{\vecbf{h}}_{t-1}) \\
+\overleftarrow{\vecbf{h}}_t &= \lstm_{\text{backward}}(\vecbf{x}_t, \overleftarrow{\vecbf{h}}_{t+1}) \\
+\vecbf{h}_t &= [\overrightarrow{\vecbf{h}}_t; \overleftarrow{\vecbf{h}}_t]
+\end{align}
+
+\section{Hybrid Fusion Strategies}
+
+\subsection{Early Fusion (Concatenation)}
+
+The concatenation fusion strategy combines embeddings at the feature level:
+
+\begin{align}
+\vecbf{h}_{\text{fused}} &= [\vecbf{h}_{\text{GNN}}; \vecbf{h}_{\text{RNN}}] \\
+\vecbf{y} &= \text{MLP}(\vecbf{h}_{\text{fused}})
+\end{align}
+
+where $\text{MLP}(\cdot)$ represents a multi-layer perceptron classifier.
+
+\subsection{Attention Fusion (Dynamic Weighting)}
+
+The attention-based fusion learns dynamic weights for each modality:
+
+\begin{align}
+\boldsymbol{\alpha} &= \softmax(\text{MLP}([\vecbf{h}_{\text{GNN}}; \vecbf{h}_{\text{RNN}}])) \\
+\vecbf{h}_{\text{fused}} &= \alpha_{\text{GNN}} \cdot \vecbf{W}_{\text{GNN}} \vecbf{h}_{\text{GNN}} + \alpha_{\text{RNN}} \cdot \vecbf{W}_{\text{RNN}} \vecbf{h}_{\text{RNN}}
+\end{align}
+
+where:
+\begin{itemize}
+    \item $\boldsymbol{\alpha} = [\alpha_{\text{GNN}}, \alpha_{\text{RNN}}]^T$ with $\alpha_{\text{GNN}} + \alpha_{\text{RNN}} = 1$
+    \item $\vecbf{W}_{\text{GNN}}, \vecbf{W}_{\text{RNN}}$ are learnable projection matrices
+\end{itemize}
+
+\subsection{Late Fusion (Ensemble)}
+
+The ensemble fusion combines predictions from separate modality-specific classifiers:
+
+\begin{align}
+\vecbf{y}_{\text{GNN}} &= \text{MLP}_{\text{GNN}}(\vecbf{h}_{\text{GNN}}) \\
+\vecbf{y}_{\text{RNN}} &= \text{MLP}_{\text{RNN}}(\vecbf{h}_{\text{RNN}}) \\
+\vecbf{y}_{\text{final}} &= \lambda \cdot \vecbf{y}_{\text{GNN}} + (1-\lambda) \cdot \vecbf{y}_{\text{RNN}}
+\end{align}
+
+where $\lambda = \sigma(w)$ is a learnable ensemble weight parameter.
+
+\section{Loss Functions and Optimization}
+
+\subsection{Weighted Cross-Entropy Loss}
+
+To handle class imbalance, we employ weighted cross-entropy loss:
+
+\begin{equation}
+\mathcal{L}_{\text{CE}} = -\frac{1}{N} \sum_{i=1}^{N} w_{y_i} \log(\softmax(\vecbf{f}(\vecbf{x}_i))_{y_i})
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $w_{y_i}$ is the class weight for the true class $y_i$
+    \item $\vecbf{f}(\vecbf{x}_i)$ is the model output for sample $i$
+    \item $N$ is the total number of samples
+\end{itemize}
+
+\subsection{Focal Loss}
+
+For severe class imbalance, we implement focal loss:
+
+\begin{equation}
+\mathcal{L}_{\text{focal}} = -\alpha_t (1-p_t)^\gamma \log(p_t)
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $p_t$ is the predicted probability for the true class
+    \item $\alpha_t$ is the class weighting factor
+    \item $\gamma = 2.0$ is the focusing parameter
+\end{itemize}
+
+\subsection{Monte Carlo Dropout for Uncertainty Quantification}
+
+For uncertainty estimation, we employ Monte Carlo dropout:
+
+\begin{align}
+p(\vecbf{y}|\vecbf{x}) &= \frac{1}{T} \sum_{t=1}^{T} \softmax(\vecbf{f}(\vecbf{x}, \boldsymbol{\theta}_t)) \\
+\text{Uncertainty} &= -\sum_{c=1}^{C} p(y=c|\vecbf{x}) \log p(y=c|\vecbf{x})
+\end{align}
+
+where:
+\begin{itemize}
+    \item $T$ is the number of Monte Carlo samples
+    \item $\boldsymbol{\theta}_t$ represents model parameters with dropout enabled
+    \item $C$ is the number of classes
+\end{itemize}
+
+\section{Evaluation Metrics}
+
+\subsection{Classification Accuracy}
+
+\begin{equation}
+\text{Accuracy} = \frac{1}{N} \sum_{i=1}^{N} \mathbb{1}[y_i = \hat{y}_i]
+\end{equation}
+
+where $\mathbb{1}[\cdot]$ is the indicator function.
+
+\subsection{F1-Score}
+
+The weighted F1-score is computed as:
+
+\begin{align}
+\text{Precision}_c &= \frac{TP_c}{TP_c + FP_c} \\
+\text{Recall}_c &= \frac{TP_c}{TP_c + FN_c} \\
+\text{F1}_c &= \frac{2 \times \text{Precision}_c \times \text{Recall}_c}{\text{Precision}_c + \text{Recall}_c} \\
+\text{F1}_{\text{weighted}} &= \sum_{c=1}^{C} \frac{n_c}{N} \text{F1}_c
+\end{align}
+
+where $n_c$ is the number of samples in class $c$.
+
+\subsection{Area Under the ROC Curve (AUC-ROC)}
+
+For multi-class classification, we use macro-averaged AUC:
+
+\begin{equation}
+\text{AUC}_{\text{macro}} = \frac{1}{C} \sum_{c=1}^{C} \text{AUC}_c
+\end{equation}
+
+where $\text{AUC}_c$ is the AUC for class $c$ in a one-vs-rest setting.
+
+\section{Activation Functions}
+
+\subsection{Sigmoid Function}
+
+\begin{equation}
+\sigma(x) = \frac{1}{1 + e^{-x}}
+\end{equation}
+
+\subsection{Softmax Function}
+
+\begin{equation}
+\softmax(\vecbf{x})_i = \frac{e^{x_i}}{\sum_{j=1}^{K} e^{x_j}}
+\end{equation}
+
+\subsection{LeakyReLU}
+
+\begin{equation}
+\lrelu(x) = \begin{cases}
+x & \text{if } x > 0 \\
+0.01x & \text{if } x \leq 0
+\end{cases}
+\end{equation}
+
+\subsection{Hyperbolic Tangent}
+
+\begin{equation}
+\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
+\end{equation}
+
+\section{Data Preprocessing}
+
+\subsection{Min-Max Normalization}
+
+\begin{equation}
+x_{\text{norm}} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}
+\end{equation}
+
+\subsection{Standard Scaling (Z-score)}
+
+\begin{equation}
+x_{\text{scaled}} = \frac{x - \mu}{\sigma}
+\end{equation}
+
+where $\mu$ is the mean and $\sigma$ is the standard deviation.
+
+\subsection{Log Transformation}
+
+\begin{equation}
+x_{\log} = \log(x + 1)
+\end{equation}
+
+\section{Performance Results}
+
+\subsection{Component Performance}
+\begin{itemize}
+    \item GNN Spatial Component: 36.2\% accuracy
+    \item RNN Temporal Component: 93.75\% accuracy
+\end{itemize}
+
+\subsection{Hybrid Model Performance}
+\begin{itemize}
+    \item Best Fusion Strategy: Attention-based fusion
+    \item Final Accuracy: \textbf{96.67\%}
+    \item F1-Score: 0.9654
+    \item Improvement over RNN: +2.92\%
+\end{itemize}
+
+\subsection{Uncertainty Quantification}
+\begin{itemize}
+    \item Average Confidence: 0.9234
+    \item Predictive Entropy: 0.1876
+    \item Monte Carlo Samples: 100
+\end{itemize}
+
+\section{Summary}
+
+This document presents the complete mathematical framework underlying the Hybrid GNN-RNN model for cardiomyocyte differentiation prediction. The integration of spatial graph neural networks and temporal recurrent neural networks through attention-based fusion achieves state-of-the-art performance (96.67\% accuracy) while providing uncertainty quantification and biological interpretability.
+
+The mathematical formulations demonstrate how spatial relationships in tissue architecture (captured by GAT) and temporal gene expression dynamics (modeled by BiLSTM) can be effectively combined through learnable attention mechanisms to predict complex biological processes with high accuracy and reliability.
+
+\begin{thebibliography}{99}
+
+\bibitem{kuppe2022}
+Kuppe, C., Ramirez Flores, R. O., Li, Z., Hayat, S., Levinson, R. T., Liao, X., Hannani, M. T., Tanevski, J., Wünnemann, F., Nagai, J. S., Halder, M., Schumacher, D., Menzel, S., Schäfer, G., Hoeft, K., Cheng, M., Ziegler, S., Zhang, X., Peisker, F., \& Kramann, R. (2022). Spatial multi-omic map of human myocardial infarction. \textit{Nature}, 608, 766–777. https://doi.org/10.1038/s41586-022-05060-x
+
+\bibitem{elorbany2022}
+Elorbany, R., Popp, J. M., Rhodes, K., Strober, B. J., Barr, K., Qi, G., Gilad, Y., \& Battle, A. (2022). Single-cell sequencing reveals lineage-specific dynamic genetic regulation of gene expression during human cardiomyocyte differentiation. \textit{PLoS Genetics}, 18(1). https://doi.org/10.1371/journal.pgen.1009666
+
+\bibitem{kgabeng2025}
+Kgabeng, T., Wang, L., Ngwangwa, H., \& Pandelani, T. (2025). Hybrid GNN-RNN Model for Cardiomyocyte Differentiation Prediction. GitHub repository: https://github.com/Tumo505/HybridGnnRnn
+
+\end{thebibliography}
+
+\end{document}

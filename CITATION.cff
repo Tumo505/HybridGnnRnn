@@ -1,0 +1,64 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: "Kgabeng"
+    given-names: "Tumo"
+    email: "28346416@mylife.unisa.ac.za"
+    orcid: "https://orcid.org/0009-0006-5826-4289"
+  - family-names: "Wang"
+    given-names: "Lulu"
+  - family-names: "Ngwangwa"
+    given-names: "Harry"
+  - family-names: "Pandelani"
+    given-names: "Thanyani"
+title: "Hybrid GNN-RNN Model for Cardiomyocyte Differentiation Prediction"
+version: 1.0.0
+date-released: 2025-09-25
+url: "https://github.com/Tumo505/HybridGnnRnn"
+repository-code: "https://github.com/Tumo505/HybridGnnRnn"
+abstract: >-
+  A state-of-the-art deep learning framework that combines Graph Neural Networks (GNN) 
+  and Recurrent Neural Networks (RNN) for predicting cardiomyocyte differentiation 
+  trajectories. This project integrates spatial multi-omics data (spatial transcriptomics) 
+  with temporal gene expression patterns to achieve superior classification performance 
+  and biological interpretability (96.67% accuracy).
+keywords:
+  - "deep learning"
+  - "graph neural networks"
+  - "recurrent neural networks"
+  - "cardiomyocyte differentiation"
+  - "spatial transcriptomics"
+  - "temporal gene expression"
+  - "explainable AI"
+  - "computational biology"
+  - "multi-omics"
+  - "cardiac development"
+license: "CC-BY-4.0"
+identifiers:
+  - type: url
+    value: "https://github.com/Tumo505/HybridGnnRnn"
+  - type: doi
+    value: "10.5281/zenodo.17196578"
+    description: "Dataset DOI"
+references:
+  - type: article
+    authors:
+      - family-names: "Kuppe"
+        given-names: "Christoph"
+    title: "Spatial multi-omic map of human myocardial infarction"
+    journal: "Nature"
+    year: 2022
+    volume: 608
+    pages: "766-777"
+    doi: "10.1038/s41586-022-05060-x"
+  - type: article
+    authors:
+      - family-names: "Elorbany"
+        given-names: "Reem"
+    title: "Single-cell sequencing reveals lineage-specific dynamic genetic regulation of gene expression during human cardiomyocyte differentiation"
+    journal: "PLoS Genetics"
+    year: 2022
+    volume: 18
+    issue: 1
+    doi: "10.1371/journal.pgen.1009666"

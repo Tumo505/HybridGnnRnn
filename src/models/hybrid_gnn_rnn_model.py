@@ -283,11 +283,11 @@ class AttentionFusion(nn.Module):
 
 class MCDropout(nn.Module):
     """Monte Carlo Dropout for uncertainty estimation"""
-    
+
     def __init__(self, p=0.3):
         super(MCDropout, self).__init__()
         self.p = p
-        
+
     def forward(self, x):
         # Always apply dropout (even during inference for MC sampling)
         return F.dropout(x, p=self.p, training=True)
@@ -784,39 +784,39 @@ class MultiTaskTrainer:
 
 class HybridDataset(torch.utils.data.Dataset):
     """Dataset for hybrid model training with class imbalance support"""
-    
+
     def __init__(self, gnn_embeddings, rnn_embeddings, targets):
         self.gnn_embeddings = torch.FloatTensor(gnn_embeddings)
         self.rnn_embeddings = torch.FloatTensor(rnn_embeddings)
         self.targets = torch.LongTensor(targets)
-        
+
         # Calculate class weights for imbalance handling
         self.class_counts = np.bincount(targets)
         self.class_weights = compute_class_weight('balanced', classes=np.unique(targets), y=targets)
-        
-        logger.info(f"   📊 Class distribution: {dict(zip(np.unique(targets), self.class_counts))}")
-        logger.info(f"   ⚖️ Class weights: {dict(zip(np.unique(targets), self.class_weights))}")
-        
+
+        logger.info(f"Class distribution: {dict(zip(np.unique(targets), self.class_counts))}")
+        logger.info(f"Class weights: {dict(zip(np.unique(targets), self.class_weights))}")
+
     def __len__(self):
         return len(self.targets)
-    
+
     def __getitem__(self, idx):
         return self.gnn_embeddings[idx], self.rnn_embeddings[idx], self.targets[idx]
-    
+
     def get_weighted_sampler(self):
         """Create WeightedRandomSampler for handling class imbalance"""
         # Assign weight to each sample based on its class
         sample_weights = np.array([self.class_weights[t] for t in self.targets])
-        
+
         sampler = torch.utils.data.WeightedRandomSampler(
             weights=sample_weights,
             num_samples=len(sample_weights),
             replacement=True
         )
-        
-        logger.info(f"   🎯 WeightedRandomSampler created for balanced training")
+
+        logger.info(f"WeightedRandomSampler created for balanced training")
         return sampler
-    
+
     def get_class_weights_tensor(self):
         """Get class weights as tensor for loss function"""
         return torch.FloatTensor(self.class_weights)

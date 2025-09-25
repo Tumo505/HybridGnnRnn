@@ -655,6 +655,47 @@ class TestHybridModel:
 - **Methods**: Cross-validation, stratified sampling, McNemar's test
 - **Analysis**: Overfitting detection, robustness assessment
 
----
 
-*This technical documentation provides comprehensive details for researchers and developers working with the hybrid GNN-RNN model. For questions or clarifications, please refer to the main README or open an issue on GitHub.*
+
+## Architecture Summary
+
+GNN
+```
+Enhanced Cardiomyocyte GNN
+├── Graph Construction: K-NN spatial graphs (k=6)
+├── Feature Processing: 2,000 → 512 → 256 dimensions
+├── Graph Layers:
+│   ├── Graph Attention Network (GAT): 256 → 128
+│   ├── Graph Convolutional Network (GCN): 128 → 64
+│   └── Global Pooling: Node → Graph representation
+├── Classification Head: 64 → 5 classes
+└── Parameters: 9.87M trainable
+```
+
+RNN
+```
+Temporal Cardiac BiLSTM
+├── Input Processing: 2,000 genes × 10 timepoints
+├── Embedding Layer: 2,000 → 512 dimensions
+├── BiLSTM Layers:
+│   ├── Layer 1: 512 → 256 (bidirectional)
+│   ├── Layer 2: 256 → 256 (bidirectional)
+│   └── Layer 3: 256 → 128 (bidirectional)
+├── Attention Mechanism: Temporal attention weights
+├── Classification Head: 128 → 4 classes
+└── Parameters: 7.34M trainable
+
+```
+
+#### Statistical Analytics Tools Summary
+
+| Tool Category | Library/Function | Application | Validation Method |
+|---------------|------------------|-------------|-------------------|
+| **Performance Metrics** | sklearn.metrics | accuracy_score, f1_score, classification_report | ✅ Extensive validation |
+| **Cross-Validation** | sklearn.model_selection | StratifiedKFold, cross_val_score | ✅ 5-fold stratified |
+| **Statistical Tests** | scipy.stats | mcnemar, ttest_rel | ✅ p<0.05 significance |
+| **Preprocessing** | sklearn.preprocessing | StandardScaler, MinMaxScaler, PCA | ✅ Validated scaling |
+| **Class Balance** | sklearn.utils | compute_class_weight | ✅ Balanced training |
+| **Uncertainty** | Custom MCDropout | Predictive entropy, confidence | ✅ 50-sample estimation |
+| **Interpretability** | SHAP v0.48.0 | DeepExplainer, summary_plot | ✅ Biological validation |
+| **Clustering** | sklearn.cluster | KMeans, NearestNeighbors | ✅ Spatial validation |
