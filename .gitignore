@@ -109,8 +109,3 @@ processed_training_data/
 temp/
 tmp/
 
-# Results and reports
-results/*.pdf
-results/*.png
-results/*.svg
-reports/xai_reports/*.pdf
