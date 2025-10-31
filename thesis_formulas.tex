@@ -8,13 +8,14 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{xcolor}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
+
 
 % Page setup
 \geometry{margin=1in}
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{Hybrid GNN-RNN Model - Mathematical Formulas}
+\rhead{Hybrid GNN-RNN Model - Mathematical Equations}
 \lhead{T. Kgabeng et al.}
 \cfoot{\thepage}
 
@@ -27,10 +28,12 @@
 \newcommand{\softmax}{\text{softmax}}
 \newcommand{\argmax}{\text{argmax}}
 
-\title{Mathematical Formulations for Hybrid GNN-RNN Model\\
-\large{Cardiomyocyte Differentiation Prediction}}
+\title{MATHEMATICAL EQUATIONS \\
+\large{Deep Learning for Spatial Multi-Omics:} \\
+\large{Predicting Cardiomyocyte Differentiation Efficiency at Single-Cell Resolution} \\
+\large{}}
 \author{Tumo Kgabeng \and Lulu Wang \and Harry Ngwangwa \and Thanyani Pandelani}
-\date{September 25, 2025}
+\date{}  % Removes date entirely
 
 \begin{document}
 
@@ -300,28 +303,28 @@ where $\mu$ is the mean and $\sigma$ is the standard deviation.
 x_{\log} = \log(x + 1)
 \end{equation}
 
-\section{Performance Results}
+% \section{Performance Results}
 
-\subsection{Component Performance}
-\begin{itemize}
-    \item GNN Spatial Component: 36.2\% accuracy
-    \item RNN Temporal Component: 93.75\% accuracy
-\end{itemize}
+% \subsection{Component Performance}
+% \begin{itemize}
+%     \item GNN Spatial Component: 36.2\% accuracy
+%     \item RNN Temporal Component: 93.75\% accuracy
+% \end{itemize}
 
-\subsection{Hybrid Model Performance}
-\begin{itemize}
-    \item Best Fusion Strategy: Attention-based fusion
-    \item Final Accuracy: \textbf{96.67\%}
-    \item F1-Score: 0.9654
-    \item Improvement over RNN: +2.92\%
-\end{itemize}
+% \subsection{Hybrid Model Performance}
+% \begin{itemize}
+%     \item Best Fusion Strategy: Attention-based fusion
+%     \item Final Accuracy: \textbf{96.67\%}
+%     \item F1-Score: 0.9654
+%     \item Improvement over RNN: +2.92\%
+% \end{itemize}
 
-\subsection{Uncertainty Quantification}
-\begin{itemize}
-    \item Average Confidence: 0.9234
-    \item Predictive Entropy: 0.1876
-    \item Monte Carlo Samples: 100
-\end{itemize}
+% \subsection{Uncertainty Quantification}
+% \begin{itemize}
+%     \item Average Confidence: 0.9234
+%     \item Predictive Entropy: 0.1876
+%     \item Monte Carlo Samples: 100
+% \end{itemize}
 
 \section{Summary}
 
