@@ -185,7 +185,7 @@ class RealRNNEmbeddingExtractor:
     
     def analyze_embeddings(self):
         """Analyze the quality of embeddings from real data"""
-        logger.info("🔍 Analyzing real RNN embeddings...")
+        logger.info(" Analyzing real RNN embeddings...")
         
         embeddings = self.embeddings['embeddings']
         targets = self.embeddings['targets']

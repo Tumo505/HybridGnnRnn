@@ -286,7 +286,7 @@ class FeatureImportanceAnalyzer:
 
     def compute_lime_explanations(self, gnn_embeddings, rnn_embeddings, sample_indices=None, num_samples=10):
         """Compute LIME explanations for individual predictions"""
-        logger.info("🔍 Computing LIME explanations for individual predictions...")
+        logger.info(" Computing LIME explanations for individual predictions...")
         
         # Combine embeddings
         combined_data = np.concatenate([gnn_embeddings, rnn_embeddings], axis=1)
@@ -726,7 +726,7 @@ class XAIVisualizationSuite:
                                           autopct='%1.1f%%', colors=['green', 'red'])
         ax4.set_title('⚖️ Overall Reliability Assessment')
         
-        plt.suptitle('🔍 Uncertainty-Aware Model Explanations', fontsize=16, fontweight='bold')
+        plt.suptitle(' Uncertainty-Aware Model Explanations', fontsize=16, fontweight='bold')
         plt.tight_layout()
         plt.savefig(self.output_dir / f"{save_name}.png", dpi=300, bbox_inches='tight')
         plt.close()

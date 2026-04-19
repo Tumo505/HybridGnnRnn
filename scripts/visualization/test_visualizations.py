@@ -11,7 +11,7 @@ results_path = os.path.join(os.path.dirname(__file__), '..', '..', 'results', 'x
 with open(results_path, 'r') as f:
     results = json.load(f)
 
-print("🔍 Testing XAI visualization data...")
+print(" Testing XAI visualization data...")
 
 # Check biological interpretations
 bio_interps = results.get('biological_interpretations', [])
@@ -46,4 +46,4 @@ print(f"   SHAP analysis: {'' if 'shap_analysis' in results else ''}")
 print(f"   Uncertainty analysis: {'' if 'uncertainty_analysis' in results else ''}")
 print(f"   Experimental suggestions: {len(results.get('experimental_suggestions', []))} items")
 
-print("\n🎉 Visualization test completed!")
+print("\n Visualization test completed!")

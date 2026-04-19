@@ -104,7 +104,7 @@ def load_real_embeddings(embeddings_path):
         n_samples = len(rnn_embeddings)
         gnn_dim = 128
         gnn_embeddings = np.random.randn(n_samples, gnn_dim)
-        logger.info(f"🔧 Created synthetic GNN embeddings: {gnn_embeddings.shape}")
+        logger.info(f" Created synthetic GNN embeddings: {gnn_embeddings.shape}")
         
         # Create a simple model for XAI
         model = HybridGNNRNN(
@@ -188,7 +188,7 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
     logger.info(f"   Class distribution: {class_distribution}")
     
     # Initialize XAI framework
-    logger.info(f"\n🚀 Initializing XAI framework...")
+    logger.info(f"\n Initializing XAI framework...")
     try:
         xai_analyzer = HybridModelXAI(model, device='cpu')
         logger.info(" XAI framework initialized")
@@ -340,7 +340,7 @@ def print_analysis_summary(results, summary):
     print(f"   • Classes: {data_info['n_classes']}")
     print(f"   • Class Distribution: {data_info['class_distribution']}")
     
-    print(f"\n🔧 XAI Analysis Results:")
+    print(f"\n XAI Analysis Results:")
     xai_info = summary['xai_results']
     print(f"   • Feature Importance: {' Completed' if xai_info['feature_importance_completed'] else ' Failed'}")
     print(f"   • Biological Interpretation: {' Completed' if xai_info['biological_interpretation_completed'] else ' Failed'}")
@@ -486,7 +486,7 @@ def main():
     )
     
     if results:
-        print("\n🎉 Real Data XAI Analysis completed successfully!")
+        print("\n Real Data XAI Analysis completed successfully!")
         print(f" Check {args.output_dir} for detailed results and visualizations.")
     else:
         print("\n Real Data XAI Analysis failed. Check logs for details.")

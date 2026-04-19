@@ -61,7 +61,7 @@ class BiologicalEmbeddingAnalyzer:
         best_model = max(self.models_data.keys(), 
                         key=lambda k: self.models_data[k]['accuracy'])
         
-        logger.info(f"🏆 Best model: {best_model} (Accuracy: {self.models_data[best_model]['accuracy']:.4f})")
+        logger.info(f" Best model: {best_model} (Accuracy: {self.models_data[best_model]['accuracy']:.4f})")
         
         data = self.models_data[best_model]
         embeddings = data['embeddings']
@@ -82,7 +82,7 @@ class BiologicalEmbeddingAnalyzer:
     
     def analyze_clustering(self, embeddings, targets):
         """Analyze natural clustering in embedding space"""
-        logger.info("🔍 Analyzing clustering patterns...")
+        logger.info(" Analyzing clustering patterns...")
         
         results = {}
         
@@ -361,7 +361,7 @@ def main():
     logger.info(f"   Separation ratio: {sep['separation_ratio']:.3f}")
     
     clustering = results['clustering_analysis']
-    logger.info(f"\n🔍 Clustering Analysis:")
+    logger.info(f"\n Clustering Analysis:")
     for k, metrics in clustering.items():
         logger.info(f"   {k}: Silhouette={metrics['silhouette_score']:.3f}, ARI={metrics['ari_with_true_labels']:.3f}")
     

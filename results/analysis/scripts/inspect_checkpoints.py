@@ -8,7 +8,7 @@ from datetime import datetime
 
 def inspect_checkpoint(checkpoint_path):
     """Inspect a model checkpoint to understand its structure"""
-    print(f"\n🔍 Inspecting: {checkpoint_path}")
+    print(f"\n Inspecting: {checkpoint_path}")
     print("=" * 50)
     
     try:

@@ -214,7 +214,7 @@ def create_final_summary_plot():
     summary_text = f"""
      SUMMARY STATISTICS
     
-    🏆 Best Model: {models[np.argmax(accuracies)]}
+     Best Model: {models[np.argmax(accuracies)]}
      Best Accuracy: {max(accuracies):.4f}
     
      GNN-only: {gnn_acc:.4f}

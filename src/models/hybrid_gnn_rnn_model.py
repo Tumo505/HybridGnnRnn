@@ -85,7 +85,7 @@ class EmbeddingAligner:
             gnn_dim = 128
             self.gnn_embeddings = np.random.randn(n_samples, gnn_dim)
             gnn_targets = np.random.randint(0, 4, n_samples)  # 4 classes
-            logger.info(f"   🔧 Created synthetic GNN embeddings: {self.gnn_embeddings.shape}")
+            logger.info(f"    Created synthetic GNN embeddings: {self.gnn_embeddings.shape}")
             
         # Try to find available RNN embeddings
         rnn_embeddings_file = None
@@ -928,7 +928,7 @@ def create_visualizations(results, fusion_strategy, output_dir):
     colors = ['#2E86AB', '#A23B72']
     
     bars = ax4.bar(metrics, values, color=colors, alpha=0.8)
-    ax4.set_title(f'🏆 Overall Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+    ax4.set_title(f' Overall Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
     ax4.set_ylabel('Score')
     ax4.set_ylim(0, 1)
     ax4.grid(True, alpha=0.3)
@@ -978,7 +978,7 @@ def create_enhanced_visualizations(results, uncertainty_results, fusion_strategy
         colors = ['#2E86AB', '#A23B72']
     
     bars = ax2.bar(metrics, values, color=colors, alpha=0.8)
-    ax2.set_title(f'🏆 Enhanced Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+    ax2.set_title(f' Enhanced Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
     ax2.set_ylabel('Score')
     ax2.set_ylim(0, 1)
     ax2.grid(True, alpha=0.3)
@@ -1081,8 +1081,8 @@ def create_enhanced_visualizations(results, uncertainty_results, fusion_strategy
 
 def train_enhanced_hybrid_model(aligner, fusion_strategy='concatenation', epochs=50, batch_size=16, enable_uncertainty=True):
     """Train enhanced hybrid model with all improvements"""
-    logger.info(f"\n🚀 Training enhanced hybrid model with {fusion_strategy} fusion...")
-    logger.info(f"   🔧 Enhanced features: Sample alignment, Class balancing, Uncertainty estimation")
+    logger.info(f"\n Training enhanced hybrid model with {fusion_strategy} fusion...")
+    logger.info(f"    Enhanced features: Sample alignment, Class balancing, Uncertainty estimation")
     
     # Prepare data
     X_gnn = aligner.gnn_embeddings
@@ -1200,7 +1200,7 @@ def train_enhanced_hybrid_model(aligner, fusion_strategy='concatenation', epochs
 def main_enhanced():
     """Main execution function with all enhancements"""
     logger.info(" ENHANCED HYBRID GNN-RNN MODEL FOR CARDIOMYOCYTE DIFFERENTIATION")
-    logger.info("🔧 Features: Sample Alignment + Class Balancing + Uncertainty + Multi-task Ready")
+    logger.info(" Features: Sample Alignment + Class Balancing + Uncertainty + Multi-task Ready")
     logger.info("=" * 80)
     
     # Step 1: Load and align embeddings with enhanced method
@@ -1283,7 +1283,7 @@ def main_enhanced():
     
     # Final enhanced comparison
     logger.info(f"\n{'='*80}")
-    logger.info("🏆 ENHANCED FUSION STRATEGY COMPARISON")
+    logger.info(" ENHANCED FUSION STRATEGY COMPARISON")
     logger.info(f"{'='*80}")
     
     for strategy, metrics in enhanced_results.items():
@@ -1303,7 +1303,7 @@ def main_enhanced():
     logger.info(f"   Best accuracy: {best_accuracy:.4f}")
     
     # Enhanced summary
-    logger.info(f"\n🔧 ENHANCEMENT SUMMARY:")
+    logger.info(f"\n ENHANCEMENT SUMMARY:")
     logger.info(f"    Sample Alignment: ID-based or stratified class alignment")
     logger.info(f"    Class Imbalance: Weighted sampling and loss function")
     logger.info(f"    Uncertainty Estimation: MC Dropout with confidence measures")
@@ -1396,7 +1396,7 @@ def main_enhanced():
     colors = ['#2E86AB', '#A23B72']
     
     bars = ax4.bar(metrics, values, color=colors, alpha=0.8)
-    ax4.set_title(f'🏆 Overall Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+    ax4.set_title(f' Overall Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
     ax4.set_ylabel('Score')
     ax4.set_ylim(0, 1)
     ax4.grid(True, alpha=0.3)
@@ -1418,7 +1418,7 @@ def main_enhanced():
 
 def train_hybrid_model(aligner, fusion_strategy='concatenation', epochs=50, batch_size=16):
     """Train hybrid model with specified fusion strategy"""
-    logger.info(f"\n🚀 Training hybrid model with {fusion_strategy} fusion...")
+    logger.info(f"\n Training hybrid model with {fusion_strategy} fusion...")
     
     # Prepare data
     X_gnn = aligner.gnn_embeddings
@@ -1585,7 +1585,7 @@ def main():
     
     # Final comparison
     logger.info(f"\n{'='*70}")
-    logger.info("🏆 FUSION STRATEGY COMPARISON")
+    logger.info(" FUSION STRATEGY COMPARISON")
     logger.info(f"{'='*70}")
     
     for strategy, metrics in results_comparison.items():
@@ -1610,7 +1610,7 @@ def main():
 
 if __name__ == "__main__":
     # Run enhanced version with all improvements
-    logger.info("🚀 Running Enhanced Hybrid Model with all improvements...")
+    logger.info(" Running Enhanced Hybrid Model with all improvements...")
     enhanced_results = main_enhanced()
     
     # Optionally run original version for comparison

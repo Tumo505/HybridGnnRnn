@@ -338,7 +338,7 @@ class TrainedModelAnalyzer:
     
     def analyze_all_models(self):
         """Analyze all loaded models"""
-        logger.info("\n🔍 ANALYZING ALL TRAINED MODELS")
+        logger.info("\n ANALYZING ALL TRAINED MODELS")
         logger.info("=" * 50)
         
         analysis_results = {}

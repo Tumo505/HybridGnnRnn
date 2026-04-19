@@ -14,7 +14,7 @@ def create_enhancement_summary():
     colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4']
     bars = ax1.bar(categories, accuracies, color=colors, alpha=0.8)
     
-    ax1.set_title('🏆 Performance Improvement: Original vs Enhanced Model', 
+    ax1.set_title(' Performance Improvement: Original vs Enhanced Model', 
                   fontsize=14, fontweight='bold', pad=20)
     ax1.set_ylabel('Accuracy (%)', fontsize=12)
     ax1.set_ylim(0, 100)
@@ -43,7 +43,7 @@ def create_enhancement_summary():
     
     im = ax2.imshow(enhancement_matrix, cmap='RdYlGn', aspect='auto', vmin=0, vmax=1)
     
-    ax2.set_title('🔧 Enhanced Features Implementation Status', 
+    ax2.set_title(' Enhanced Features Implementation Status', 
                   fontsize=14, fontweight='bold', pad=20)
     ax2.set_xticks(range(len(features)))
     ax2.set_xticklabels(features, fontsize=10)
@@ -131,11 +131,11 @@ def create_enhancement_summary():
 
 if __name__ == "__main__":
     output_file = create_enhancement_summary()
-    print(f"🎉 Enhancement summary visualization saved: {output_file}")
+    print(f" Enhancement summary visualization saved: {output_file}")
     
     # Print achievement summary
     print("\n" + "="*80)
-    print("🏆 ENHANCED HYBRID MODEL ACHIEVEMENTS SUMMARY")
+    print(" ENHANCED HYBRID MODEL ACHIEVEMENTS SUMMARY")
     print("="*80)
     print(" Sample Alignment Enhancement: ID-based + stratified class matching")
     print(" Class Imbalance Handling: WeightedRandomSampler + class weights")

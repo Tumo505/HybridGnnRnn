@@ -71,7 +71,7 @@ class TrainedGNNAnalyzer:
                     if os.path.exists(model_path):
                         model_paths[f'{exp_dir}_fold_{fold}'] = model_path
         
-        logger.info(f"🔍 Found {len(model_paths)} trained models:")
+        logger.info(f" Found {len(model_paths)} trained models:")
         for name, path in model_paths.items():
             logger.info(f"    {name}: {path}")
         
@@ -287,7 +287,7 @@ class TrainedGNNAnalyzer:
             }
         
         # Summary comparison
-        logger.info("\n🏆 PERFORMANCE SUMMARY:")
+        logger.info("\n PERFORMANCE SUMMARY:")
         for model_name, results in comparison_results.items():
             if results['performance']:
                 acc = results['performance']['accuracy']
@@ -359,7 +359,7 @@ def main():
     logger.info(f" Successfully loaded {loaded_count}/{len(model_paths)} models")
     
     # 4. Analyze models
-    logger.info("\n🔍 Analyzing models...")
+    logger.info("\n Analyzing models...")
     results = analyzer.compare_models()
     
     # 5. Save results

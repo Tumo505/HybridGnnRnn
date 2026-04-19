@@ -322,7 +322,7 @@ def create_overfitting_validation_plots(framework):
 
 def main():
     """Main validation analysis"""
-    print("🔍 ADVANCED OVERFITTING DETECTION & VALIDATION ANALYSIS")
+    print(" ADVANCED OVERFITTING DETECTION & VALIDATION ANALYSIS")
     print("=" * 70)
     
     # Load embeddings
@@ -383,7 +383,7 @@ def main():
     
     print(f"\n SPECIFIC RECOMMENDATIONS:")
     if overfitting_analysis['overfitting_risk'] == 'High':
-        print("   • 🔧 Increase regularization (dropout 40-50%)")
+        print("   •  Increase regularization (dropout 40-50%)")
         print("   •  Collect more training data")
         print("   • 🎲 Use ensemble methods")
         print("   • 📉 Reduce model complexity")

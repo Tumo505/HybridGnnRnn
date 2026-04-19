@@ -22,7 +22,7 @@ fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 12))
 
 # 1. Model Performance Comparison
 bars = ax1.bar(models, accuracies, color=colors, alpha=0.8, edgecolor='black', linewidth=1)
-ax1.set_title('🏆 Model Performance Comparison', fontsize=16, fontweight='bold', pad=20)
+ax1.set_title(' Model Performance Comparison', fontsize=16, fontweight='bold', pad=20)
 ax1.set_ylabel('Accuracy (%)', fontsize=12)
 ax1.set_ylim(0, 100)
 ax1.grid(True, alpha=0.3)
@@ -117,14 +117,14 @@ summary_text = f"""
    • Attention: 9.4% accuracy, 7.5% F1-score
    • Ensemble: 21.9% accuracy, 20.6% F1-score ⭐ BEST
 
-🏆 KEY ACHIEVEMENTS:
+ KEY ACHIEVEMENTS:
     Successful multimodal fusion implementation
     Three fusion strategies compared
     Ensemble fusion performs best
     Complete training and evaluation pipeline
     Comprehensive visualizations and metrics
 
-🔍 INSIGHTS:
+ INSIGHTS:
    • Ensemble fusion allows specialized modality contributions
    • Limited training data (159 samples) challenges deep learning
    • Early-stage differentiation better captured than late stages
@@ -136,7 +136,7 @@ summary_text = f"""
    • HYBRID_MODEL_RESULTS_SUMMARY.md: Detailed analysis
    • {output_path}: Performance visualization
 
-🚀 FUTURE DIRECTIONS:
+ FUTURE DIRECTIONS:
    • Increase training data through augmentation
    • Add biological validation with marker genes
    • Implement progressive training strategies
@@ -151,4 +151,4 @@ print(summary_text)
 with open(f"HYBRID_MODEL_SUMMARY_{timestamp}.txt", 'w') as f:
     f.write(summary_text)
 
-print(f"📄 Text summary saved: HYBRID_MODEL_SUMMARY_{timestamp}.txt")
+print(f" Text summary saved: HYBRID_MODEL_SUMMARY_{timestamp}.txt")

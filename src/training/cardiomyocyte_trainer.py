@@ -226,7 +226,7 @@ class CardiomyocyteTrainer:
         optimizer, criterion, scheduler = self.setup_optimizer(model, train_mask, data)
         
         # Training loop
-        logger.info("🚀 Starting enhanced cardiomyocyte classification...")
+        logger.info(" Starting enhanced cardiomyocyte classification...")
         
         best_val_acc = 0
         best_val_loss = float('inf')
@@ -305,7 +305,7 @@ class CardiomyocyteTrainer:
         # Save results
         self.save_results(results)
         
-        logger.info(f"🎉 Enhanced cardiomyocyte classification complete!")
+        logger.info(f" Enhanced cardiomyocyte classification complete!")
         logger.info(f"Test accuracy: {test_results['accuracy']:.4f}")
         
         return results

@@ -359,4 +359,4 @@ if __name__ == "__main__":
     print(f"\nTest successful!")
     print(f"Input shape: {x.shape}")
     print(f"Output shape: {logits.shape}")
-    print(f"Ready for hybrid GNN-RNN integration! 🚀")
+    print(f"Ready for hybrid GNN-RNN integration! ")

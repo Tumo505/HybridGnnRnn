@@ -246,7 +246,7 @@ class EnhancedCardiomyocyteTrainer:
         try:
             # This is a placeholder for attention analysis
             # Would need to modify model to return attention weights
-            logger.info("🔍 Attention analysis not implemented for current model")
+            logger.info(" Attention analysis not implemented for current model")
             return None
         except Exception as e:
             logger.warning(f"Attention analysis failed: {e}")
@@ -344,7 +344,7 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
     
     def train_and_analyze(self):
         """Complete training and analysis pipeline."""
-        logger.info("🚀 Starting Enhanced Cardiomyocyte GNN Training & Analysis")
+        logger.info(" Starting Enhanced Cardiomyocyte GNN Training & Analysis")
         
         # Setup
         wandb_enabled = self.setup_wandb()
@@ -357,7 +357,7 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
             return False
         
         # Train model
-        logger.info("🔥 Training model...")
+        logger.info(" Training model...")
         results = train_enhanced_cardiomyocyte_classifier(self.config)
         
         if not results:

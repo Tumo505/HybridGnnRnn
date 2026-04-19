@@ -282,7 +282,7 @@ def generate_recommendations():
         "Overfitting Mitigation": [
             " Implement k-fold cross-validation (recommended: 5-fold)",
             " Collect larger datasets (target: >500 samples per class)",
-            "🔧 Add more aggressive regularization (increase dropout to 40-50%)",
+            " Add more aggressive regularization (increase dropout to 40-50%)",
             "📉 Monitor training/validation curves during training",
             "🎲 Implement bootstrap sampling for robust performance estimates"
         ],
@@ -296,7 +296,7 @@ def generate_recommendations():
         "Clinical Translation": [
             "🏥 Validate uncertainty estimates against experimental variability",
             "📋 Develop interpretability tools for biological insights",
-            "🔍 Create feature attribution analysis",
+            " Create feature attribution analysis",
             " Establish confidence thresholds for clinical decisions",
             " Test on disease-specific differentiation protocols"
         ]

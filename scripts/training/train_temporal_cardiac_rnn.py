@@ -60,7 +60,7 @@ def create_training_curves(results, output_dir):
     ax1.axvline(x=best_epoch + 1, color=colors['accent'], linestyle='--', 
                 alpha=0.8, linewidth=2, label=f'Best Epoch ({best_epoch + 1})')
     
-    ax1.set_title('🔥 Training & Validation Loss', fontsize=14, fontweight='bold', pad=20)
+    ax1.set_title(' Training & Validation Loss', fontsize=14, fontweight='bold', pad=20)
     ax1.set_xlabel('Epoch', fontsize=12)
     ax1.set_ylabel('Loss', fontsize=12)
     ax1.legend(frameon=True, fancybox=True, shadow=True)
@@ -96,7 +96,7 @@ def create_training_curves(results, output_dir):
         ax3.grid(True, alpha=0.3)
         ax3.set_facecolor('#f8f9fa')
     else:
-        ax3.text(0.5, 0.5, '🔍 Learning Rate\nData Not Available', 
+        ax3.text(0.5, 0.5, ' Learning Rate\nData Not Available', 
                 ha='center', va='center', transform=ax3.transAxes,
                 fontsize=12, bbox=dict(boxstyle="round,pad=0.3", facecolor='lightgray'))
         ax3.set_facecolor('#f8f9fa')
@@ -107,7 +107,7 @@ def create_training_curves(results, output_dir):
              marker='o', markersize=4, label='Train-Val Gap')
     ax4.axhline(y=0.1, color='orange', linestyle='--', alpha=0.7, label='Overfitting Threshold')
     
-    ax4.set_title('🧠 Generalization Analysis', fontsize=14, fontweight='bold', pad=20)
+    ax4.set_title(' Generalization Analysis', fontsize=14, fontweight='bold', pad=20)
     ax4.set_xlabel('Epoch', fontsize=12)
     ax4.set_ylabel('Loss Gap', fontsize=12)
     ax4.legend(frameon=True, fancybox=True, shadow=True)
@@ -257,7 +257,7 @@ def create_temporal_analysis(results, data_info, output_dir):
     ax1.plot(epochs, results['val_losses'], alpha=0.5, color='#A23B72', linewidth=1)
     ax1.plot(epochs, smoothed_val, color='#A23B72', linewidth=2.5, label='Val (Smoothed)')
     
-    ax1.set_title('🧠 Loss Convergence Analysis', fontsize=14, fontweight='bold')
+    ax1.set_title(' Loss Convergence Analysis', fontsize=14, fontweight='bold')
     ax1.set_xlabel('Epoch', fontsize=12)
     ax1.set_ylabel('Loss', fontsize=12)
     ax1.legend()
@@ -428,12 +428,12 @@ def create_visualizations_after_training(results, eval_results, model_info, data
         summary_path = create_performance_summary(results, eval_results, model_info, data_info, output_dir)
         print(f" Saved: {summary_path}")
         
-        print(f"\n🎉 VISUALIZATION COMPLETE!")
+        print(f"\n VISUALIZATION COMPLETE!")
         print(f" Output directory: {output_dir}")
-        print(f"📄 Files created: {len(figures) + 1}")
+        print(f" Files created: {len(figures) + 1}")
         
         # Success message with key highlights
-        print(f"\n🏆 PERFORMANCE HIGHLIGHTS:")
+        print(f"\n PERFORMANCE HIGHLIGHTS:")
         best_val = results.get('best_val_acc', 'N/A')
         if isinstance(best_val, (int, float)):
             val_str = f"{best_val:.2%}"
@@ -470,7 +470,7 @@ def create_visualizations_after_training(results, eval_results, model_info, data
 
 def main():
     """Main training function with Wandb tracking"""
-    print("🚀 Temporal Cardiac RNN Training with Wandb")
+    print(" Temporal Cardiac RNN Training with Wandb")
     print("=" * 60)
     
     # Setup logging
@@ -644,7 +644,7 @@ def main():
         wandb.log(class_metrics)
         
         # 6. Model analysis
-        print("\n🔧 Model Analysis:")
+        print("\n Model Analysis:")
         print(f"   Total parameters: {model_info['total_parameters']:,}")
         print(f"   Model complexity: {model_info['total_parameters'] / 1e6:.1f}M parameters")
         

@@ -643,7 +643,7 @@ The model successfully identified known cardiac development markers:
 - **Late stage**: TNNT2, MYH6, MYH7 (structural proteins)
 - **Functional**: SCN5A, KCNH2, CACNA1C (ion channels)
 
-## 🔧 Technical Implementation
+##  Technical Implementation
 
 ### System Requirements
 ```bash
@@ -805,7 +805,7 @@ black src/ scripts/
 flake8 src/ scripts/
 ```
 
-## 📄 License
+##  License
 
 This project is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).
 
@@ -820,7 +820,7 @@ This project is licensed under the Creative Commons Attribution 4.0 Internationa
 
 For more details, see the [Creative Commons License](https://creativecommons.org/licenses/by/4.0/).
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - **Data Providers**: Kuppe et al. and Elorbany et al. for providing high-quality datasets
 - **Open Source Community**: PyTorch, PyTorch Geometric, and scikit-learn teams

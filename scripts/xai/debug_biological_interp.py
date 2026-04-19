@@ -20,7 +20,7 @@ def debug_biological_interpretations():
     with open('results/xai_analysis/xai_analysis_results_20250921_232550.json', 'r') as f:
         data = json.load(f)
     
-    print("🔍 Debugging biological interpretations...")
+    print(" Debugging biological interpretations...")
     
     # Check if biological interpretations exist in results
     if 'biological_interpretations' in data:
