@@ -43,7 +43,7 @@ def analyze_model_comparison():
     # Sort by accuracy
     models_summary.sort(key=lambda x: x['accuracy'], reverse=True)
     
-    logger.info("\n📊 MODEL PERFORMANCE RANKING:")
+    logger.info("\n MODEL PERFORMANCE RANKING:")
     logger.info("-" * 50)
     for i, model in enumerate(models_summary, 1):
         logger.info(f"{i}. {model['name']} ({model['type']})")
@@ -53,7 +53,7 @@ def analyze_model_comparison():
         logger.info("")
     
     # Key insights
-    logger.info("🎯 KEY INSIGHTS:")
+    logger.info(" KEY INSIGHTS:")
     logger.info("-" * 50)
     
     # 1. Model architecture findings
@@ -113,7 +113,7 @@ def analyze_model_comparison():
     logger.info("")
     
     # 6. Biological implications
-    logger.info("🧬 BIOLOGICAL IMPLICATIONS:")
+    logger.info(" BIOLOGICAL IMPLICATIONS:")
     logger.info("-" * 50)
     logger.info("1. Model learns meaningful cell state representations")
     logger.info("2. High silhouette scores (0.65+) indicate biological clustering")
@@ -136,7 +136,7 @@ def analyze_model_comparison():
 
 def create_final_summary_plot():
     """Create a comprehensive summary visualization"""
-    logger.info("🎨 Creating comprehensive summary visualization...")
+    logger.info(" Creating comprehensive summary visualization...")
     
     # Load data
     analysis_file = "trained_gnn_analysis_20250921_193410.json"
@@ -212,23 +212,23 @@ def create_final_summary_plot():
     mean_hybrid = np.mean(hybrid_accs)
     
     summary_text = f"""
-    📊 SUMMARY STATISTICS
+     SUMMARY STATISTICS
     
     🏆 Best Model: {models[np.argmax(accuracies)]}
-    📈 Best Accuracy: {max(accuracies):.4f}
+     Best Accuracy: {max(accuracies):.4f}
     
-    🤖 GNN-only: {gnn_acc:.4f}
+     GNN-only: {gnn_acc:.4f}
     🔗 Hybrid Mean: {mean_hybrid:.4f}
     
     📏 Architecture Impact:
        Simple GNN competitive
        
-    🎯 Key Finding:
+     Key Finding:
        Model performance varies more
        by training fold than by
        architecture complexity
     
-    🧬 Biological Insight:
+     Biological Insight:
        Models learn meaningful
        low-dimensional representations
     """
@@ -244,7 +244,7 @@ def create_final_summary_plot():
     plt.savefig(plot_path, dpi=300, bbox_inches='tight')
     plt.close()
     
-    logger.info(f"   💾 Saved: {plot_path}")
+    logger.info(f"    Saved: {plot_path}")
     return plot_path
 
 def main():
@@ -260,9 +260,9 @@ def main():
     with open("comprehensive_gnn_analysis_summary.json", 'w') as f:
         json.dump(summary, f, indent=2, default=str)
     
-    logger.info("✅ ANALYSIS COMPLETE!")
-    logger.info(f"📁 Summary: comprehensive_gnn_analysis_summary.json")
-    logger.info(f"🎨 Visualization: {plot_path}")
+    logger.info(" ANALYSIS COMPLETE!")
+    logger.info(f" Summary: comprehensive_gnn_analysis_summary.json")
+    logger.info(f" Visualization: {plot_path}")
     
     return summary
 

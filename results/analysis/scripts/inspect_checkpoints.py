@@ -46,13 +46,13 @@ def inspect_checkpoint(checkpoint_path):
         return state_dict
         
     except Exception as e:
-        print(f"❌ Error loading checkpoint: {e}")
+        print(f" Error loading checkpoint: {e}")
         return None
 
 def main():
     """Inspect available model checkpoints"""
     
-    print("🧬 MODEL CHECKPOINT INSPECTION")
+    print(" MODEL CHECKPOINT INSPECTION")
     print("=" * 60)
     
     # List of checkpoints to inspect
@@ -82,7 +82,7 @@ def main():
                 }
                 
         except Exception as e:
-            print(f"⚠️ Failed to inspect {checkpoint_path}: {e}")
+            print(f" Failed to inspect {checkpoint_path}: {e}")
     
     # Save inspection results
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -91,10 +91,10 @@ def main():
     with open(results_file, 'w') as f:
         json.dump(inspection_results, f, indent=2)
     
-    print(f"\n📁 Inspection results saved to: {results_file}")
+    print(f"\n Inspection results saved to: {results_file}")
     
     # Summary
-    print("\n📊 SUMMARY:")
+    print("\n SUMMARY:")
     for checkpoint_path, info in inspection_results.items():
         print(f"   {checkpoint_path}:")
         print(f"      Parameters: {info['total_parameters']:,}")

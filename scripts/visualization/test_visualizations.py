@@ -15,7 +15,7 @@ print("🔍 Testing XAI visualization data...")
 
 # Check biological interpretations
 bio_interps = results.get('biological_interpretations', [])
-print(f"✅ Biological interpretations: {len(bio_interps)} items")
+print(f" Biological interpretations: {len(bio_interps)} items")
 
 if bio_interps:
     print("\n🔬 Top 5 biological interpretations:")
@@ -35,15 +35,15 @@ if bio_interps:
     plt.savefig('test_feature_importance.png', dpi=150, bbox_inches='tight')
     plt.close()
     
-    print(f"\n✅ Test visualization saved as test_feature_importance.png")
+    print(f"\n Test visualization saved as test_feature_importance.png")
     print(f"   Data ranges from {min(importance_scores):.6f} to {max(importance_scores):.6f}")
 else:
-    print("❌ No biological interpretations found!")
+    print(" No biological interpretations found!")
 
 # Check other data
-print(f"\n📊 Other XAI components:")
-print(f"   SHAP analysis: {'✅' if 'shap_analysis' in results else '❌'}")
-print(f"   Uncertainty analysis: {'✅' if 'uncertainty_analysis' in results else '❌'}")
+print(f"\n Other XAI components:")
+print(f"   SHAP analysis: {'' if 'shap_analysis' in results else ''}")
+print(f"   Uncertainty analysis: {'' if 'uncertainty_analysis' in results else ''}")
 print(f"   Experimental suggestions: {len(results.get('experimental_suggestions', []))} items")
 
 print("\n🎉 Visualization test completed!")

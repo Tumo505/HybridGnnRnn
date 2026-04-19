@@ -36,7 +36,7 @@ except ImportError as e:
 
 def create_training_curves(results, output_dir):
     """Create training curves visualization"""
-    print("📊 Creating training curves...")
+    print(" Creating training curves...")
     
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 12))
     
@@ -78,7 +78,7 @@ def create_training_curves(results, output_dir):
     ax2.axvline(x=best_epoch + 1, color=colors['accent'], linestyle='--', 
                 alpha=0.8, linewidth=2, label=f'Best Epoch ({best_epoch + 1})')
     
-    ax2.set_title('🎯 Training & Validation Accuracy', fontsize=14, fontweight='bold', pad=20)
+    ax2.set_title(' Training & Validation Accuracy', fontsize=14, fontweight='bold', pad=20)
     ax2.set_xlabel('Epoch', fontsize=12)
     ax2.set_ylabel('Accuracy (%)', fontsize=12)
     ax2.legend(frameon=True, fancybox=True, shadow=True)
@@ -89,7 +89,7 @@ def create_training_curves(results, output_dir):
     if 'learning_rates' in results and results['learning_rates']:
         ax3.plot(epochs, results['learning_rates'], color=colors['accent'], 
                  linewidth=2.5, marker='o', markersize=3)
-        ax3.set_title('📈 Learning Rate Schedule', fontsize=14, fontweight='bold', pad=20)
+        ax3.set_title(' Learning Rate Schedule', fontsize=14, fontweight='bold', pad=20)
         ax3.set_xlabel('Epoch', fontsize=12)
         ax3.set_ylabel('Learning Rate', fontsize=12)
         ax3.set_yscale('log')
@@ -125,7 +125,7 @@ def create_training_curves(results, output_dir):
 
 def create_confusion_matrix(eval_results, output_dir):
     """Create confusion matrix visualization"""
-    print("📊 Creating confusion matrix...")
+    print(" Creating confusion matrix...")
     
     if eval_results and 'confusion_matrix' in eval_results:
         cm = eval_results['confusion_matrix']
@@ -136,7 +136,7 @@ def create_confusion_matrix(eval_results, output_dir):
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax,
                    cbar_kws={'label': 'Count'}, square=True)
         
-        ax.set_title('🎯 Confusion Matrix', fontsize=16, fontweight='bold', pad=20)
+        ax.set_title(' Confusion Matrix', fontsize=16, fontweight='bold', pad=20)
         ax.set_xlabel('Predicted Class', fontsize=12)
         ax.set_ylabel('True Class', fontsize=12)
         
@@ -144,10 +144,10 @@ def create_confusion_matrix(eval_results, output_dir):
     else:
         # Create placeholder
         fig, ax = plt.subplots(figsize=(10, 8))
-        ax.text(0.5, 0.5, '⚠️ Evaluation Required\n\nRun model evaluation to\ngenerate confusion matrix',
+        ax.text(0.5, 0.5, ' Evaluation Required\n\nRun model evaluation to\ngenerate confusion matrix',
                 ha='center', va='center', transform=ax.transAxes,
                 fontsize=14, bbox=dict(boxstyle="round,pad=0.5", facecolor='lightblue', alpha=0.7))
-        ax.set_title('📊 Confusion Matrix (Placeholder)', fontsize=16, fontweight='bold')
+        ax.set_title(' Confusion Matrix (Placeholder)', fontsize=16, fontweight='bold')
         ax.set_facecolor('#f8f9fa')
     
     # Save the figure
@@ -159,7 +159,7 @@ def create_confusion_matrix(eval_results, output_dir):
 
 def create_class_performance(eval_results, output_dir):
     """Create class performance analysis"""
-    print("📊 Creating class performance analysis...")
+    print(" Creating class performance analysis...")
     
     if eval_results and 'classification_report' in eval_results:
         class_report = eval_results['classification_report']
@@ -188,7 +188,7 @@ def create_class_performance(eval_results, output_dir):
             ax1.bar(x, recall, width, label='Recall', color='#A23B72', alpha=0.8)
             ax1.bar(x + width, f1_score, width, label='F1-Score', color='#F18F01', alpha=0.8)
             
-            ax1.set_title('📊 Per-Class Performance Metrics', fontsize=14, fontweight='bold')
+            ax1.set_title(' Per-Class Performance Metrics', fontsize=14, fontweight='bold')
             ax1.set_xlabel('Classes', fontsize=12)
             ax1.set_ylabel('Score', fontsize=12)
             ax1.set_xticks(x)
@@ -204,7 +204,7 @@ def create_class_performance(eval_results, output_dir):
                 (ax4, 'F1-Score', f1_score, '#F18F01', 'F1-Score by Class')
             ]):
                 bars = ax.bar(classes, values, color=color, alpha=0.8)
-                ax.set_title(f'📈 {title}', fontsize=12, fontweight='bold')
+                ax.set_title(f' {title}', fontsize=12, fontweight='bold')
                 ax.set_ylabel(metric, fontsize=10)
                 ax.set_ylim(0, 1.1)
                 ax.grid(True, alpha=0.3)
@@ -220,18 +220,18 @@ def create_class_performance(eval_results, output_dir):
         else:
             # No valid class data
             fig, ax = plt.subplots(figsize=(10, 8))
-            ax.text(0.5, 0.5, '📊 No Class Performance Data\n\nRun evaluation with classification report',
+            ax.text(0.5, 0.5, ' No Class Performance Data\n\nRun evaluation with classification report',
                     ha='center', va='center', transform=ax.transAxes,
                     fontsize=14, bbox=dict(boxstyle="round,pad=0.5", facecolor='lightcoral', alpha=0.7))
-            ax.set_title('📊 Class Performance Analysis', fontsize=16, fontweight='bold')
+            ax.set_title(' Class Performance Analysis', fontsize=16, fontweight='bold')
             ax.set_facecolor('#f8f9fa')
     else:
         # Create placeholder
         fig, ax = plt.subplots(figsize=(10, 8))
-        ax.text(0.5, 0.5, '⚠️ Evaluation Required\n\nRun model evaluation to\ngenerate class performance metrics',
+        ax.text(0.5, 0.5, ' Evaluation Required\n\nRun model evaluation to\ngenerate class performance metrics',
                 ha='center', va='center', transform=ax.transAxes,
                 fontsize=14, bbox=dict(boxstyle="round,pad=0.5", facecolor='lightgreen', alpha=0.7))
-        ax.set_title('📊 Class Performance Analysis (Placeholder)', fontsize=16, fontweight='bold')
+        ax.set_title(' Class Performance Analysis (Placeholder)', fontsize=16, fontweight='bold')
         ax.set_facecolor('#f8f9fa')
     
     # Save the figure
@@ -243,7 +243,7 @@ def create_class_performance(eval_results, output_dir):
 
 def create_temporal_analysis(results, data_info, output_dir):
     """Create temporal-specific analysis"""
-    print("📊 Creating temporal analysis...")
+    print(" Creating temporal analysis...")
     
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 12))
     
@@ -279,7 +279,7 @@ def create_temporal_analysis(results, data_info, output_dir):
     epochs_std = range(5, len(results['train_losses']) + 1)
     
     ax3.plot(epochs_std, loss_std[4:], color='#C73E1D', linewidth=2.5, marker='o', markersize=3)
-    ax3.set_title('📊 Training Stability (Loss Std Dev)', fontsize=14, fontweight='bold')
+    ax3.set_title(' Training Stability (Loss Std Dev)', fontsize=14, fontweight='bold')
     ax3.set_xlabel('Epoch', fontsize=12)
     ax3.set_ylabel('Loss Standard Deviation', fontsize=12)
     ax3.grid(True, alpha=0.3)
@@ -289,7 +289,7 @@ def create_temporal_analysis(results, data_info, output_dir):
     best_val_acc = results.get('best_val_acc', 0)
     
     ax4.scatter([total_params/1e6], [best_val_acc*100], s=200, color='#2E86AB', alpha=0.8)
-    ax4.set_title('🎯 Model Efficiency', fontsize=14, fontweight='bold')
+    ax4.set_title(' Model Efficiency', fontsize=14, fontweight='bold')
     ax4.set_xlabel('Parameters (Millions)', fontsize=12)
     ax4.set_ylabel('Best Validation Accuracy (%)', fontsize=12)
     ax4.grid(True, alpha=0.3)
@@ -378,11 +378,11 @@ def create_performance_summary(results, eval_results, model_info, data_info, out
         if train_losses and val_losses:
             gap = abs(train_losses[-1] - val_losses[-1])
             if gap < 0.1:
-                f.write("✅ Excellent generalization (train-val gap < 0.1)\n")
+                f.write(" Excellent generalization (train-val gap < 0.1)\n")
             elif gap < 0.2:
-                f.write("⚠️  Moderate overfitting (train-val gap < 0.2)\n")
+                f.write("  Moderate overfitting (train-val gap < 0.2)\n")
             else:
-                f.write("❌ High overfitting detected (train-val gap >= 0.2)\n")
+                f.write(" High overfitting detected (train-val gap >= 0.2)\n")
         else:
             f.write("❓ Unable to assess generalization\n")
     
@@ -390,7 +390,7 @@ def create_performance_summary(results, eval_results, model_info, data_info, out
 
 def create_visualizations_after_training(results, eval_results, model_info, data_info):
     """Create all visualizations after training completes"""
-    print("\n🎨 CREATING PERFORMANCE VISUALIZATIONS")
+    print("\n CREATING PERFORMANCE VISUALIZATIONS")
     print("=" * 55)
     
     # Create output directory
@@ -398,7 +398,7 @@ def create_visualizations_after_training(results, eval_results, model_info, data
     output_dir = Path(f"temporal_rnn_visualizations_{timestamp}")
     output_dir.mkdir(exist_ok=True)
     
-    print(f"📁 Output directory: {output_dir}")
+    print(f" Output directory: {output_dir}")
     
     # Create all visualizations
     try:
@@ -407,29 +407,29 @@ def create_visualizations_after_training(results, eval_results, model_info, data
         # 1. Training curves
         filepath1 = create_training_curves(results, output_dir)
         figures.append(('Training Curves', filepath1))
-        print(f"✅ Saved: {filepath1}")
+        print(f" Saved: {filepath1}")
         
         # 2. Confusion matrix
         filepath2 = create_confusion_matrix(eval_results, output_dir)
         figures.append(('Confusion Matrix', filepath2))
-        print(f"✅ Saved: {filepath2}")
+        print(f" Saved: {filepath2}")
         
         # 3. Class performance
         filepath3 = create_class_performance(eval_results, output_dir)
         figures.append(('Class Performance', filepath3))
-        print(f"✅ Saved: {filepath3}")
+        print(f" Saved: {filepath3}")
         
         # 4. Temporal analysis
         filepath4 = create_temporal_analysis(results, data_info, output_dir)
         figures.append(('Temporal Analysis', filepath4))
-        print(f"✅ Saved: {filepath4}")
+        print(f" Saved: {filepath4}")
         
         # 5. Performance summary
         summary_path = create_performance_summary(results, eval_results, model_info, data_info, output_dir)
-        print(f"✅ Saved: {summary_path}")
+        print(f" Saved: {summary_path}")
         
         print(f"\n🎉 VISUALIZATION COMPLETE!")
-        print(f"📁 Output directory: {output_dir}")
+        print(f" Output directory: {output_dir}")
         print(f"📄 Files created: {len(figures) + 1}")
         
         # Success message with key highlights
@@ -463,7 +463,7 @@ def create_visualizations_after_training(results, eval_results, model_info, data
         return output_dir, figures
         
     except Exception as e:
-        print(f"❌ Error creating visualizations: {str(e)}")
+        print(f" Error creating visualizations: {str(e)}")
         import traceback
         traceback.print_exc()
         return None, []
@@ -502,7 +502,7 @@ def main():
         # Create validation loader
         val_loader = test_loader  # Using test as validation for now
         
-        print(f"✅ Data loaded successfully:")
+        print(f" Data loaded successfully:")
         print(f"   Input size: {data_info['input_size']}")
         print(f"   Sequence length: {data_info['sequence_length']}")
         print(f"   Number of classes: {data_info['n_classes']}")
@@ -528,7 +528,7 @@ def main():
         )
         
         model_info = model.get_model_info()
-        print(f"✅ Model initialized:")
+        print(f" Model initialized:")
         print(f"   Model type: {model_info['model_name']}")
         print(f"   Total parameters: {model_info['total_parameters']:,}")
         print(f"   Trainable parameters: {model_info['trainable_parameters']:,}")
@@ -581,7 +581,7 @@ def main():
         trainer.prepare_data(train_loader, val_loader, test_loader, data_info)
         trainer.setup_model(model)
         
-        print("✅ Trainer configured with Wandb integration")
+        print(" Trainer configured with Wandb integration")
         
         # 4. Train model with Wandb logging
         print("\n4. Starting temporal training with Wandb tracking...")
@@ -609,7 +609,7 @@ def main():
                 "learning_rate": results.get('learning_rates', [config['learning_rate']])[epoch] if epoch < len(results.get('learning_rates', [])) else config['learning_rate']
             })
         
-        print(f"\n✅ Training completed!")
+        print(f"\n Training completed!")
         print(f"   Best epoch: {results['best_epoch'] + 1}")
         print(f"   Best validation loss: {results['best_val_loss']:.4f}")
         print(f"   Best validation accuracy: {results['best_val_acc']:.4f}")
@@ -624,12 +624,12 @@ def main():
             "test_accuracy": eval_results['test_accuracy']
         })
         
-        print(f"✅ Evaluation completed!")
+        print(f" Evaluation completed!")
         print(f"   Test loss: {eval_results['test_loss']:.4f}")
         print(f"   Test accuracy: {eval_results['test_accuracy']:.4f}")
         
         # Print detailed classification report
-        print("\n📊 Classification Report:")
+        print("\n Classification Report:")
         class_report = eval_results['classification_report']
         class_metrics = {}
         for class_idx, metrics in class_report.items():
@@ -661,11 +661,11 @@ def main():
         })
         
         if final_gap < 0.1:
-            print("   ✅ Good generalization (low train-val gap)")
+            print("    Good generalization (low train-val gap)")
         elif final_gap < 0.2:
-            print("   ⚠️  Moderate overfitting")
+            print("     Moderate overfitting")
         else:
-            print("   ❌ High overfitting detected")
+            print("    High overfitting detected")
         
         # 7. Save results
         print("\n7. Saving results...")
@@ -689,19 +689,19 @@ def main():
         }
         
         trainer.save_results(results_file)
-        print(f"✅ Results saved to {results_file}")
+        print(f" Results saved to {results_file}")
         
         # Log results to Wandb (skip file upload due to Windows permissions)
         print(f"   Training metrics logged to Wandb: {wandb.run.url}")
         
         # 8. Create comprehensive visualizations
-        print(f"\n🎨 Creating performance visualizations...")
+        print(f"\n Creating performance visualizations...")
         visualization_dir, viz_files = create_visualizations_after_training(
             results, eval_results, model_info, data_info
         )
         
         if visualization_dir:
-            print(f"✅ Visualizations saved to: {visualization_dir}")
+            print(f" Visualizations saved to: {visualization_dir}")
             # Log visualization info to Wandb
             wandb.log({
                 "visualization_files_created": len(viz_files),
@@ -709,7 +709,7 @@ def main():
             })
         
         # 9. Summary
-        print(f"\n🎯 Training Summary:")
+        print(f"\n Training Summary:")
         print(f"   Model: {model_info['model_name']}")
         print(f"   Parameters: {model_info['trainable_parameters']:,}")
         print(f"   Training epochs: {len(results['train_losses'])}")

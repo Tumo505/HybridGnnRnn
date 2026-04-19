@@ -691,11 +691,11 @@ Temporal Cardiac BiLSTM
 
 | Tool Category | Library/Function | Application | Validation Method |
 |---------------|------------------|-------------|-------------------|
-| **Performance Metrics** | sklearn.metrics | accuracy_score, f1_score, classification_report | ✅ Extensive validation |
-| **Cross-Validation** | sklearn.model_selection | StratifiedKFold, cross_val_score | ✅ 5-fold stratified |
-| **Statistical Tests** | scipy.stats | mcnemar, ttest_rel | ✅ p<0.05 significance |
-| **Preprocessing** | sklearn.preprocessing | StandardScaler, MinMaxScaler, PCA | ✅ Validated scaling |
-| **Class Balance** | sklearn.utils | compute_class_weight | ✅ Balanced training |
-| **Uncertainty** | Custom MCDropout | Predictive entropy, confidence | ✅ 50-sample estimation |
-| **Interpretability** | SHAP v0.48.0 | DeepExplainer, summary_plot | ✅ Biological validation |
-| **Clustering** | sklearn.cluster | KMeans, NearestNeighbors | ✅ Spatial validation |
+| **Performance Metrics** | sklearn.metrics | accuracy_score, f1_score, classification_report |  Extensive validation |
+| **Cross-Validation** | sklearn.model_selection | StratifiedKFold, cross_val_score |  5-fold stratified |
+| **Statistical Tests** | scipy.stats | mcnemar, ttest_rel |  p<0.05 significance |
+| **Preprocessing** | sklearn.preprocessing | StandardScaler, MinMaxScaler, PCA |  Validated scaling |
+| **Class Balance** | sklearn.utils | compute_class_weight |  Balanced training |
+| **Uncertainty** | Custom MCDropout | Predictive entropy, confidence |  50-sample estimation |
+| **Interpretability** | SHAP v0.48.0 | DeepExplainer, summary_plot |  Biological validation |
+| **Clustering** | sklearn.cluster | KMeans, NearestNeighbors |  Spatial validation |

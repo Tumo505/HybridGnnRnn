@@ -198,14 +198,14 @@ class CardiomyocyteTrainer:
         Returns:
             dict: Training results and metrics
         """
-        logger.info("🧬 Starting Enhanced Cardiomyocyte Subtype Classification")
+        logger.info(" Starting Enhanced Cardiomyocyte Subtype Classification")
         logger.info(f"Using device: {self.device}")
         
         # Load data
         try:
             data = self.data_processor.load_cached_data(device=self.device)
         except FileNotFoundError as e:
-            logger.error(f"❌ {e}")
+            logger.error(f" {e}")
             return None
         
         # Initialize model
@@ -336,13 +336,13 @@ class CardiomyocyteTrainer:
             for true_label, pred_label in zip(test_true, test_pred_np):
                 confusion_matrix[true_label][pred_label] += 1
             
-            logger.info("\n🧬 ENHANCED CARDIOMYOCYTE SUBTYPE CLASSIFICATION RESULTS:")
+            logger.info("\n ENHANCED CARDIOMYOCYTE SUBTYPE CLASSIFICATION RESULTS:")
             logger.info(f"  Overall Test Accuracy: {test_acc:.4f}")
             
             # Get biological cell type names
             cell_type_names = self.data_processor.get_cell_type_names()
             
-            logger.info(f"\n📊 Confusion Matrix:")
+            logger.info(f"\n Confusion Matrix:")
             for i in range(data.num_classes):
                 cell_type = cell_type_names[i] if i < len(cell_type_names) else f"Unknown Type {i}"
                 logger.info(f"  True {cell_type}: {confusion_matrix[i].tolist()}")

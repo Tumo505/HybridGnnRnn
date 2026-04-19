@@ -323,7 +323,7 @@ class FeatureImportanceAnalyzer:
                 'prediction': predict_fn(combined_data[idx:idx+1])[0]
             })
         
-        logger.info(f"   ✅ LIME explanations generated for {len(sample_indices)} samples")
+        logger.info(f"    LIME explanations generated for {len(sample_indices)} samples")
         
         return explanations
 
@@ -368,7 +368,7 @@ class TemporalAttentionAnalyzer:
             # This is attention weights tensor
             attention_weights = attention_info.detach().numpy()
         
-        logger.info(f"   ✅ Temporal attention analysis completed")
+        logger.info(f"    Temporal attention analysis completed")
         
         return {
             'temporal_importance': temporal_importance,
@@ -408,7 +408,7 @@ class SpatialRelationshipAnalyzer:
             gradients = gnn_tensor.grad.detach().numpy()
             spatial_importance[f'class_{class_idx}'] = np.abs(gradients)
         
-        logger.info(f"   ✅ Spatial relationship analysis completed")
+        logger.info(f"    Spatial relationship analysis completed")
         
         return {
             'spatial_importance': spatial_importance,
@@ -439,7 +439,7 @@ class BiologicalInterpreter:
         
     def interpret_feature_importance(self, shap_results, top_k=20):
         """Interpret SHAP results in biological context"""
-        logger.info("🧬 Interpreting feature importance in biological context...")
+        logger.info(" Interpreting feature importance in biological context...")
         
         shap_values = shap_results['shap_values']
         feature_names = shap_results['feature_names']
@@ -511,7 +511,7 @@ class BiologicalInterpreter:
             }
             interpretations.append(interpretation)
         
-        logger.info(f"   ✅ Biological interpretation completed for top {top_k} features")
+        logger.info(f"    Biological interpretation completed for top {top_k} features")
         
         return interpretations
     
@@ -600,7 +600,7 @@ class UncertaintyAwareExplainer:
                 # Restore original training mode
                 self.model.train(original_training_mode)
         
-        logger.info(f"   ✅ Uncertainty-aware explanations generated for {len(sample_indices)} samples")
+        logger.info(f"    Uncertainty-aware explanations generated for {len(sample_indices)} samples")
         
         return explanations
 
@@ -631,7 +631,7 @@ class XAIVisualizationSuite:
         ax1.set_yticks(range(len(features)))
         ax1.set_yticklabels(features, fontsize=10)
         ax1.set_xlabel('SHAP Importance Score')
-        ax1.set_title('🧬 Top Biological Features by Importance', fontsize=14, fontweight='bold')
+        ax1.set_title(' Top Biological Features by Importance', fontsize=14, fontweight='bold')
         ax1.grid(True, alpha=0.3)
         
         # Add value labels
@@ -642,7 +642,7 @@ class XAIVisualizationSuite:
         category_counts = pd.Series(categories).value_counts()
         wedges, texts, autotexts = ax2.pie(category_counts.values, labels=category_counts.index, 
                                           autopct='%1.1f%%', colors=[color_map[cat] for cat in category_counts.index])
-        ax2.set_title('📊 Feature Categories Distribution', fontsize=14, fontweight='bold')
+        ax2.set_title(' Feature Categories Distribution', fontsize=14, fontweight='bold')
         
         plt.tight_layout()
         plt.savefig(self.output_dir / f"{save_name}.png", dpi=300, bbox_inches='tight')
@@ -706,7 +706,7 @@ class XAIVisualizationSuite:
         ax2.bar(pred_counts.index, pred_counts.values, alpha=0.8, color='steelblue')
         ax2.set_xlabel('Predicted Class')
         ax2.set_ylabel('Count')
-        ax2.set_title('📊 Prediction Distribution')
+        ax2.set_title(' Prediction Distribution')
         ax2.grid(True, alpha=0.3)
         
         # Plot 3: Confidence distribution by class
@@ -716,7 +716,7 @@ class XAIVisualizationSuite:
             ax3.hist(class_confidences, alpha=0.6, label=f'Class {pred_class}', bins=10)
         ax3.set_xlabel('Confidence')
         ax3.set_ylabel('Frequency')
-        ax3.set_title('📈 Confidence Distribution by Class')
+        ax3.set_title(' Confidence Distribution by Class')
         ax3.legend()
         ax3.grid(True, alpha=0.3)
         
@@ -751,7 +751,7 @@ class XAIVisualizationSuite:
             ax1.set_yticks(range(len(features)))
             ax1.set_yticklabels(features, fontsize=10)
             ax1.set_xlabel('Importance Score')
-            ax1.set_title('🧬 Top Biological Features', fontweight='bold')
+            ax1.set_title(' Top Biological Features', fontweight='bold')
             ax1.grid(True, alpha=0.3)
         
         # Attention weights (top-right, spans 2 columns)
@@ -827,7 +827,7 @@ class XAIVisualizationSuite:
                     ax3.hist(importance_values, bins=20, alpha=0.7, color='steelblue')
                     ax3.set_xlabel('Feature Importance')
                     ax3.set_ylabel('Frequency')
-                    ax3.set_title('📊 Feature Importance Distribution', fontweight='bold')
+                    ax3.set_title(' Feature Importance Distribution', fontweight='bold')
                     ax3.grid(True, alpha=0.3)
                     
                     # Show summary statistics
@@ -836,7 +836,7 @@ class XAIVisualizationSuite:
                     stats_text += f'Max: {np.max(importance_values):.4f}'
                     ax4.text(0.1, 0.5, stats_text, transform=ax4.transAxes, fontsize=12,
                             bbox=dict(boxstyle="round,pad=0.3", facecolor="lightblue", alpha=0.7))
-                    ax4.set_title('📈 SHAP Statistics', fontweight='bold')
+                    ax4.set_title(' SHAP Statistics', fontweight='bold')
                     ax4.axis('off')
         
         # Biological pathway summary (bottom row)
@@ -887,7 +887,7 @@ class HybridModelXAI:
         results = {}
         
         # 1. Feature Importance Analysis
-        logger.info("\n📊 Phase 1: Feature Importance Analysis")
+        logger.info("\n Phase 1: Feature Importance Analysis")
         try:
             shap_results = self.feature_analyzer.compute_shap_values(gnn_embeddings, rnn_embeddings)
             results['shap_analysis'] = shap_results
@@ -897,7 +897,7 @@ class HybridModelXAI:
             results['lime_analysis'] = lime_results
             
         except Exception as e:
-            logger.error(f"   ❌ Feature importance analysis failed: {e}")
+            logger.error(f"    Feature importance analysis failed: {e}")
             results['shap_analysis'] = None
             results['lime_analysis'] = None
         
@@ -907,7 +907,7 @@ class HybridModelXAI:
             temporal_results = self.temporal_analyzer.extract_temporal_attention(rnn_embeddings)
             results['temporal_analysis'] = temporal_results
         except Exception as e:
-            logger.error(f"   ❌ Temporal analysis failed: {e}")
+            logger.error(f"    Temporal analysis failed: {e}")
             results['temporal_analysis'] = None
         
         # 3. Spatial Relationship Analysis
@@ -918,12 +918,12 @@ class HybridModelXAI:
             results['spatial_analysis'] = spatial_results
             results['critical_nodes'] = critical_nodes
         except Exception as e:
-            logger.error(f"   ❌ Spatial analysis failed: {e}")
+            logger.error(f"    Spatial analysis failed: {e}")
             results['spatial_analysis'] = None
             results['critical_nodes'] = None
         
         # 4. Biological Interpretation
-        logger.info("\n🧬 Phase 4: Biological Interpretation")
+        logger.info("\n Phase 4: Biological Interpretation")
         try:
             if results['shap_analysis']:
                 biological_interpretations = self.bio_interpreter.interpret_feature_importance(results['shap_analysis'])
@@ -931,9 +931,9 @@ class HybridModelXAI:
                 results['biological_interpretations'] = biological_interpretations
                 results['experimental_suggestions'] = experimental_suggestions
             else:
-                logger.warning("   ⚠️ Skipping biological interpretation (no SHAP results)")
+                logger.warning("    Skipping biological interpretation (no SHAP results)")
         except Exception as e:
-            logger.error(f"   ❌ Biological interpretation failed: {e}")
+            logger.error(f"    Biological interpretation failed: {e}")
             results['biological_interpretations'] = None
             results['experimental_suggestions'] = None
         
@@ -943,38 +943,38 @@ class HybridModelXAI:
             uncertainty_explanations = self.uncertainty_explainer.explain_with_uncertainty(gnn_embeddings, rnn_embeddings)
             results['uncertainty_explanations'] = uncertainty_explanations
         except Exception as e:
-            logger.error(f"   ❌ Uncertainty analysis failed: {e}")
+            logger.error(f"    Uncertainty analysis failed: {e}")
             results['uncertainty_explanations'] = None
         
         # 6. Generate Visualizations
-        logger.info("\n📊 Phase 6: Creating Visualizations")
+        logger.info("\n Phase 6: Creating Visualizations")
         try:
             visualization_paths = {}
             
             if results['biological_interpretations']:
                 viz_path = self.visualizer.create_feature_importance_plot(results['biological_interpretations'])
                 visualization_paths['feature_importance'] = viz_path
-                logger.info(f"   ✅ Feature importance plot: {viz_path}")
+                logger.info(f"    Feature importance plot: {viz_path}")
             
             if results['temporal_analysis']:
                 viz_path = self.visualizer.create_temporal_attention_plot(results['temporal_analysis'])
                 visualization_paths['temporal_attention'] = viz_path
-                logger.info(f"   ✅ Temporal attention plot: {viz_path}")
+                logger.info(f"    Temporal attention plot: {viz_path}")
             
             if results['uncertainty_explanations']:
                 viz_path = self.visualizer.create_uncertainty_explanation_plot(results['uncertainty_explanations'])
                 visualization_paths['uncertainty_explanations'] = viz_path
-                logger.info(f"   ✅ Uncertainty explanation plot: {viz_path}")
+                logger.info(f"    Uncertainty explanation plot: {viz_path}")
             
             # Integrated dashboard
             viz_path = self.visualizer.create_integrated_dashboard(results)
             visualization_paths['dashboard'] = viz_path
-            logger.info(f"   ✅ Integrated dashboard: {viz_path}")
+            logger.info(f"    Integrated dashboard: {viz_path}")
             
             results['visualizations'] = visualization_paths
             
         except Exception as e:
-            logger.error(f"   ❌ Visualization creation failed: {e}")
+            logger.error(f"    Visualization creation failed: {e}")
             results['visualizations'] = {}
         
         # 7. Generate Summary Report
@@ -992,9 +992,9 @@ class HybridModelXAI:
         with open(results_file, 'w') as f:
             json.dump(serializable_results, f, indent=2)
         
-        logger.info(f"   💾 Complete XAI analysis saved: {results_file}")
+        logger.info(f"    Complete XAI analysis saved: {results_file}")
         
-        logger.info("\n✅ Comprehensive explainable AI analysis completed!")
+        logger.info("\n Comprehensive explainable AI analysis completed!")
         logger.info("=" * 70)
         
         return results
@@ -1115,9 +1115,9 @@ def main_xai_analysis(model, gnn_embeddings, rnn_embeddings, targets=None):
         print("🔬 EXPLAINABLE AI ANALYSIS SUMMARY")
         print("="*80)
         
-        print(f"\n📊 XAI Capabilities Enabled:")
+        print(f"\n XAI Capabilities Enabled:")
         for capability, enabled in report['xai_capabilities'].items():
-            status = "✅" if enabled else "❌"
+            status = "" if enabled else ""
             print(f"   {status} {capability.replace('_', ' ').title()}")
         
         if report['key_findings']:
@@ -1126,7 +1126,7 @@ def main_xai_analysis(model, gnn_embeddings, rnn_embeddings, targets=None):
                 print(f"   • {finding}")
         
         if report['biological_insights']:
-            print(f"\n🧬 Biological Insights:")
+            print(f"\n Biological Insights:")
             for insight in report['biological_insights']:
                 print(f"   • {insight}")
         

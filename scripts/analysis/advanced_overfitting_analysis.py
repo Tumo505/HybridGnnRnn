@@ -144,7 +144,7 @@ class AdvancedValidationFramework:
     
     def learning_curve_analysis(self, fusion_strategy='concatenation'):
         """Analyze learning curves for overfitting detection"""
-        print(f"\n📈 Learning Curve Analysis for {fusion_strategy} fusion...")
+        print(f"\n Learning Curve Analysis for {fusion_strategy} fusion...")
         
         X_gnn = self.aligner.gnn_embeddings
         X_rnn = self.aligner.rnn_embeddings
@@ -332,7 +332,7 @@ def main():
     )
     
     if not aligner.load_embeddings():
-        print("❌ Failed to load embeddings")
+        print(" Failed to load embeddings")
         return
     
     aligner.normalize_embeddings()
@@ -341,14 +341,14 @@ def main():
     framework = AdvancedValidationFramework(aligner)
     
     # Run k-fold cross-validation
-    print(f"\n📊 Dataset Info: {aligner.gnn_embeddings.shape[0]} samples, {aligner.gnn_embeddings.shape[1] + aligner.rnn_embeddings.shape[1]} features")
+    print(f"\n Dataset Info: {aligner.gnn_embeddings.shape[0]} samples, {aligner.gnn_embeddings.shape[1] + aligner.rnn_embeddings.shape[1]} features")
     
     fold_results = framework.k_fold_cross_validation(k=5, fusion_strategy='concatenation')
     
     # Analyze overfitting patterns
     overfitting_analysis = framework.analyze_overfitting_patterns(fold_results)
     
-    print(f"\n📈 K-Fold Cross-Validation Results:")
+    print(f"\n K-Fold Cross-Validation Results:")
     print(f"   Mean Training Accuracy: {overfitting_analysis['mean_train_acc']:.2f}%")
     print(f"   Mean Validation Accuracy: {overfitting_analysis['mean_val_acc']:.2f}%")
     print(f"   Train-Val Gap: {overfitting_analysis['train_val_gap_mean']:.2f}% ± {overfitting_analysis['train_val_gap_std']:.2f}%")
@@ -357,44 +357,44 @@ def main():
     
     # Create visualization
     viz_path = create_overfitting_validation_plots(framework)
-    print(f"\n📊 Advanced validation plots saved: {viz_path}")
+    print(f"\n Advanced validation plots saved: {viz_path}")
     
     # Final assessment
     print(f"\n📋 OVERFITTING ASSESSMENT SUMMARY")
     print("=" * 50)
     
     if overfitting_analysis['train_val_gap_mean'] > 10:
-        print("⚠️ HIGH OVERFITTING RISK DETECTED!")
+        print(" HIGH OVERFITTING RISK DETECTED!")
         print("   • Large train-validation gap (>10%)")
         print("   • Model may not generalize well")
     elif overfitting_analysis['train_val_gap_mean'] > 5:
-        print("⚠️ MODERATE OVERFITTING RISK")
+        print(" MODERATE OVERFITTING RISK")
         print("   • Noticeable train-validation gap (5-10%)")
         print("   • Monitor closely, consider more regularization")
     else:
-        print("✅ LOW OVERFITTING RISK")
+        print(" LOW OVERFITTING RISK")
         print("   • Small train-validation gap (<5%)")
         print("   • Good generalization expected")
     
     if overfitting_analysis['validation_std'] > 5:
-        print("⚠️ HIGH VARIANCE IN VALIDATION PERFORMANCE")
+        print(" HIGH VARIANCE IN VALIDATION PERFORMANCE")
         print("   • Model performance varies significantly across folds")
         print("   • May indicate unstable training or small dataset")
     
-    print(f"\n🎯 SPECIFIC RECOMMENDATIONS:")
+    print(f"\n SPECIFIC RECOMMENDATIONS:")
     if overfitting_analysis['overfitting_risk'] == 'High':
         print("   • 🔧 Increase regularization (dropout 40-50%)")
-        print("   • 📊 Collect more training data")
+        print("   •  Collect more training data")
         print("   • 🎲 Use ensemble methods")
         print("   • 📉 Reduce model complexity")
     elif overfitting_analysis['overfitting_risk'] == 'Moderate':
-        print("   • 📈 Continue monitoring with k-fold validation")
+        print("   •  Continue monitoring with k-fold validation")
         print("   • 🔄 Test with different random seeds")
         print("   • ⚖️ Fine-tune regularization parameters")
     else:
-        print("   • ✅ Current approach appears robust")
+        print("   •  Current approach appears robust")
         print("   • 🔬 Focus on biological validation")
-        print("   • 📊 Test on independent datasets")
+        print("   •  Test on independent datasets")
     
     return framework, overfitting_analysis
 

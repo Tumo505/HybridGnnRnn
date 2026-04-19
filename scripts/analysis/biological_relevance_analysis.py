@@ -52,7 +52,7 @@ def analyze_biological_relevance():
         }
     }
     
-    print("\n📊 Biological Factor Analysis:")
+    print("\n Biological Factor Analysis:")
     for factor, details in biological_factors.items():
         print(f"\n🔸 {factor}:")
         print(f"   Relevance: {details['relevance']}")
@@ -64,7 +64,7 @@ def analyze_biological_relevance():
 
 def analyze_overfitting_indicators():
     """Analyze potential overfitting in the enhanced model"""
-    print("\n\n⚠️ OVERFITTING ANALYSIS")
+    print("\n\n OVERFITTING ANALYSIS")
     print("=" * 50)
     
     # Load recent training results
@@ -104,7 +104,7 @@ def analyze_overfitting_indicators():
                     })
     
     # Analyze overfitting patterns
-    print("\n📈 Overfitting Risk Assessment:")
+    print("\n Overfitting Risk Assessment:")
     
     overfitting_concerns = []
     
@@ -160,7 +160,7 @@ def assess_model_robustness():
         }
     }
     
-    print("\n📊 Robustness Factor Analysis:")
+    print("\n Robustness Factor Analysis:")
     for factor, details in robustness_factors.items():
         print(f"\n🔸 {factor}:")
         print(f"   Current: {details['current']}")
@@ -276,12 +276,12 @@ def generate_recommendations():
         "Biological Validation": [
             "🔬 Validate predictions against known cardiac differentiation markers (TNNT2, MYL2, MYL7)",
             "🧪 Compare temporal predictions with experimental differentiation timelines",
-            "📊 Correlate spatial predictions with actual cell-cell interaction data",
-            "🎯 Test on independent cardiomyocyte differentiation datasets"
+            " Correlate spatial predictions with actual cell-cell interaction data",
+            " Test on independent cardiomyocyte differentiation datasets"
         ],
         "Overfitting Mitigation": [
-            "📈 Implement k-fold cross-validation (recommended: 5-fold)",
-            "📊 Collect larger datasets (target: >500 samples per class)",
+            " Implement k-fold cross-validation (recommended: 5-fold)",
+            " Collect larger datasets (target: >500 samples per class)",
             "🔧 Add more aggressive regularization (increase dropout to 40-50%)",
             "📉 Monitor training/validation curves during training",
             "🎲 Implement bootstrap sampling for robust performance estimates"
@@ -297,8 +297,8 @@ def generate_recommendations():
             "🏥 Validate uncertainty estimates against experimental variability",
             "📋 Develop interpretability tools for biological insights",
             "🔍 Create feature attribution analysis",
-            "📊 Establish confidence thresholds for clinical decisions",
-            "🎯 Test on disease-specific differentiation protocols"
+            " Establish confidence thresholds for clinical decisions",
+            " Test on disease-specific differentiation protocols"
         ]
     }
     
@@ -311,7 +311,7 @@ def generate_recommendations():
 
 def main():
     """Main analysis function"""
-    print("🧬 ENHANCED HYBRID MODEL: BIOLOGICAL RELEVANCE & OVERFITTING ANALYSIS")
+    print(" ENHANCED HYBRID MODEL: BIOLOGICAL RELEVANCE & OVERFITTING ANALYSIS")
     print("=" * 80)
     
     # Run analyses
@@ -321,7 +321,7 @@ def main():
     
     # Create visualization
     viz_path = create_overfitting_analysis_plot()
-    print(f"\n📊 Analysis visualization saved: {viz_path}")
+    print(f"\n Analysis visualization saved: {viz_path}")
     
     # Generate recommendations
     recommendations = generate_recommendations()
@@ -334,29 +334,29 @@ def main():
     bio_score = 82  # Based on analysis
     print(f"🔬 Biological Relevance Score: {bio_score}/100")
     if bio_score >= 80:
-        print("   ✅ High biological relevance - well-aligned with cardiomyocyte biology")
+        print("    High biological relevance - well-aligned with cardiomyocyte biology")
     elif bio_score >= 60:
-        print("   ⚠️ Moderate biological relevance - some improvements needed")
+        print("    Moderate biological relevance - some improvements needed")
     else:
-        print("   ❌ Low biological relevance - significant improvements required")
+        print("    Low biological relevance - significant improvements required")
     
     # Overfitting risk assessment
     if overfitting_concerns:
-        print(f"\n⚠️ Overfitting Concerns Detected ({len(overfitting_concerns)}):")
+        print(f"\n Overfitting Concerns Detected ({len(overfitting_concerns)}):")
         for concern in overfitting_concerns:
             print(f"   • {concern}")
         overfitting_risk = "High" if len(overfitting_concerns) >= 2 else "Moderate"
     else:
         overfitting_risk = "Low"
-        print("\n✅ No major overfitting concerns detected")
+        print("\n No major overfitting concerns detected")
     
-    print(f"\n📊 Overall Overfitting Risk: {overfitting_risk}")
+    print(f"\n Overall Overfitting Risk: {overfitting_risk}")
     
     # Key recommendations
-    print(f"\n🎯 TOP PRIORITY ACTIONS:")
-    print("   1. 📈 Implement k-fold cross-validation")
+    print(f"\n TOP PRIORITY ACTIONS:")
+    print("   1.  Implement k-fold cross-validation")
     print("   2. 🔬 Validate against experimental cardiac markers")
-    print("   3. 📊 Collect larger training dataset (>500 samples)")
+    print("   3.  Collect larger training dataset (>500 samples)")
     print("   4. 🎲 Add bootstrap confidence intervals")
     print("   5. 🧪 Test on independent biological datasets")
     

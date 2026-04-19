@@ -331,7 +331,7 @@ def create_temporal_cardiac_rnn(
 
 if __name__ == "__main__":
     # Test the model
-    print("🧬 Testing Temporal Cardiac RNN")
+    print(" Testing Temporal Cardiac RNN")
     print("=" * 40)
     
     # Create test model

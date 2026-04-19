@@ -42,7 +42,7 @@ class RealRNNEmbeddingExtractor:
         
     def load_real_data(self):
         """Load real temporal cardiac data"""
-        logger.info("📊 Loading real temporal cardiac data...")
+        logger.info(" Loading real temporal cardiac data...")
         
         try:
             # Load data using the temporal cardiac data loader with correct path
@@ -73,7 +73,7 @@ class RealRNNEmbeddingExtractor:
                 'sequence_length': data_info['sequence_length']
             }
             
-            logger.info(f"   ✅ Real data loaded:")
+            logger.info(f"    Real data loaded:")
             logger.info(f"      Sequences: {self.data['sequences'].shape}")
             logger.info(f"      Targets: {self.data['targets'].shape}")
             logger.info(f"      Input size: {self.data['input_size']}")
@@ -82,7 +82,7 @@ class RealRNNEmbeddingExtractor:
             return True
             
         except Exception as e:
-            logger.error(f"❌ Failed to load real temporal data: {e}")
+            logger.error(f" Failed to load real temporal data: {e}")
             return False
     
     def create_trained_model(self):
@@ -102,13 +102,13 @@ class RealRNNEmbeddingExtractor:
         
         # Put model in evaluation mode
         self.model.eval()
-        logger.info("   ✅ Model created and set to evaluation mode")
+        logger.info("    Model created and set to evaluation mode")
         
         return True
     
     def simulate_trained_performance(self):
         """Simulate the trained model performance using real data"""
-        logger.info("🎯 Simulating trained model performance...")
+        logger.info(" Simulating trained model performance...")
         
         with torch.no_grad():
             X = self.data['sequences'].to(self.device)
@@ -143,7 +143,7 @@ class RealRNNEmbeddingExtractor:
     
     def extract_embeddings(self):
         """Extract embeddings from the model using real data"""
-        logger.info("📊 Extracting RNN embeddings from real data...")
+        logger.info(" Extracting RNN embeddings from real data...")
         
         with torch.no_grad():
             X = self.data['sequences'].to(self.device)
@@ -175,7 +175,7 @@ class RealRNNEmbeddingExtractor:
             }
             
             accuracy = accuracy_score(y, trained_predictions)
-            logger.info(f"   ✅ Embeddings extracted:")
+            logger.info(f"    Embeddings extracted:")
             logger.info(f"      Main embeddings: {embeddings.shape}")
             logger.info(f"      LSTM outputs: {features['lstm_outputs'].shape}")
             logger.info(f"      Final hidden: {features['final_hidden'].shape}")
@@ -230,7 +230,7 @@ class RealRNNEmbeddingExtractor:
     
     def create_visualizations(self):
         """Create t-SNE and PCA visualizations for real data embeddings"""
-        logger.info("🎨 Creating real RNN embedding visualizations...")
+        logger.info(" Creating real RNN embedding visualizations...")
         
         embeddings = self.embeddings['embeddings']
         targets = self.embeddings['targets']
@@ -250,7 +250,7 @@ class RealRNNEmbeddingExtractor:
             ax1.scatter(embeddings_tsne[mask, 0], embeddings_tsne[mask, 1], 
                        c=[colors[i]], label=f'Class {class_label}', alpha=0.7)
         
-        ax1.set_title('🧬 Real RNN Embeddings (t-SNE)', fontsize=14, fontweight='bold')
+        ax1.set_title(' Real RNN Embeddings (t-SNE)', fontsize=14, fontweight='bold')
         ax1.set_xlabel('t-SNE 1')
         ax1.set_ylabel('t-SNE 2')
         ax1.legend()
@@ -265,7 +265,7 @@ class RealRNNEmbeddingExtractor:
             ax2.scatter(embeddings_pca[mask, 0], embeddings_pca[mask, 1], 
                        c=[colors[i]], label=f'Class {class_label}', alpha=0.7)
         
-        ax2.set_title('🧬 Real RNN Embeddings (PCA)', fontsize=14, fontweight='bold')
+        ax2.set_title(' Real RNN Embeddings (PCA)', fontsize=14, fontweight='bold')
         ax2.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]:.2%} variance)')
         ax2.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]:.2%} variance)')
         ax2.legend()
@@ -274,7 +274,7 @@ class RealRNNEmbeddingExtractor:
         # Class distribution
         unique_classes, class_counts = np.unique(targets, return_counts=True)
         ax3.bar(unique_classes, class_counts, color=colors[:len(unique_classes)])
-        ax3.set_title('📊 Class Distribution', fontsize=14, fontweight='bold')
+        ax3.set_title(' Class Distribution', fontsize=14, fontweight='bold')
         ax3.set_xlabel('Class')
         ax3.set_ylabel('Count')
         ax3.grid(True, alpha=0.3)
@@ -291,7 +291,7 @@ class RealRNNEmbeddingExtractor:
                 class_accuracies.append(0)
         
         ax4.bar(unique_classes, class_accuracies, color=colors[:len(unique_classes)])
-        ax4.set_title('🎯 Accuracy by Class', fontsize=14, fontweight='bold')
+        ax4.set_title(' Accuracy by Class', fontsize=14, fontweight='bold')
         ax4.set_xlabel('Class')
         ax4.set_ylabel('Accuracy')
         ax4.set_ylim(0, 1)
@@ -306,7 +306,7 @@ class RealRNNEmbeddingExtractor:
         plt.savefig(viz_path, dpi=300, bbox_inches='tight')
         plt.close()
         
-        logger.info(f"   💾 Saved: {viz_path}")
+        logger.info(f"    Saved: {viz_path}")
         
         return {
             'tsne_coordinates': embeddings_tsne,
@@ -330,7 +330,7 @@ class RealRNNEmbeddingExtractor:
         np.save(f"{embeddings_dir}/raw_predictions.npy", self.embeddings['raw_predictions'])
         np.save(f"{embeddings_dir}/output_logits.npy", self.embeddings['output_logits'])
         
-        logger.info(f"📁 Results saved:")
+        logger.info(f" Results saved:")
         logger.info(f"   Embeddings: {embeddings_dir}")
         
         return embeddings_dir
@@ -399,7 +399,7 @@ class RealRNNEmbeddingExtractor:
 
 def main():
     """Main execution function"""
-    logger.info("🧬 REAL RNN EMBEDDING EXTRACTION")
+    logger.info(" REAL RNN EMBEDDING EXTRACTION")
     logger.info("=" * 60)
     
     # Initialize extractor
@@ -407,18 +407,18 @@ def main():
     
     # Load real data
     if not extractor.load_real_data():
-        logger.error("❌ Failed to load real data")
+        logger.error(" Failed to load real data")
         return None
     
     # Create trained model
     if not extractor.create_trained_model():
-        logger.error("❌ Failed to create model")
+        logger.error(" Failed to create model")
         return None
     
     # Extract embeddings
     embeddings = extractor.extract_embeddings()
     if embeddings is None:
-        logger.error("❌ Failed to extract embeddings")
+        logger.error(" Failed to extract embeddings")
         return None
     
     # Analyze embeddings
@@ -436,14 +436,14 @@ def main():
     # Final summary
     logger.info("")
     logger.info("=" * 60)
-    logger.info("🎯 REAL RNN ANALYSIS SUMMARY")
+    logger.info(" REAL RNN ANALYSIS SUMMARY")
     logger.info("=" * 60)
     logger.info(f"Model: Real Temporal Cardiac RNN (Trained)")
     logger.info(f"Simulated Accuracy: {getattr(extractor, 'simulated_accuracy', 0.9375):.4f}")
     logger.info(f"Best Silhouette Score: {analysis_results['best_silhouette']:.3f}")
     logger.info(f"Embedding Dimension: {embeddings.shape[1]}")
     logger.info("")
-    logger.info("🎯 Class Performance:")
+    logger.info(" Class Performance:")
     
     targets = extractor.embeddings['targets']
     predictions = extractor.embeddings['predictions']
@@ -455,8 +455,8 @@ def main():
         logger.info(f"   Class {class_label}: {class_count} samples, {class_accuracy:.3f} accuracy")
     
     logger.info("")
-    logger.info(f"💾 Results: {report_path}")
-    logger.info(f"🎨 Visualization: {viz_results['visualization_path']}")
+    logger.info(f" Results: {report_path}")
+    logger.info(f" Visualization: {viz_results['visualization_path']}")
     
     return {
         'embeddings': embeddings,

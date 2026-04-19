@@ -24,15 +24,15 @@ def debug_biological_interpretations():
     
     # Check if biological interpretations exist in results
     if 'biological_interpretations' in data:
-        print(f"✅ Biological interpretations found: {len(data['biological_interpretations'])} items")
+        print(f" Biological interpretations found: {len(data['biological_interpretations'])} items")
         for i, interp in enumerate(data['biological_interpretations'][:3]):
             print(f"   {i+1}. {interp}")
     else:
-        print("❌ No biological interpretations found in results")
+        print(" No biological interpretations found in results")
     
     # Check the actual SHAP structure
     shap_data = data['shap_analysis']
-    print(f"\n📊 SHAP data structure:")
+    print(f"\n SHAP data structure:")
     for key, value in shap_data.items():
         if isinstance(value, list):
             print(f"   {key}: list with {len(value)} items")
@@ -48,7 +48,7 @@ def debug_biological_interpretations():
     feature_names = shap_data['feature_names'] 
     shap_per_feature = shap_data['mean_shap_values']  # List of [class0, class1, class2, class3] per feature
     
-    print(f"\n📊 Processed analysis:")
+    print(f"\n Processed analysis:")
     print(f"   Features: {len(feature_names)}")
     print(f"   SHAP values per feature: {len(shap_per_feature)}")
     
@@ -73,7 +73,7 @@ def debug_biological_interpretations():
         print(f"   {i+1}. {feature_names[idx]}: {feature_importance[idx]:.6f}")
     
     # Test biological interpretation with mean_shap_values directly
-    print(f"\n🧬 Testing biological interpretation...")
+    print(f"\n Testing biological interpretation...")
     bio_interpreter = BiologicalInterpreter()
     
     # Use the mean_shap_values directly (features x classes format)

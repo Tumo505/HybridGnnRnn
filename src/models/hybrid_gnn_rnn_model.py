@@ -53,7 +53,7 @@ class EmbeddingAligner:
         
     def load_embeddings(self):
         """Load GNN and RNN embeddings from saved directories"""
-        logger.info("📊 Loading GNN and RNN embeddings...")
+        logger.info(" Loading GNN and RNN embeddings...")
         
         # Try to find available GNN embeddings
         gnn_embeddings_file = None
@@ -77,9 +77,9 @@ class EmbeddingAligner:
         if gnn_embeddings_file and gnn_embeddings_file.exists():
             self.gnn_embeddings = np.load(gnn_embeddings_file)
             gnn_targets = np.load(gnn_targets_file)
-            logger.info(f"   ✅ GNN embeddings loaded: {self.gnn_embeddings.shape}")
+            logger.info(f"    GNN embeddings loaded: {self.gnn_embeddings.shape}")
         else:
-            logger.warning(f"⚠️ No GNN embeddings found in {self.gnn_dir}, will create synthetic GNN embeddings")
+            logger.warning(f" No GNN embeddings found in {self.gnn_dir}, will create synthetic GNN embeddings")
             # Create synthetic GNN embeddings to match RNN data
             n_samples = 159  # Match RNN data size
             gnn_dim = 128
@@ -104,9 +104,9 @@ class EmbeddingAligner:
         if rnn_embeddings_file and rnn_embeddings_file.exists():
             self.rnn_embeddings = np.load(rnn_embeddings_file)
             rnn_targets = np.load(rnn_targets_file)
-            logger.info(f"   ✅ RNN embeddings loaded: {self.rnn_embeddings.shape}")
+            logger.info(f"    RNN embeddings loaded: {self.rnn_embeddings.shape}")
         else:
-            logger.error(f"❌ RNN embeddings not found in {self.rnn_dir}")
+            logger.error(f" RNN embeddings not found in {self.rnn_dir}")
             return False
         
         # Align targets and check consistency
@@ -137,10 +137,10 @@ class EmbeddingAligner:
                 self.rnn_embeddings = self.rnn_embeddings[rnn_indices]
                 self.aligned_targets = gnn_targets[gnn_indices]
                 
-                logger.info(f"   ✅ ID-based alignment: {len(common_ids)} matched samples")
+                logger.info(f"    ID-based alignment: {len(common_ids)} matched samples")
                 logger.info(f"      Common sample IDs found: {len(common_ids)}")
             else:
-                logger.warning("   ⚠️ No common sample IDs found, falling back to class-stratified alignment")
+                logger.warning("    No common sample IDs found, falling back to class-stratified alignment")
                 return self._stratified_alignment(gnn_targets, rnn_targets)
         else:
             logger.info("   ℹ️ Sample metadata not found, using class-stratified alignment")
@@ -164,7 +164,7 @@ class EmbeddingAligner:
         common_classes = np.intersect1d(gnn_classes, rnn_classes)
         
         if len(common_classes) == 0:
-            logger.error("   ❌ No common classes found between GNN and RNN datasets")
+            logger.error("    No common classes found between GNN and RNN datasets")
             return False
         
         # For each class, take the minimum available samples
@@ -188,7 +188,7 @@ class EmbeddingAligner:
                 rnn_selected_indices.extend(rnn_sampled)
         
         if len(gnn_selected_indices) == 0:
-            logger.error("   ❌ No samples could be aligned")
+            logger.error("    No samples could be aligned")
             return False
         
         # Apply selection
@@ -199,7 +199,7 @@ class EmbeddingAligner:
         self.rnn_embeddings = self.rnn_embeddings[rnn_selected_indices]
         self.aligned_targets = gnn_targets[gnn_selected_indices]
         
-        logger.info(f"   ✅ Stratified alignment completed: {len(gnn_selected_indices)} samples")
+        logger.info(f"    Stratified alignment completed: {len(gnn_selected_indices)} samples")
         logger.info(f"      Classes preserved: {common_classes}")
         
         return True
@@ -217,7 +217,7 @@ class EmbeddingAligner:
             self.gnn_embeddings = scaler_gnn.fit_transform(self.gnn_embeddings)
             self.rnn_embeddings = scaler_rnn.fit_transform(self.rnn_embeddings)
         
-        logger.info("   ✅ Normalization completed")
+        logger.info("    Normalization completed")
         return True
     
     def reduce_dimensions(self, gnn_dim=None, rnn_dim=None):
@@ -226,13 +226,13 @@ class EmbeddingAligner:
             logger.info(f"🔄 Reducing GNN dimensions: {self.gnn_embeddings.shape[1]} → {gnn_dim}")
             pca_gnn = PCA(n_components=gnn_dim)
             self.gnn_embeddings = pca_gnn.fit_transform(self.gnn_embeddings)
-            logger.info(f"   ✅ GNN PCA explained variance: {pca_gnn.explained_variance_ratio_.sum():.3f}")
+            logger.info(f"    GNN PCA explained variance: {pca_gnn.explained_variance_ratio_.sum():.3f}")
             
         if rnn_dim and rnn_dim < self.rnn_embeddings.shape[1]:
             logger.info(f"🔄 Reducing RNN dimensions: {self.rnn_embeddings.shape[1]} → {rnn_dim}")
             pca_rnn = PCA(n_components=rnn_dim)
             self.rnn_embeddings = pca_rnn.fit_transform(self.rnn_embeddings)
-            logger.info(f"   ✅ RNN PCA explained variance: {pca_rnn.explained_variance_ratio_.sum():.3f}")
+            logger.info(f"    RNN PCA explained variance: {pca_rnn.explained_variance_ratio_.sum():.3f}")
         
         return True
 
@@ -873,7 +873,7 @@ def create_visualizations(results, fusion_strategy, output_dir):
     # Confusion Matrix
     cm = results['confusion_matrix']
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax1)
-    ax1.set_title(f'🎯 Confusion Matrix - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+    ax1.set_title(f' Confusion Matrix - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
     ax1.set_xlabel('Predicted Class')
     ax1.set_ylabel('True Class')
     
@@ -891,7 +891,7 @@ def create_visualizations(results, fusion_strategy, output_dir):
     ax2.bar(x, recalls, width, label='Recall', alpha=0.8)
     ax2.bar(x + width, f1s, width, label='F1-Score', alpha=0.8)
     
-    ax2.set_title(f'📊 Per-Class Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+    ax2.set_title(f' Per-Class Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
     ax2.set_xlabel('Class')
     ax2.set_ylabel('Score')
     ax2.set_xticks(x)
@@ -911,7 +911,7 @@ def create_visualizations(results, fusion_strategy, output_dir):
     ax3.bar(x - 0.2, true_counts, 0.4, label='True', alpha=0.8)
     ax3.bar(x + 0.2, pred_counts, 0.4, label='Predicted', alpha=0.8)
     
-    ax3.set_title(f'📈 Class Distribution - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+    ax3.set_title(f' Class Distribution - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
     ax3.set_xlabel('Class')
     ax3.set_ylabel('Count')
     ax3.set_xticks(x)
@@ -957,7 +957,7 @@ def create_enhanced_visualizations(results, uncertainty_results, fusion_strategy
     # Confusion Matrix
     cm = results['confusion_matrix']
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax1)
-    ax1.set_title(f'🎯 Confusion Matrix - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+    ax1.set_title(f' Confusion Matrix - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
     ax1.set_xlabel('Predicted Class')
     ax1.set_ylabel('True Class')
     
@@ -1020,7 +1020,7 @@ def create_enhanced_visualizations(results, uncertainty_results, fusion_strategy
                 class_confidences.append(0.0)
         
         ax4.bar(range(len(unique_classes)), class_confidences, alpha=0.8, color='skyblue')
-        ax4.set_title(f'📊 Per-Class Confidence - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+        ax4.set_title(f' Per-Class Confidence - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
         ax4.set_xlabel('Class')
         ax4.set_ylabel('Average Confidence')
         ax4.set_xticks(range(len(unique_classes)))
@@ -1039,7 +1039,7 @@ def create_enhanced_visualizations(results, uncertainty_results, fusion_strategy
         ax3.bar(x - 0.2, true_counts, 0.4, label='True', alpha=0.8)
         ax3.bar(x + 0.2, pred_counts, 0.4, label='Predicted', alpha=0.8)
         
-        ax3.set_title(f'📈 Class Distribution - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+        ax3.set_title(f' Class Distribution - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
         ax3.set_xlabel('Class')
         ax3.set_ylabel('Count')
         ax3.set_xticks(x)
@@ -1061,7 +1061,7 @@ def create_enhanced_visualizations(results, uncertainty_results, fusion_strategy
         ax4.bar(x, recalls, width, label='Recall', alpha=0.8)
         ax4.bar(x + width, f1s, width, label='F1-Score', alpha=0.8)
         
-        ax4.set_title(f'📊 Per-Class Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+        ax4.set_title(f' Per-Class Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
         ax4.set_xlabel('Class')
         ax4.set_ylabel('Score')
         ax4.set_xticks(x)
@@ -1186,11 +1186,11 @@ def train_enhanced_hybrid_model(aligner, fusion_strategy='concatenation', epochs
         avg_confidence = np.mean(uncertainty_results['confidence'])
         avg_entropy = np.mean(uncertainty_results['predictive_entropy'])
         
-        logger.info(f"   📊 Uncertainty analysis:")
+        logger.info(f"    Uncertainty analysis:")
         logger.info(f"      Average confidence: {avg_confidence:.4f}")
         logger.info(f"      Average entropy: {avg_entropy:.4f}")
     
-    logger.info(f"\n✅ Enhanced training completed!")
+    logger.info(f"\n Enhanced training completed!")
     logger.info(f"   Best validation accuracy: {best_val_acc:.2f}%")
     logger.info(f"   Test accuracy: {results['accuracy']:.4f}")
     logger.info(f"   Test F1-score: {results['f1_score']:.4f}")
@@ -1199,7 +1199,7 @@ def train_enhanced_hybrid_model(aligner, fusion_strategy='concatenation', epochs
 
 def main_enhanced():
     """Main execution function with all enhancements"""
-    logger.info("🧬 ENHANCED HYBRID GNN-RNN MODEL FOR CARDIOMYOCYTE DIFFERENTIATION")
+    logger.info(" ENHANCED HYBRID GNN-RNN MODEL FOR CARDIOMYOCYTE DIFFERENTIATION")
     logger.info("🔧 Features: Sample Alignment + Class Balancing + Uncertainty + Multi-task Ready")
     logger.info("=" * 80)
     
@@ -1212,13 +1212,13 @@ def main_enhanced():
     )
     
     if not aligner.load_embeddings():
-        logger.error("❌ Failed to load embeddings")
+        logger.error(" Failed to load embeddings")
         return None
     
     # Normalize embeddings
     aligner.normalize_embeddings(method='standard')
     
-    logger.info(f"✅ Enhanced alignment completed:")
+    logger.info(f" Enhanced alignment completed:")
     logger.info(f"   GNN: {aligner.gnn_embeddings.shape}")
     logger.info(f"   RNN: {aligner.rnn_embeddings.shape}")
     logger.info(f"   Targets: {aligner.aligned_targets.shape}")
@@ -1254,7 +1254,7 @@ def main_enhanced():
         
         # Create enhanced visualizations
         viz_path = create_enhanced_visualizations(results, uncertainty_results, strategy, output_dir)
-        logger.info(f"   📊 Enhanced visualization saved: {viz_path}")
+        logger.info(f"    Enhanced visualization saved: {viz_path}")
         
         # Save detailed results
         results_file = output_dir / f"enhanced_{strategy}_results.json"
@@ -1279,7 +1279,7 @@ def main_enhanced():
             
             json.dump(json_results, f, indent=2)
         
-        logger.info(f"   💾 Enhanced results saved: {results_file}")
+        logger.info(f"    Enhanced results saved: {results_file}")
     
     # Final enhanced comparison
     logger.info(f"\n{'='*80}")
@@ -1304,11 +1304,11 @@ def main_enhanced():
     
     # Enhanced summary
     logger.info(f"\n🔧 ENHANCEMENT SUMMARY:")
-    logger.info(f"   ✅ Sample Alignment: ID-based or stratified class alignment")
-    logger.info(f"   ✅ Class Imbalance: Weighted sampling and loss function")
-    logger.info(f"   ✅ Uncertainty Estimation: MC Dropout with confidence measures")
-    logger.info(f"   ✅ Multi-task Ready: Architecture supports multiple biological outputs")
-    logger.info(f"   ✅ Biological Validation: Framework aligned with cardiomyocyte research needs")
+    logger.info(f"    Sample Alignment: ID-based or stratified class alignment")
+    logger.info(f"    Class Imbalance: Weighted sampling and loss function")
+    logger.info(f"    Uncertainty Estimation: MC Dropout with confidence measures")
+    logger.info(f"    Multi-task Ready: Architecture supports multiple biological outputs")
+    logger.info(f"    Biological Validation: Framework aligned with cardiomyocyte research needs")
     
     # Save enhanced comparison summary
     comparison_file = output_dir / "enhanced_fusion_comparison.json"
@@ -1329,8 +1329,8 @@ def main_enhanced():
         
         json.dump(serializable_results, f, indent=2)
     
-    logger.info(f"\n💾 All enhanced results saved to: {output_dir}")
-    logger.info(f"📊 Enhanced comparison: {comparison_file}")
+    logger.info(f"\n All enhanced results saved to: {output_dir}")
+    logger.info(f" Enhanced comparison: {comparison_file}")
     
     return aligner, enhanced_results, output_dir
     """Create comprehensive visualizations"""
@@ -1341,7 +1341,7 @@ def main_enhanced():
     # Confusion Matrix
     cm = results['confusion_matrix']
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax1)
-    ax1.set_title(f'🎯 Confusion Matrix - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+    ax1.set_title(f' Confusion Matrix - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
     ax1.set_xlabel('Predicted Class')
     ax1.set_ylabel('True Class')
     
@@ -1359,7 +1359,7 @@ def main_enhanced():
     ax2.bar(x, recalls, width, label='Recall', alpha=0.8)
     ax2.bar(x + width, f1s, width, label='F1-Score', alpha=0.8)
     
-    ax2.set_title(f'📊 Per-Class Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+    ax2.set_title(f' Per-Class Performance - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
     ax2.set_xlabel('Class')
     ax2.set_ylabel('Score')
     ax2.set_xticks(x)
@@ -1379,7 +1379,7 @@ def main_enhanced():
     ax3.bar(x - 0.2, true_counts, 0.4, label='True', alpha=0.8)
     ax3.bar(x + 0.2, pred_counts, 0.4, label='Predicted', alpha=0.8)
     
-    ax3.set_title(f'📈 Class Distribution - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
+    ax3.set_title(f' Class Distribution - {fusion_strategy.title()}', fontsize=14, fontweight='bold')
     ax3.set_xlabel('Class')
     ax3.set_ylabel('Count')
     ax3.set_xticks(x)
@@ -1509,7 +1509,7 @@ def train_hybrid_model(aligner, fusion_strategy='concatenation', epochs=50, batc
     # Final evaluation
     results = evaluate_model(model, test_loader, device)
     
-    logger.info(f"\n✅ Training completed!")
+    logger.info(f"\n Training completed!")
     logger.info(f"   Best validation accuracy: {best_val_acc:.2f}%")
     logger.info(f"   Test accuracy: {results['accuracy']:.4f}")
     logger.info(f"   Test F1-score: {results['f1_score']:.4f}")
@@ -1518,7 +1518,7 @@ def train_hybrid_model(aligner, fusion_strategy='concatenation', epochs=50, batc
 
 def main():
     """Main execution function"""
-    logger.info("🧬 HYBRID GNN-RNN MODEL FOR CARDIOMYOCYTE DIFFERENTIATION")
+    logger.info(" HYBRID GNN-RNN MODEL FOR CARDIOMYOCYTE DIFFERENTIATION")
     logger.info("=" * 70)
     
     # Step 1: Load and align embeddings
@@ -1530,13 +1530,13 @@ def main():
     )
     
     if not aligner.load_embeddings():
-        logger.error("❌ Failed to load embeddings")
+        logger.error(" Failed to load embeddings")
         return None
     
     # Normalize embeddings
     aligner.normalize_embeddings(method='standard')
     
-    logger.info(f"✅ Final embedding shapes:")
+    logger.info(f" Final embedding shapes:")
     logger.info(f"   GNN: {aligner.gnn_embeddings.shape}")
     logger.info(f"   RNN: {aligner.rnn_embeddings.shape}")
     logger.info(f"   Targets: {aligner.aligned_targets.shape}")
@@ -1565,7 +1565,7 @@ def main():
         
         # Create visualizations
         viz_path = create_visualizations(results, strategy, output_dir)
-        logger.info(f"   📊 Visualization saved: {viz_path}")
+        logger.info(f"    Visualization saved: {viz_path}")
         
         # Save detailed results
         results_file = output_dir / f"{strategy}_results.json"
@@ -1581,7 +1581,7 @@ def main():
             }
             json.dump(json_results, f, indent=2)
         
-        logger.info(f"   💾 Results saved: {results_file}")
+        logger.info(f"    Results saved: {results_file}")
     
     # Final comparison
     logger.info(f"\n{'='*70}")
@@ -1603,8 +1603,8 @@ def main():
     with open(comparison_file, 'w') as f:
         json.dump(results_comparison, f, indent=2)
     
-    logger.info(f"\n💾 All results saved to: {output_dir}")
-    logger.info(f"📊 Comparison summary: {comparison_file}")
+    logger.info(f"\n All results saved to: {output_dir}")
+    logger.info(f" Comparison summary: {comparison_file}")
     
     return aligner, results_comparison, output_dir
 

@@ -31,7 +31,7 @@ class BiologicalEmbeddingAnalyzer:
     
     def load_embeddings(self):
         """Load all model embeddings"""
-        logger.info("📊 Loading model embeddings...")
+        logger.info(" Loading model embeddings...")
         
         for model_dir in self.embeddings_dir.iterdir():
             if model_dir.is_dir():
@@ -50,10 +50,10 @@ class BiologicalEmbeddingAnalyzer:
                         'accuracy': np.mean(predictions == targets)
                     }
                     
-                    logger.info(f"   ✅ Loaded {model_name}: {embeddings.shape}")
+                    logger.info(f"    Loaded {model_name}: {embeddings.shape}")
                     
                 except Exception as e:
-                    logger.warning(f"   ⚠️ Failed to load {model_name}: {e}")
+                    logger.warning(f"    Failed to load {model_name}: {e}")
     
     def analyze_best_model(self):
         """Focus analysis on the best-performing model"""
@@ -156,7 +156,7 @@ class BiologicalEmbeddingAnalyzer:
     
     def analyze_prediction_patterns(self, embeddings, targets, predictions):
         """Analyze what the model learned about each class"""
-        logger.info("🎯 Analyzing prediction patterns...")
+        logger.info(" Analyzing prediction patterns...")
         
         unique_classes = np.unique(targets)
         class_analysis = {}
@@ -195,7 +195,7 @@ class BiologicalEmbeddingAnalyzer:
     
     def compute_embedding_statistics(self, embeddings, targets):
         """Compute overall embedding space statistics"""
-        logger.info("📊 Computing embedding statistics...")
+        logger.info(" Computing embedding statistics...")
         
         # Overall statistics
         mean_embedding = np.mean(embeddings, axis=0)
@@ -223,7 +223,7 @@ class BiologicalEmbeddingAnalyzer:
     
     def create_biological_visualization(self, embeddings, targets, predictions, model_name):
         """Create comprehensive biological visualization"""
-        logger.info("🎨 Creating biological visualization...")
+        logger.info(" Creating biological visualization...")
         
         # Apply t-SNE for visualization
         tsne = TSNE(n_components=2, random_state=42, perplexity=30)
@@ -319,18 +319,18 @@ class BiologicalEmbeddingAnalyzer:
         plt.savefig(plot_path, dpi=300, bbox_inches='tight')
         plt.close()
         
-        logger.info(f"   💾 Saved: {plot_path}")
+        logger.info(f"    Saved: {plot_path}")
         return plot_path
 
 def main():
     """Main biological analysis"""
-    logger.info("🧬 BIOLOGICAL EMBEDDING ANALYSIS")
+    logger.info(" BIOLOGICAL EMBEDDING ANALYSIS")
     logger.info("=" * 60)
     
     analyzer = BiologicalEmbeddingAnalyzer()
     
     if not analyzer.models_data:
-        logger.error("❌ No embedding data found!")
+        logger.error(" No embedding data found!")
         return
     
     # Analyze the best model
@@ -348,7 +348,7 @@ def main():
     
     # Print summary
     logger.info("\n" + "=" * 60)
-    logger.info("🎯 BIOLOGICAL INSIGHTS SUMMARY")
+    logger.info(" BIOLOGICAL INSIGHTS SUMMARY")
     logger.info("=" * 60)
     
     logger.info(f"Best Model: {results['model_name']}")
@@ -366,18 +366,18 @@ def main():
         logger.info(f"   {k}: Silhouette={metrics['silhouette_score']:.3f}, ARI={metrics['ari_with_true_labels']:.3f}")
     
     stats = results['embedding_statistics']
-    logger.info(f"\n📊 Embedding Statistics:")
+    logger.info(f"\n Embedding Statistics:")
     logger.info(f"   Dimensionality: {stats['embedding_dim']}")
     logger.info(f"   Components for 95% variance: {stats['n_components_95_variance']}")
     logger.info(f"   Mean embedding norm: {stats['mean_norm']:.3f}")
     
     class_patterns = results['prediction_patterns']
-    logger.info(f"\n🎯 Class Performance:")
+    logger.info(f"\n Class Performance:")
     for class_id, data in class_patterns.items():
         logger.info(f"   Class {class_id}: {data['sample_count']} samples, {data['accuracy']:.3f} accuracy")
     
-    logger.info(f"\n💾 Results saved to: {output_path}")
-    logger.info(f"🎨 Visualization: {plot_path}")
+    logger.info(f"\n Results saved to: {output_path}")
+    logger.info(f" Visualization: {plot_path}")
     
     return results
 

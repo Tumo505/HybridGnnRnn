@@ -163,10 +163,10 @@ class TrainedModelAnalyzer:
         
     def load_data(self):
         """Load the training data"""
-        logger.info("📊 Loading training data...")
+        logger.info(" Loading training data...")
         
         if not Path('data/aligned_spatial_temporal_data.pt').exists():
-            logger.error("❌ Data file not found: data/aligned_spatial_temporal_data.pt")
+            logger.error(" Data file not found: data/aligned_spatial_temporal_data.pt")
             return False
         
         data = torch.load('data/aligned_spatial_temporal_data.pt', map_location=self.device)
@@ -176,12 +176,12 @@ class TrainedModelAnalyzer:
             'edge_index': data['spatial']['edge_index']
         }
         
-        logger.info(f"   ✅ Data loaded: {self.data['features'].shape[0]} samples, {self.data['features'].shape[1]} features")
+        logger.info(f"    Data loaded: {self.data['features'].shape[0]} samples, {self.data['features'].shape[1]} features")
         return True
     
     def load_trained_model(self, checkpoint_path, model_name):
         """Load a specific trained model"""
-        logger.info(f"🤖 Loading model: {model_name}")
+        logger.info(f" Loading model: {model_name}")
         
         try:
             # Load checkpoint
@@ -194,11 +194,11 @@ class TrainedModelAnalyzer:
             if has_rnn:
                 # Hybrid GNN-RNN model
                 model = TrainedHybridModel()
-                logger.info(f"   📊 Model type: Hybrid GNN-RNN")
+                logger.info(f"    Model type: Hybrid GNN-RNN")
             else:
                 # GNN-only model
                 model = TrainedGNNEncoder()
-                logger.info(f"   📊 Model type: GNN-only")
+                logger.info(f"    Model type: GNN-only")
             
             # Load weights
             model.load_state_dict(state_dict, strict=False)  # Use strict=False for partial loading
@@ -215,13 +215,13 @@ class TrainedModelAnalyzer:
                 }
             }
             
-            logger.info(f"   ✅ Successfully loaded {model_name}")
+            logger.info(f"    Successfully loaded {model_name}")
             logger.info(f"      Best val score: {checkpoint.get('best_val_score', 'N/A'):.4f}")
             
             return True
             
         except Exception as e:
-            logger.warning(f"   ⚠️ Failed to load {model_name}: {e}")
+            logger.warning(f"    Failed to load {model_name}: {e}")
             return False
     
     def extract_embeddings(self, model_name):
@@ -233,7 +233,7 @@ class TrainedModelAnalyzer:
         model_info = self.models[model_name]
         model = model_info['model']
         
-        logger.info(f"📊 Extracting embeddings from {model_name}")
+        logger.info(f" Extracting embeddings from {model_name}")
         
         with torch.no_grad():
             x = self.data['features']
@@ -255,8 +255,8 @@ class TrainedModelAnalyzer:
             accuracy = accuracy_score(self.data['targets'].cpu().numpy(), 
                                     torch.argmax(logits, dim=1).cpu().numpy())
             
-            logger.info(f"   📈 Accuracy: {accuracy:.4f}")
-            logger.info(f"   📊 Embedding shape: {embeddings.shape}")
+            logger.info(f"    Accuracy: {accuracy:.4f}")
+            logger.info(f"    Embedding shape: {embeddings.shape}")
             
             return embeddings.cpu().numpy()
     
@@ -266,7 +266,7 @@ class TrainedModelAnalyzer:
             logger.warning(f"No embeddings found for {model_name}")
             return None
         
-        logger.info(f"🎨 Creating {method.upper()} visualization for {model_name}")
+        logger.info(f" Creating {method.upper()} visualization for {model_name}")
         
         embeddings = self.embeddings[model_name]['embeddings']
         targets = self.embeddings[model_name]['targets']
@@ -333,7 +333,7 @@ class TrainedModelAnalyzer:
         plt.savefig(plot_path, dpi=300, bbox_inches='tight')
         plt.close()
         
-        logger.info(f"   💾 Saved: {plot_path}")
+        logger.info(f"    Saved: {plot_path}")
         return embeddings_2d, plot_path
     
     def analyze_all_models(self):
@@ -344,7 +344,7 @@ class TrainedModelAnalyzer:
         analysis_results = {}
         
         for model_name, model_info in self.models.items():
-            logger.info(f"\n📊 Analyzing: {model_name}")
+            logger.info(f"\n Analyzing: {model_name}")
             logger.info("-" * 30)
             
             # Extract embeddings
@@ -372,7 +372,7 @@ class TrainedModelAnalyzer:
                     }
                 }
                 
-                logger.info(f"   ✅ Analysis complete for {model_name}")
+                logger.info(f"    Analysis complete for {model_name}")
         
         return analysis_results
     
@@ -396,21 +396,21 @@ class TrainedModelAnalyzer:
             np.save(model_dir / "targets.npy", embedding_data['targets'])
             np.save(model_dir / "logits.npy", embedding_data['logits'])
             
-            logger.info(f"   💾 Saved embeddings: {model_dir}")
+            logger.info(f"    Saved embeddings: {model_dir}")
         
         # Save analysis summary
         summary_path = f"trained_gnn_analysis_{timestamp}.json"
         with open(summary_path, 'w') as f:
             json.dump(results, f, indent=2, default=str)
         
-        logger.info(f"📁 Analysis summary: {summary_path}")
-        logger.info(f"📁 Embeddings directory: {embeddings_dir}")
+        logger.info(f" Analysis summary: {summary_path}")
+        logger.info(f" Embeddings directory: {embeddings_dir}")
         
         return summary_path, embeddings_dir
 
 def main():
     """Main analysis function"""
-    logger.info("🧬 TRAINED GNN MODEL ANALYSIS")
+    logger.info(" TRAINED GNN MODEL ANALYSIS")
     logger.info("=" * 60)
     
     analyzer = TrainedModelAnalyzer()
@@ -435,13 +435,13 @@ def main():
             if analyzer.load_trained_model(model_path, model_name):
                 loaded_count += 1
         else:
-            logger.warning(f"   ⚠️ Model file not found: {model_path}")
+            logger.warning(f"    Model file not found: {model_path}")
     
     if loaded_count == 0:
-        logger.error("❌ No models could be loaded!")
+        logger.error(" No models could be loaded!")
         return
     
-    logger.info(f"\n✅ Successfully loaded {loaded_count} models")
+    logger.info(f"\n Successfully loaded {loaded_count} models")
     
     # Analyze all models
     results = analyzer.analyze_all_models()
@@ -451,7 +451,7 @@ def main():
     
     # Print summary
     logger.info("\n" + "=" * 60)
-    logger.info("🎯 ANALYSIS SUMMARY")
+    logger.info(" ANALYSIS SUMMARY")
     logger.info("=" * 60)
     
     for model_name, result in results.items():
@@ -461,8 +461,8 @@ def main():
         logger.info(f"   Embeddings: {result['embedding_shape']}")
         logger.info(f"   Val Score: {result['checkpoint_info']['best_val_score']}")
     
-    logger.info(f"\n📁 Results saved to: {summary_path}")
-    logger.info(f"📁 Embeddings saved to: {embeddings_dir}")
+    logger.info(f"\n Results saved to: {summary_path}")
+    logger.info(f" Embeddings saved to: {embeddings_dir}")
     
     return results
 

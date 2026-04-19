@@ -52,7 +52,7 @@ def create_enhancement_summary():
     
     # Add checkmarks for implemented features
     for i in range(len(features)):
-        ax2.text(i, 0, '✅', ha='center', va='center', fontsize=20)
+        ax2.text(i, 0, '', ha='center', va='center', fontsize=20)
         ax2.text(i, -0.3, methods[i], ha='center', va='center', fontsize=9, 
                 style='italic', color='darkgreen')
     
@@ -118,7 +118,7 @@ def create_enhancement_summary():
     plt.tight_layout()
     
     # Add overall title
-    fig.suptitle('🧬 Enhanced Hybrid GNN-RNN Model: Comprehensive Improvements Summary', 
+    fig.suptitle(' Enhanced Hybrid GNN-RNN Model: Comprehensive Improvements Summary', 
                  fontsize=16, fontweight='bold', y=0.98)
     
     # Save the summary
@@ -137,12 +137,12 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("🏆 ENHANCED HYBRID MODEL ACHIEVEMENTS SUMMARY")
     print("="*80)
-    print("✅ Sample Alignment Enhancement: ID-based + stratified class matching")
-    print("✅ Class Imbalance Handling: WeightedRandomSampler + class weights")
-    print("✅ Uncertainty Estimation: MC Dropout + comprehensive metrics")
-    print("✅ Multi-task Extension: Flexible architecture for multiple outputs")
-    print("✅ Integration Testing: All features working seamlessly together")
-    print("\n🎯 KEY RESULTS:")
+    print(" Sample Alignment Enhancement: ID-based + stratified class matching")
+    print(" Class Imbalance Handling: WeightedRandomSampler + class weights")
+    print(" Uncertainty Estimation: MC Dropout + comprehensive metrics")
+    print(" Multi-task Extension: Flexible architecture for multiple outputs")
+    print(" Integration Testing: All features working seamlessly together")
+    print("\n KEY RESULTS:")
     print(f"   • Performance: 90.62% accuracy (314% improvement)")
     print(f"   • Confidence: 87.61% average prediction confidence")
     print(f"   • Robustness: Balanced training with uncertainty quantification")

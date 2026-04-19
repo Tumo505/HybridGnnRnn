@@ -25,7 +25,7 @@ try:
     from explainable_ai.hybrid_model_xai import HybridModelXAI
     from models.hybrid_gnn_rnn_model import EmbeddingAligner, HybridGNNRNN, train_enhanced_hybrid_model
 except ImportError as e:
-    print(f"❌ Import Error: {e}")
+    print(f" Import Error: {e}")
     print("Make sure you're running from the project root directory and src/ is in your path")
     sys.exit(1)
 
@@ -41,7 +41,7 @@ def load_real_embeddings(embeddings_path):
     
     # Check if directories exist - if not, look for actual embedding files
     if not os.path.exists(gnn_dir) and not os.path.exists(rnn_dir):
-        logger.warning(f"⚠️ Standard embedding directories not found, looking for actual embeddings...")
+        logger.warning(f" Standard embedding directories not found, looking for actual embeddings...")
         
         # Try to use the hybrid model's EmbeddingAligner which handles this correctly
         try:
@@ -49,14 +49,14 @@ def load_real_embeddings(embeddings_path):
             
             # This will automatically handle finding and aligning embeddings
             if aligner.load_embeddings():
-                logger.info("✅ Real embeddings loaded via EmbeddingAligner")
-                logger.info(f"   📊 GNN embeddings: {aligner.gnn_embeddings.shape}")
-                logger.info(f"   📊 RNN embeddings: {aligner.rnn_embeddings.shape}")
-                logger.info(f"   📊 Targets: {aligner.aligned_targets.shape}")
+                logger.info(" Real embeddings loaded via EmbeddingAligner")
+                logger.info(f"    GNN embeddings: {aligner.gnn_embeddings.shape}")
+                logger.info(f"    RNN embeddings: {aligner.rnn_embeddings.shape}")
+                logger.info(f"    Targets: {aligner.aligned_targets.shape}")
                 
                 # Normalize embeddings
                 aligner.normalize_embeddings(method='standard')
-                logger.info("✅ Embeddings normalized")
+                logger.info(" Embeddings normalized")
                 
                 # Train a model for XAI analysis
                 logger.info("🔄 Training model for XAI analysis...")
@@ -67,15 +67,15 @@ def load_real_embeddings(embeddings_path):
                     enable_uncertainty=True
                 )
                 
-                logger.info(f"✅ Model trained - Accuracy: {results['accuracy']:.4f}")
+                logger.info(f" Model trained - Accuracy: {results['accuracy']:.4f}")
                 
                 return model, aligner.gnn_embeddings, aligner.rnn_embeddings, aligner.aligned_targets
             else:
-                logger.error("❌ Could not load embeddings via EmbeddingAligner")
+                logger.error(" Could not load embeddings via EmbeddingAligner")
                 return None
                 
         except Exception as e:
-            logger.error(f"❌ Error loading via EmbeddingAligner: {e}")
+            logger.error(f" Error loading via EmbeddingAligner: {e}")
             
         # Fallback: try to load embeddings manually
         logger.info("🔄 Attempting manual embedding loading...")
@@ -93,11 +93,11 @@ def load_real_embeddings(embeddings_path):
                     if os.path.exists(emb_file) and os.path.exists(tgt_file):
                         rnn_embeddings = np.load(emb_file)
                         rnn_targets = np.load(tgt_file)
-                        logger.info(f"✅ Found RNN embeddings: {rnn_embeddings.shape}")
+                        logger.info(f" Found RNN embeddings: {rnn_embeddings.shape}")
                         break
         
         if rnn_embeddings is None:
-            logger.error("❌ Could not find RNN embeddings")
+            logger.error(" Could not find RNN embeddings")
             return None
             
         # Create synthetic GNN embeddings to match
@@ -117,10 +117,10 @@ def load_real_embeddings(embeddings_path):
             mc_dropout=True
         )
         
-        logger.info(f"✅ Manual loading completed")
-        logger.info(f"   📊 GNN embeddings: {gnn_embeddings.shape}")
-        logger.info(f"   📊 RNN embeddings: {rnn_embeddings.shape}")
-        logger.info(f"   📊 Targets: {rnn_targets.shape}")
+        logger.info(f" Manual loading completed")
+        logger.info(f"    GNN embeddings: {gnn_embeddings.shape}")
+        logger.info(f"    RNN embeddings: {rnn_embeddings.shape}")
+        logger.info(f"    Targets: {rnn_targets.shape}")
         
         return model, gnn_embeddings, rnn_embeddings, rnn_targets
         
@@ -128,14 +128,14 @@ def load_real_embeddings(embeddings_path):
         aligner = EmbeddingAligner(gnn_dir=gnn_dir, rnn_dir=rnn_dir)
         
         if aligner.load_embeddings():
-            logger.info("✅ Real embeddings loaded successfully")
-            logger.info(f"   📊 GNN embeddings: {aligner.gnn_embeddings.shape}")
-            logger.info(f"   📊 RNN embeddings: {aligner.rnn_embeddings.shape}")
-            logger.info(f"   📊 Targets: {aligner.aligned_targets.shape}")
+            logger.info(" Real embeddings loaded successfully")
+            logger.info(f"    GNN embeddings: {aligner.gnn_embeddings.shape}")
+            logger.info(f"    RNN embeddings: {aligner.rnn_embeddings.shape}")
+            logger.info(f"    Targets: {aligner.aligned_targets.shape}")
             
             # Normalize embeddings
             aligner.normalize_embeddings(method='standard')
-            logger.info("✅ Embeddings normalized")
+            logger.info(" Embeddings normalized")
             
             # Train a model for XAI analysis
             logger.info("🔄 Training model for XAI analysis...")
@@ -146,15 +146,15 @@ def load_real_embeddings(embeddings_path):
                 enable_uncertainty=True
             )
             
-            logger.info(f"✅ Model trained - Accuracy: {results['accuracy']:.4f}")
+            logger.info(f" Model trained - Accuracy: {results['accuracy']:.4f}")
             
             return model, aligner.gnn_embeddings, aligner.rnn_embeddings, aligner.aligned_targets
         else:
-            logger.error("❌ Could not load embeddings")
+            logger.error(" Could not load embeddings")
             return None
             
     except Exception as e:
-        logger.error(f"❌ Error loading real data: {e}")
+        logger.error(f" Error loading real data: {e}")
         import traceback
         traceback.print_exc()
         return None
@@ -171,14 +171,14 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
     # Load real data
     data_result = load_real_embeddings(embeddings_path)
     if data_result is None:
-        logger.error("❌ Failed to load real embeddings. Cannot proceed.")
+        logger.error(" Failed to load real embeddings. Cannot proceed.")
         logger.error("💡 Make sure to train your model first:")
         logger.error("   python train_enhanced_temporal_rnn.py")
         return None
     
     model, gnn_embeddings, rnn_embeddings, targets = data_result
     
-    logger.info(f"\n📊 Real Data Summary:")
+    logger.info(f"\n Real Data Summary:")
     logger.info(f"   Model: {model.__class__.__name__}")
     logger.info(f"   GNN embeddings: {gnn_embeddings.shape}")
     logger.info(f"   RNN embeddings: {rnn_embeddings.shape}")
@@ -191,9 +191,9 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
     logger.info(f"\n🚀 Initializing XAI framework...")
     try:
         xai_analyzer = HybridModelXAI(model, device='cpu')
-        logger.info("✅ XAI framework initialized")
+        logger.info(" XAI framework initialized")
     except Exception as e:
-        logger.error(f"❌ Failed to initialize XAI framework: {e}")
+        logger.error(f" Failed to initialize XAI framework: {e}")
         return None
     
     # Run XAI analysis
@@ -201,7 +201,7 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
     
     try:
         # 1. Feature Importance Analysis
-        logger.info("\n📊 Phase 1: Feature Importance Analysis")
+        logger.info("\n Phase 1: Feature Importance Analysis")
         
         # Use subset of data for faster analysis
         n_samples = min(100, len(gnn_embeddings))
@@ -214,10 +214,10 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
             gnn_sample, rnn_sample, max_samples=n_samples
         )
         results['shap_analysis'] = shap_results
-        logger.info(f"   ✅ SHAP analysis completed on {n_samples} samples")
+        logger.info(f"    SHAP analysis completed on {n_samples} samples")
         
         # 2. Biological Interpretation
-        logger.info("\n🧬 Phase 2: Biological Interpretation")
+        logger.info("\n Phase 2: Biological Interpretation")
         
         # Create processed SHAP results for biological interpretation
         # Convert raw SHAP values to mean values across samples and classes
@@ -244,39 +244,39 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
         )
         results['biological_interpretations'] = biological_interpretations
         results['experimental_suggestions'] = experimental_suggestions
-        logger.info("   ✅ Biological interpretation completed")
+        logger.info("    Biological interpretation completed")
         
         # 3. Uncertainty Analysis
-        logger.info("\n🎯 Phase 3: Uncertainty Analysis")
+        logger.info("\n Phase 3: Uncertainty Analysis")
         uncertainty_results = xai_analyzer.uncertainty_explainer.explain_with_uncertainty(
             gnn_sample, rnn_sample
         )
         results['uncertainty_analysis'] = uncertainty_results
-        logger.info("   ✅ Uncertainty analysis completed")
+        logger.info("    Uncertainty analysis completed")
         
         # 4. Generate Visualizations
-        logger.info("\n📊 Phase 4: Creating Visualizations")
+        logger.info("\n Phase 4: Creating Visualizations")
         
         # Create feature importance plot
         viz_path = xai_analyzer.visualizer.create_feature_importance_plot(
             biological_interpretations
         )
-        logger.info(f"   ✅ Feature importance plot: {viz_path}")
+        logger.info(f"    Feature importance plot: {viz_path}")
         
         # Create uncertainty visualization
         uncertainty_path = xai_analyzer.visualizer.create_uncertainty_explanation_plot(
             uncertainty_results
         )
-        logger.info(f"   ✅ Uncertainty plot: {uncertainty_path}")
+        logger.info(f"    Uncertainty plot: {uncertainty_path}")
         
         # Create integrated dashboard
         dashboard_path = xai_analyzer.visualizer.create_integrated_dashboard(
             results
         )
-        logger.info(f"   ✅ Integrated dashboard: {dashboard_path}")
+        logger.info(f"    Integrated dashboard: {dashboard_path}")
         
     except Exception as e:
-        logger.error(f"❌ XAI analysis failed: {e}")
+        logger.error(f" XAI analysis failed: {e}")
         import traceback
         traceback.print_exc()
         return None
@@ -317,10 +317,10 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
     with open(results_file, 'w', encoding='utf-8') as f:
         json.dump(serializable_results, f, indent=2, ensure_ascii=False)
     
-    logger.info(f"\n💾 XAI analysis results saved to: {results_file}")
-    logger.info(f"📁 All outputs saved in: {output_dir}")
+    logger.info(f"\n XAI analysis results saved to: {results_file}")
+    logger.info(f" All outputs saved in: {output_dir}")
     
-    logger.info("\n✅ REAL DATA XAI ANALYSIS COMPLETED SUCCESSFULLY!")
+    logger.info("\n REAL DATA XAI ANALYSIS COMPLETED SUCCESSFULLY!")
     logger.info("=" * 60)
     
     return results
@@ -332,7 +332,7 @@ def print_analysis_summary(results, summary):
     print("🔬 REAL DATA XAI ANALYSIS SUMMARY")
     print("="*80)
     
-    print(f"\n📊 Data Analysis:")
+    print(f"\n Data Analysis:")
     data_info = summary['data_summary']
     print(f"   • GNN Features: {data_info['gnn_features']}")
     print(f"   • RNN Features: {data_info['rnn_features']}")
@@ -342,14 +342,14 @@ def print_analysis_summary(results, summary):
     
     print(f"\n🔧 XAI Analysis Results:")
     xai_info = summary['xai_results']
-    print(f"   • Feature Importance: {'✅ Completed' if xai_info['feature_importance_completed'] else '❌ Failed'}")
-    print(f"   • Biological Interpretation: {'✅ Completed' if xai_info['biological_interpretation_completed'] else '❌ Failed'}")
-    print(f"   • Uncertainty Analysis: {'✅ Completed' if xai_info['uncertainty_analysis_completed'] else '❌ Failed'}")
+    print(f"   • Feature Importance: {' Completed' if xai_info['feature_importance_completed'] else ' Failed'}")
+    print(f"   • Biological Interpretation: {' Completed' if xai_info['biological_interpretation_completed'] else ' Failed'}")
+    print(f"   • Uncertainty Analysis: {' Completed' if xai_info['uncertainty_analysis_completed'] else ' Failed'}")
     print(f"   • Important Features Found: {xai_info['num_important_features']}")
     print(f"   • Experimental Suggestions: {xai_info['num_experimental_suggestions']}")
     
     if results.get('biological_interpretations'):
-        print(f"\n🧬 Top Biological Features:")
+        print(f"\n Top Biological Features:")
         for i, interp in enumerate(results['biological_interpretations'][:5], 1):
             marker = interp['biological_marker']
             category = interp['biological_category']
@@ -369,7 +369,7 @@ def print_analysis_summary(results, summary):
             entropies = [u['uncertainty']['predictive_entropy'] for u in uncertainty_list]
             high_uncertainty_count = sum(1 for e in entropies if e > 0.5)
             
-            print(f"\n🎯 Uncertainty Analysis:")
+            print(f"\n Uncertainty Analysis:")
             print(f"   • Mean Prediction Confidence: {np.mean(confidences):.4f}")
             print(f"   • High Uncertainty Samples: {high_uncertainty_count}/{len(uncertainty_list)}")
             print(f"   • Mean Predictive Entropy: {np.mean(entropies):.4f}")
@@ -474,7 +474,7 @@ def main():
     
     # Validate embeddings path
     if not os.path.exists(args.embeddings_path):
-        print(f"❌ Embeddings path does not exist: {args.embeddings_path}")
+        print(f" Embeddings path does not exist: {args.embeddings_path}")
         print("💡 Make sure to train your model first:")
         print("   python train_enhanced_temporal_rnn.py")
         sys.exit(1)
@@ -487,9 +487,9 @@ def main():
     
     if results:
         print("\n🎉 Real Data XAI Analysis completed successfully!")
-        print(f"📁 Check {args.output_dir} for detailed results and visualizations.")
+        print(f" Check {args.output_dir} for detailed results and visualizations.")
     else:
-        print("\n❌ Real Data XAI Analysis failed. Check logs for details.")
+        print("\n Real Data XAI Analysis failed. Check logs for details.")
 
 if __name__ == "__main__":
     main()

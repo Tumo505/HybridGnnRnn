@@ -25,7 +25,7 @@ try:
     from src.training.cardiomyocyte_trainer import train_enhanced_cardiomyocyte_classifier
     from src.data_processing.authentic_10x_processor import Authentic10XProcessor  
     from src.models.gnn_models.cardiomyocyte_gnn import AdvancedCardiomyocyteGNN
-    print("✅ All imports successful")
+    print(" All imports successful")
 except ImportError as e:
     # Fallback imports if modules don't exist
     print(f"Warning: Import error - {e}. Will create minimal training.")
@@ -76,10 +76,10 @@ class EnhancedCardiomyocyteTrainer:
                 config=self.config,
                 tags=['enhanced-gnn', 'cardiomyocyte', 'classification']
             )
-            logger.info("✅ Wandb logging initialized")
+            logger.info(" Wandb logging initialized")
             return True
         except Exception as e:
-            logger.warning(f"⚠️ Wandb initialization failed: {e}")
+            logger.warning(f" Wandb initialization failed: {e}")
             logger.info("Continuing without wandb logging...")
             return False
     
@@ -88,7 +88,7 @@ class EnhancedCardiomyocyteTrainer:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.viz_dir = Path(f"enhanced_results_{timestamp}")
         self.viz_dir.mkdir(exist_ok=True)
-        logger.info(f"📁 Results directory: {self.viz_dir}")
+        logger.info(f" Results directory: {self.viz_dir}")
         return self.viz_dir
     
     def load_model_and_data(self, results):
@@ -112,7 +112,7 @@ class EnhancedCardiomyocyteTrainer:
             
             return True
         except Exception as e:
-            logger.error(f"❌ Failed to load model/data: {e}")
+            logger.error(f" Failed to load model/data: {e}")
             return False
     
     def generate_predictions(self):
@@ -337,7 +337,7 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
             accuracy = accuracy_score(y_true, y_pred)
             wandb.log({"overall_accuracy": accuracy})
             
-            logger.info("📊 Metrics logged to wandb")
+            logger.info(" Metrics logged to wandb")
             
         except Exception as e:
             logger.warning(f"Failed to log metrics to wandb: {e}")
@@ -352,7 +352,7 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
         
         # Check if training function is available
         if train_enhanced_cardiomyocyte_classifier is None:
-            logger.error("❌ Training function not available due to import error")
+            logger.error(" Training function not available due to import error")
             logger.error("💡 Please fix the import issues in the script")
             return False
         
@@ -361,7 +361,7 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
         results = train_enhanced_cardiomyocyte_classifier(self.config)
         
         if not results:
-            logger.error("❌ Training failed")
+            logger.error(" Training failed")
             return False
         
         # Load model and generate predictions
@@ -375,7 +375,7 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
         class_names = getattr(self.data, 'class_names', None)
         
         # Generate visualizations
-        logger.info("🎨 Generating visualizations...")
+        logger.info(" Generating visualizations...")
         self.plot_confusion_matrix(y_true, predictions, class_names)
         self.plot_class_distribution(y_true, predictions, class_names)
         self.plot_training_curves(results)
@@ -400,12 +400,12 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
     def print_summary(self, results):
         """Print training summary."""
         print(f"\n{'='*60}")
-        print(f"🎯 ENHANCED CARDIOMYOCYTE GNN - TRAINING COMPLETE")
+        print(f" ENHANCED CARDIOMYOCYTE GNN - TRAINING COMPLETE")
         print(f"{'='*60}")
-        print(f"📊 Test Accuracy: {results['test_accuracy']*100:.2f}%")
-        print(f"📈 Best Val Accuracy: {results['best_val_accuracy']*100:.2f}%")
-        print(f"🧬 Classes: {results['dataset_info']['num_classes']} cardiomyocyte subtypes")
-        print(f"📁 Results saved to: {self.viz_dir}")
+        print(f" Test Accuracy: {results['test_accuracy']*100:.2f}%")
+        print(f" Best Val Accuracy: {results['best_val_accuracy']*100:.2f}%")
+        print(f" Classes: {results['dataset_info']['num_classes']} cardiomyocyte subtypes")
+        print(f" Results saved to: {self.viz_dir}")
         
         print(f"\n📋 Per-Class Performance:")
         
@@ -428,7 +428,7 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
                   f"R={metrics['recall']*100:.1f}% | "
                   f"Support={metrics['support']}")
         
-        print(f"\n✅ Enhanced GNN with wandb logging & visualizations complete!")
+        print(f"\n Enhanced GNN with wandb logging & visualizations complete!")
         print(f"{'='*60}")
 
 
@@ -454,7 +454,7 @@ def main():
         'experiment_name': f'enhanced_gnn_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
     }
     
-    print("🎯 ENHANCED CARDIOMYOCYTE GNN TRAINING")
+    print(" ENHANCED CARDIOMYOCYTE GNN TRAINING")
     print("=" * 50)
     print(f"Hidden Dim: {config['hidden_dim']}")
     print(f"Dropout: {config['dropout']}")

@@ -73,13 +73,13 @@ class TrainedGNNAnalyzer:
         
         logger.info(f"🔍 Found {len(model_paths)} trained models:")
         for name, path in model_paths.items():
-            logger.info(f"   📁 {name}: {path}")
+            logger.info(f"    {name}: {path}")
         
         return model_paths
     
     def load_data(self):
         """Load the data that was used for training"""
-        logger.info("📊 Loading training data...")
+        logger.info(" Loading training data...")
         
         # Try to load cached data first
         if os.path.exists('data/aligned_spatial_temporal_data.pt'):
@@ -89,10 +89,10 @@ class TrainedGNNAnalyzer:
                 'targets': data['spatial']['targets'],
                 'edge_index': data['spatial']['edge_index']
             }
-            logger.info(f"   ✅ Data loaded: {self.data['features'].shape[0]} samples, {self.data['features'].shape[1]} features")
+            logger.info(f"    Data loaded: {self.data['features'].shape[0]} samples, {self.data['features'].shape[1]} features")
             return True
         else:
-            logger.error("❌ Data file not found: data/aligned_spatial_temporal_data.pt")
+            logger.error(" Data file not found: data/aligned_spatial_temporal_data.pt")
             return False
     
     def load_model(self, model_path, model_name):
@@ -131,11 +131,11 @@ class TrainedGNNAnalyzer:
             model.to(self.device)
             
             self.models[model_name] = model
-            logger.info(f"   ✅ Loaded model: {model_name}")
+            logger.info(f"    Loaded model: {model_name}")
             return True
             
         except Exception as e:
-            logger.warning(f"   ⚠️ Failed to load {model_name}: {e}")
+            logger.warning(f"    Failed to load {model_name}: {e}")
             return False
     
     def extract_embeddings(self, model_name):
@@ -188,7 +188,7 @@ class TrainedGNNAnalyzer:
         embeddings = get_embeddings(model, self.data)
         self.embeddings[model_name] = embeddings.cpu().numpy()
         
-        logger.info(f"   📊 Extracted embeddings for {model_name}: {embeddings.shape}")
+        logger.info(f"    Extracted embeddings for {model_name}: {embeddings.shape}")
         return embeddings.cpu().numpy()
     
     def evaluate_model_performance(self, model_name):
@@ -218,7 +218,7 @@ class TrainedGNNAnalyzer:
                 'targets': targets
             }
             
-            logger.info(f"   🎯 {model_name} Accuracy: {accuracy:.4f}")
+            logger.info(f"    {model_name} Accuracy: {accuracy:.4f}")
             return results
     
     def visualize_embeddings(self, model_name, method='tsne'):
@@ -256,12 +256,12 @@ class TrainedGNNAnalyzer:
         plt.savefig(plot_path, dpi=300, bbox_inches='tight')
         plt.close()
         
-        logger.info(f"   📊 Saved embedding visualization: {plot_path}")
+        logger.info(f"    Saved embedding visualization: {plot_path}")
         return embeddings_2d, plot_path
     
     def compare_models(self):
         """Compare performance across all loaded models"""
-        logger.info("\n📊 MODEL COMPARISON")
+        logger.info("\n MODEL COMPARISON")
         logger.info("=" * 50)
         
         comparison_results = {}
@@ -312,7 +312,7 @@ class TrainedGNNAnalyzer:
         with open(summary_path, 'w') as f:
             json.dump(summary, f, indent=2, default=str)
         
-        logger.info(f"📁 Analysis summary saved: {summary_path}")
+        logger.info(f" Analysis summary saved: {summary_path}")
         
         # Save embeddings as numpy arrays
         embeddings_dir = f"gnn_embeddings_{timestamp}"
@@ -322,13 +322,13 @@ class TrainedGNNAnalyzer:
             if model_results['embeddings'] is not None:
                 embedding_path = os.path.join(embeddings_dir, f"{model_name}_embeddings.npy")
                 np.save(embedding_path, model_results['embeddings'])
-                logger.info(f"   💾 Saved embeddings: {embedding_path}")
+                logger.info(f"    Saved embeddings: {embedding_path}")
         
         return summary_path, embeddings_dir
 
 def main():
     """Main analysis function"""
-    logger.info("🧬 GNN MODEL ANALYSIS")
+    logger.info(" GNN MODEL ANALYSIS")
     logger.info("=" * 60)
     
     analyzer = TrainedGNNAnalyzer()
@@ -337,26 +337,26 @@ def main():
     model_paths = analyzer.find_trained_models()
     
     if not model_paths:
-        logger.error("❌ No trained models found!")
+        logger.error(" No trained models found!")
         return
     
     # 2. Load data
     if not analyzer.load_data():
-        logger.error("❌ Failed to load data!")
+        logger.error(" Failed to load data!")
         return
     
     # 3. Load models
-    logger.info("\n🤖 Loading trained models...")
+    logger.info("\n Loading trained models...")
     loaded_count = 0
     for model_name, model_path in model_paths.items():
         if analyzer.load_model(model_path, model_name):
             loaded_count += 1
     
     if loaded_count == 0:
-        logger.error("❌ No models could be loaded!")
+        logger.error(" No models could be loaded!")
         return
     
-    logger.info(f"✅ Successfully loaded {loaded_count}/{len(model_paths)} models")
+    logger.info(f" Successfully loaded {loaded_count}/{len(model_paths)} models")
     
     # 4. Analyze models
     logger.info("\n🔍 Analyzing models...")
@@ -366,9 +366,9 @@ def main():
     summary_path, embeddings_dir = analyzer.save_analysis_results(results)
     
     logger.info("\n" + "=" * 60)
-    logger.info("🎯 ANALYSIS COMPLETE")
-    logger.info(f"📊 Summary: {summary_path}")
-    logger.info(f"📁 Embeddings: {embeddings_dir}")
+    logger.info(" ANALYSIS COMPLETE")
+    logger.info(f" Summary: {summary_path}")
+    logger.info(f" Embeddings: {embeddings_dir}")
     logger.info("=" * 60)
     
     return results

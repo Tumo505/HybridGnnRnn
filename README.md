@@ -587,7 +587,7 @@ cardiac_markers = {
 }
 ```
 
-## 📊 Results
+##  Results
 
 ### Model Performance Summary
 
@@ -742,7 +742,7 @@ python scripts/training/train_hybrid_ensemble.py
 python scripts/xai/xai_real_data_analysis.py --embeddings-path analysis
 ```
 
-## 📈 Performance Metrics
+##  Performance Metrics
 
 ### Quantitative Results
 
@@ -756,10 +756,10 @@ python scripts/xai/xai_real_data_analysis.py --embeddings-path analysis
 | **Training Time** | 81 epochs | 28 epochs | **35 epochs** |
 
 ### Biological Validation
-- ✅ **Cardiac Gene Identification**: Successfully mapped to known cardiac development genes
-- ✅ **Pathway Analysis**: Identified relevant cardiac developmental pathways
-- ✅ **Temporal Dynamics**: Captured meaningful differentiation trajectories
-- ✅ **Spatial Context**: Leveraged cell neighborhood relationships
+-  **Cardiac Gene Identification**: Successfully mapped to known cardiac development genes
+-  **Pathway Analysis**: Identified relevant cardiac developmental pathways
+-  **Temporal Dynamics**: Captured meaningful differentiation trajectories
+-  **Spatial Context**: Leveraged cell neighborhood relationships
 
 ## 🔬 Scientific Impact
 
@@ -826,7 +826,7 @@ For more details, see the [Creative Commons License](https://creativecommons.org
 - **Open Source Community**: PyTorch, PyTorch Geometric, and scikit-learn teams
 - **Research Collaborators**: Tumo Kgabeng, Lulu Wang, Harry Ngwangwa, Thanyani Pandelani
 
-## 📖 Citation
+##  Citation
 
 If you use this work in your research, please cite:
 
@@ -841,7 +841,7 @@ If you use this work in your research, please cite:
 
 ---
 
-## 📧 Contact
+##  Contact
 
 **Tumo Kgabeng**  
 Email: <28346416@mylife.unisa.ac.za>  
@@ -849,11 +849,11 @@ GitHub: [@Tumo505](https://github.com/Tumo505)
 
 ---
 
-## 📖 Detailed Results
+##  Detailed Results
 
 For comprehensive results analysis, performance metrics, statistical significance testing, and biological validation, see our detailed results documentation:
 
-**[📊 DETAILED RESULTS DOCUMENTATION](RESULTS.md)**
+**[ DETAILED RESULTS DOCUMENTATION](RESULTS.md)**
 
 This includes:
 

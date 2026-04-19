@@ -65,7 +65,7 @@ pipeline_samples = [8634, 8634, 159, 159, 159]
 
 ax3.plot(pipeline_stages, pipeline_samples, 'o-', linewidth=3, markersize=8, color='#F18F01')
 ax3.fill_between(pipeline_stages, pipeline_samples, alpha=0.3, color='#F18F01')
-ax3.set_title('📊 Data Processing Pipeline', fontsize=16, fontweight='bold', pad=20)
+ax3.set_title(' Data Processing Pipeline', fontsize=16, fontweight='bold', pad=20)
 ax3.set_ylabel('Number of Samples', fontsize=12)
 ax3.set_yscale('log')
 ax3.grid(True, alpha=0.3)
@@ -89,7 +89,7 @@ for i, dim in enumerate(dimensions):
     ax4.text(dim + 10, i, f'{dim}D', va='center', fontweight='bold')
 
 # Main title
-fig.suptitle('🧬 Hybrid GNN-RNN Model for Cardiomyocyte Differentiation\nPerformance Summary', 
+fig.suptitle(' Hybrid GNN-RNN Model for Cardiomyocyte Differentiation\nPerformance Summary', 
              fontsize=18, fontweight='bold', y=0.95)
 
 plt.tight_layout()
@@ -100,15 +100,15 @@ output_path = f"HYBRID_MODEL_PERFORMANCE_SUMMARY_{timestamp}.png"
 plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.show()
 
-print(f"📊 Performance summary visualization saved: {output_path}")
+print(f" Performance summary visualization saved: {output_path}")
 
 # Create a text summary
 summary_text = f"""
 =================================================================
-🧬 HYBRID GNN-RNN MODEL PERFORMANCE SUMMARY
+ HYBRID GNN-RNN MODEL PERFORMANCE SUMMARY
 =================================================================
 
-📊 INDIVIDUAL MODEL PERFORMANCE:
+ INDIVIDUAL MODEL PERFORMANCE:
    • GNN Only (Spatial): 36.2% accuracy
    • RNN Only (Temporal): 93.75% accuracy
 
@@ -118,11 +118,11 @@ summary_text = f"""
    • Ensemble: 21.9% accuracy, 20.6% F1-score ⭐ BEST
 
 🏆 KEY ACHIEVEMENTS:
-   ✅ Successful multimodal fusion implementation
-   ✅ Three fusion strategies compared
-   ✅ Ensemble fusion performs best
-   ✅ Complete training and evaluation pipeline
-   ✅ Comprehensive visualizations and metrics
+    Successful multimodal fusion implementation
+    Three fusion strategies compared
+    Ensemble fusion performs best
+    Complete training and evaluation pipeline
+    Comprehensive visualizations and metrics
 
 🔍 INSIGHTS:
    • Ensemble fusion allows specialized modality contributions
@@ -130,7 +130,7 @@ summary_text = f"""
    • Early-stage differentiation better captured than late stages
    • Framework established for future multimodal research
 
-📁 OUTPUT FILES:
+ OUTPUT FILES:
    • hybrid_gnn_rnn_model.py: Complete implementation
    • hybrid_model_results_20250921_210358/: All results
    • HYBRID_MODEL_RESULTS_SUMMARY.md: Detailed analysis
