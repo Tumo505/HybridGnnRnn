@@ -31,7 +31,7 @@ class AdvancedValidationFramework:
         
     def k_fold_cross_validation(self, k=5, fusion_strategy='concatenation'):
         """Implement k-fold cross-validation"""
-        print(f"\n🔄 Running {k}-Fold Cross-Validation for {fusion_strategy} fusion...")
+        print(f"\n Running {k}-Fold Cross-Validation for {fusion_strategy} fusion...")
         
         X_gnn = self.aligner.gnn_embeddings
         X_rnn = self.aligner.rnn_embeddings
@@ -360,7 +360,7 @@ def main():
     print(f"\n Advanced validation plots saved: {viz_path}")
     
     # Final assessment
-    print(f"\n📋 OVERFITTING ASSESSMENT SUMMARY")
+    print(f"\n OVERFITTING ASSESSMENT SUMMARY")
     print("=" * 50)
     
     if overfitting_analysis['train_val_gap_mean'] > 10:
@@ -385,15 +385,15 @@ def main():
     if overfitting_analysis['overfitting_risk'] == 'High':
         print("   •  Increase regularization (dropout 40-50%)")
         print("   •  Collect more training data")
-        print("   • 🎲 Use ensemble methods")
-        print("   • 📉 Reduce model complexity")
+        print("   •  Use ensemble methods")
+        print("   •  Reduce model complexity")
     elif overfitting_analysis['overfitting_risk'] == 'Moderate':
         print("   •  Continue monitoring with k-fold validation")
-        print("   • 🔄 Test with different random seeds")
-        print("   • ⚖️ Fine-tune regularization parameters")
+        print("   •  Test with different random seeds")
+        print("   •  Fine-tune regularization parameters")
     else:
         print("   •  Current approach appears robust")
-        print("   • 🔬 Focus on biological validation")
+        print("   •  Focus on biological validation")
         print("   •  Test on independent datasets")
     
     return framework, overfitting_analysis

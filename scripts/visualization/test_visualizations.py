@@ -18,7 +18,7 @@ bio_interps = results.get('biological_interpretations', [])
 print(f" Biological interpretations: {len(bio_interps)} items")
 
 if bio_interps:
-    print("\n🔬 Top 5 biological interpretations:")
+    print("\n Top 5 biological interpretations:")
     for i, interp in enumerate(bio_interps[:5]):
         print(f"   {i+1}. {interp['feature_name']}: {interp['importance_score']:.6f} - {interp['biological_marker']}")
     

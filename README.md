@@ -761,7 +761,7 @@ python scripts/xai/xai_real_data_analysis.py --embeddings-path analysis
 -  **Temporal Dynamics**: Captured meaningful differentiation trajectories
 -  **Spatial Context**: Leveraged cell neighborhood relationships
 
-## 🔬 Scientific Impact
+##  Scientific Impact
 
 ### Key Contributions
 1. **Methodological Innovation**: First hybrid GNN-RNN model for cardiomyocyte differentiation
@@ -775,7 +775,7 @@ python scripts/xai/xai_real_data_analysis.py --embeddings-path analysis
 - **Basic Research**: Advancing knowledge of cardiac cell biology
 - **Computational Biology**: Methodological framework for multimodal biological data
 
-## 📚 References
+##  References
 
 ### Datasets
 1. **Kuppe, C., et al.** (2022). Spatial multi-omic map of human myocardial infarction. *Nature*, 608, 766–777. https://doi.org/10.1038/s41586-022-05060-x
@@ -788,7 +788,7 @@ python scripts/xai/xai_real_data_analysis.py --embeddings-path analysis
 - SHAP Explanations: Lundberg & Lee (2017)
 - Cardiac Development: Paige et al. (2010), Burridge et al. (2014)
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 

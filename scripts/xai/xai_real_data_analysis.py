@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 def load_real_embeddings(embeddings_path):
     """Load real embeddings from training results"""
-    logger.info(f"🔄 Loading real embeddings from {embeddings_path}...")
+    logger.info(f" Loading real embeddings from {embeddings_path}...")
     
     gnn_dir = os.path.join(embeddings_path, "gnn_embeddings")
     rnn_dir = os.path.join(embeddings_path, "rnn_embeddings")
@@ -59,7 +59,7 @@ def load_real_embeddings(embeddings_path):
                 logger.info(" Embeddings normalized")
                 
                 # Train a model for XAI analysis
-                logger.info("🔄 Training model for XAI analysis...")
+                logger.info(" Training model for XAI analysis...")
                 model, results, uncertainty_results, trainer = train_enhanced_hybrid_model(
                     aligner, 
                     fusion_strategy='concatenation',
@@ -78,7 +78,7 @@ def load_real_embeddings(embeddings_path):
             logger.error(f" Error loading via EmbeddingAligner: {e}")
             
         # Fallback: try to load embeddings manually
-        logger.info("🔄 Attempting manual embedding loading...")
+        logger.info(" Attempting manual embedding loading...")
         
         # Look for RNN embeddings first (we know these exist)
         rnn_embeddings = None
@@ -138,7 +138,7 @@ def load_real_embeddings(embeddings_path):
             logger.info(" Embeddings normalized")
             
             # Train a model for XAI analysis
-            logger.info("🔄 Training model for XAI analysis...")
+            logger.info(" Training model for XAI analysis...")
             model, results, uncertainty_results, trainer = train_enhanced_hybrid_model(
                 aligner, 
                 fusion_strategy='concatenation',
@@ -162,7 +162,7 @@ def load_real_embeddings(embeddings_path):
 def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
     """Main function to run XAI analysis on real data"""
     
-    logger.info("🔬 STARTING XAI ANALYSIS ON REAL DATA")
+    logger.info(" STARTING XAI ANALYSIS ON REAL DATA")
     logger.info("=" * 60)
     
     # Ensure output directory exists
@@ -172,7 +172,7 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
     data_result = load_real_embeddings(embeddings_path)
     if data_result is None:
         logger.error(" Failed to load real embeddings. Cannot proceed.")
-        logger.error("💡 Make sure to train your model first:")
+        logger.error(" Make sure to train your model first:")
         logger.error("   python train_enhanced_temporal_rnn.py")
         return None
     
@@ -282,7 +282,7 @@ def run_xai_analysis(embeddings_path, output_dir="results/xai_analysis"):
         return None
     
     # 5. Generate Report
-    logger.info("\n📋 Phase 5: Generating Report")
+    logger.info("\n Phase 5: Generating Report")
     
     # Create comprehensive summary
     summary = {
@@ -329,7 +329,7 @@ def print_analysis_summary(results, summary):
     """Print a comprehensive summary of the XAI analysis"""
     
     print("\n" + "="*80)
-    print("🔬 REAL DATA XAI ANALYSIS SUMMARY")
+    print(" REAL DATA XAI ANALYSIS SUMMARY")
     print("="*80)
     
     print(f"\n Data Analysis:")
@@ -357,7 +357,7 @@ def print_analysis_summary(results, summary):
             print(f"   {i}. {marker} ({category}) - Score: {importance:.4f}")
     
     if results.get('experimental_suggestions'):
-        print(f"\n🧪 High Priority Experimental Suggestions:")
+        print(f"\n High Priority Experimental Suggestions:")
         high_priority = [s for s in results['experimental_suggestions'] if s['priority'] == 'High']
         for i, suggestion in enumerate(high_priority[:3], 1):
             print(f"   {i}. {suggestion['marker']}: {suggestion['experiment']}")
@@ -475,7 +475,7 @@ def main():
     # Validate embeddings path
     if not os.path.exists(args.embeddings_path):
         print(f" Embeddings path does not exist: {args.embeddings_path}")
-        print("💡 Make sure to train your model first:")
+        print(" Make sure to train your model first:")
         print("   python train_enhanced_temporal_rnn.py")
         sys.exit(1)
     

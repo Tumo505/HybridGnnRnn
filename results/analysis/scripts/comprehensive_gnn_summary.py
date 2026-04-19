@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def analyze_model_comparison():
     """Compare all models and extract key insights"""
     
-    logger.info("🔬 COMPREHENSIVE GNN ANALYSIS SUMMARY")
+    logger.info(" COMPREHENSIVE GNN ANALYSIS SUMMARY")
     logger.info("=" * 70)
     
     # Load analysis results

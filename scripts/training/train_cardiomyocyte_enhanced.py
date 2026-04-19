@@ -353,7 +353,7 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
         # Check if training function is available
         if train_enhanced_cardiomyocyte_classifier is None:
             logger.error(" Training function not available due to import error")
-            logger.error("💡 Please fix the import issues in the script")
+            logger.error(" Please fix the import issues in the script")
             return False
         
         # Train model
@@ -407,7 +407,7 @@ Experiment logged to: {self.config['project_name']}/{self.config['experiment_nam
         print(f" Classes: {results['dataset_info']['num_classes']} cardiomyocyte subtypes")
         print(f" Results saved to: {self.viz_dir}")
         
-        print(f"\n📋 Per-Class Performance:")
+        print(f"\n Per-Class Performance:")
         
         # Get biological cell type names for mapping
         processor = Authentic10XProcessor()

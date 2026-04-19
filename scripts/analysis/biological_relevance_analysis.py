@@ -21,7 +21,7 @@ warnings.filterwarnings('ignore')
 
 def analyze_biological_relevance():
     """Analyze the biological relevance of the model"""
-    print("🔬 BIOLOGICAL RELEVANCE ANALYSIS")
+    print(" BIOLOGICAL RELEVANCE ANALYSIS")
     print("=" * 50)
     
     # Key biological considerations for cardiomyocyte differentiation
@@ -54,7 +54,7 @@ def analyze_biological_relevance():
     
     print("\n Biological Factor Analysis:")
     for factor, details in biological_factors.items():
-        print(f"\n🔸 {factor}:")
+        print(f"\n {factor}:")
         print(f"   Relevance: {details['relevance']}")
         print(f"   Implementation: {details['implementation']}")
         print(f"   Biological Basis: {details['biological_basis']}")
@@ -109,7 +109,7 @@ def analyze_overfitting_indicators():
     overfitting_concerns = []
     
     for strategy, metrics in overfitting_indicators.items():
-        print(f"\n🔸 {strategy.capitalize()} Strategy:")
+        print(f"\n {strategy.capitalize()} Strategy:")
         print(f"   Test Accuracy: {metrics['test_accuracy']:.4f}")
         print(f"   Test F1-Score: {metrics['test_f1']:.4f}")
         
@@ -129,7 +129,7 @@ def analyze_overfitting_indicators():
 
 def assess_model_robustness():
     """Assess model robustness and generalization"""
-    print("\n\n🛡️ ROBUSTNESS ASSESSMENT")
+    print("\n\n ROBUSTNESS ASSESSMENT")
     print("=" * 50)
     
     robustness_factors = {
@@ -162,7 +162,7 @@ def assess_model_robustness():
     
     print("\n Robustness Factor Analysis:")
     for factor, details in robustness_factors.items():
-        print(f"\n🔸 {factor}:")
+        print(f"\n {factor}:")
         print(f"   Current: {details['current']}")
         print(f"   Concern Level: {details['concern']}")
         print(f"   Recommendation: {details['recommendation']}")
@@ -269,13 +269,13 @@ def create_overfitting_analysis_plot():
 
 def generate_recommendations():
     """Generate specific recommendations for biological relevance and overfitting"""
-    print("\n\n💡 RECOMMENDATIONS")
+    print("\n\n RECOMMENDATIONS")
     print("=" * 50)
     
     recommendations = {
         "Biological Validation": [
-            "🔬 Validate predictions against known cardiac differentiation markers (TNNT2, MYL2, MYL7)",
-            "🧪 Compare temporal predictions with experimental differentiation timelines",
+            " Validate predictions against known cardiac differentiation markers (TNNT2, MYL2, MYL7)",
+            " Compare temporal predictions with experimental differentiation timelines",
             " Correlate spatial predictions with actual cell-cell interaction data",
             " Test on independent cardiomyocyte differentiation datasets"
         ],
@@ -283,19 +283,19 @@ def generate_recommendations():
             " Implement k-fold cross-validation (recommended: 5-fold)",
             " Collect larger datasets (target: >500 samples per class)",
             " Add more aggressive regularization (increase dropout to 40-50%)",
-            "📉 Monitor training/validation curves during training",
-            "🎲 Implement bootstrap sampling for robust performance estimates"
+            " Monitor training/validation curves during training",
+            " Implement bootstrap sampling for robust performance estimates"
         ],
         "Model Robustness": [
-            "🔄 Test model stability across different random seeds",
-            "📝 Implement learning curve analysis",
-            "⚖️ Add more sophisticated uncertainty calibration",
-            "🧮 Consider ensemble methods for increased robustness",
-            "📐 Implement feature importance analysis"
+            " Test model stability across different random seeds",
+            " Implement learning curve analysis",
+            " Add more sophisticated uncertainty calibration",
+            " Consider ensemble methods for increased robustness",
+            " Implement feature importance analysis"
         ],
         "Clinical Translation": [
-            "🏥 Validate uncertainty estimates against experimental variability",
-            "📋 Develop interpretability tools for biological insights",
+            " Validate uncertainty estimates against experimental variability",
+            " Develop interpretability tools for biological insights",
             " Create feature attribution analysis",
             " Establish confidence thresholds for clinical decisions",
             " Test on disease-specific differentiation protocols"
@@ -303,7 +303,7 @@ def generate_recommendations():
     }
     
     for category, items in recommendations.items():
-        print(f"\n🔸 {category}:")
+        print(f"\n {category}:")
         for item in items:
             print(f"   {item}")
     
@@ -327,12 +327,12 @@ def main():
     recommendations = generate_recommendations()
     
     # Summary assessment
-    print(f"\n\n📋 OVERALL ASSESSMENT")
+    print(f"\n\n OVERALL ASSESSMENT")
     print("=" * 50)
     
     # Biological relevance score
     bio_score = 82  # Based on analysis
-    print(f"🔬 Biological Relevance Score: {bio_score}/100")
+    print(f" Biological Relevance Score: {bio_score}/100")
     if bio_score >= 80:
         print("    High biological relevance - well-aligned with cardiomyocyte biology")
     elif bio_score >= 60:
@@ -355,10 +355,10 @@ def main():
     # Key recommendations
     print(f"\n TOP PRIORITY ACTIONS:")
     print("   1.  Implement k-fold cross-validation")
-    print("   2. 🔬 Validate against experimental cardiac markers")
+    print("   2.  Validate against experimental cardiac markers")
     print("   3.  Collect larger training dataset (>500 samples)")
-    print("   4. 🎲 Add bootstrap confidence intervals")
-    print("   5. 🧪 Test on independent biological datasets")
+    print("   4.  Add bootstrap confidence intervals")
+    print("   5.  Test on independent biological datasets")
     
     return {
         'biological_score': bio_score,

@@ -47,7 +47,7 @@ width = 0.35
 ax2.bar(x - width/2, fusion_acc, width, label='Accuracy (%)', alpha=0.8, color='#2E86AB')
 ax2.bar(x + width/2, fusion_f1, width, label='F1-Score (%)', alpha=0.8, color='#A23B72')
 
-ax2.set_title('🔬 Fusion Strategy Comparison', fontsize=16, fontweight='bold', pad=20)
+ax2.set_title(' Fusion Strategy Comparison', fontsize=16, fontweight='bold', pad=20)
 ax2.set_ylabel('Performance (%)', fontsize=12)
 ax2.set_xticks(x)
 ax2.set_xticklabels(fusion_strategies)
@@ -80,7 +80,7 @@ components = ['GNN\nEmbeddings', 'RNN\nEmbeddings', 'Fusion\nLayer', 'Classifier
 dimensions = [256, 512, 768, 7]  # 768 for concatenation, 7 for output classes
 
 ax4.barh(components, dimensions, color=['#2E86AB', '#A23B72', '#F18F01', '#4CAF50'], alpha=0.8)
-ax4.set_title('🏗️ Model Architecture Dimensions', fontsize=16, fontweight='bold', pad=20)
+ax4.set_title(' Model Architecture Dimensions', fontsize=16, fontweight='bold', pad=20)
 ax4.set_xlabel('Dimension Size', fontsize=12)
 ax4.grid(True, alpha=0.3)
 
@@ -112,10 +112,10 @@ summary_text = f"""
    • GNN Only (Spatial): 36.2% accuracy
    • RNN Only (Temporal): 93.75% accuracy
 
-🔬 HYBRID FUSION STRATEGIES:
+ HYBRID FUSION STRATEGIES:
    • Concatenation: 12.5% accuracy, 12.2% F1-score
    • Attention: 9.4% accuracy, 7.5% F1-score
-   • Ensemble: 21.9% accuracy, 20.6% F1-score ⭐ BEST
+   • Ensemble: 21.9% accuracy, 20.6% F1-score * BEST
 
  KEY ACHIEVEMENTS:
     Successful multimodal fusion implementation

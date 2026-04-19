@@ -724,7 +724,7 @@ class XAIVisualizationSuite:
         reliability_counts = pd.Series(reliabilities).value_counts()
         wedges, texts, autotexts = ax4.pie(reliability_counts.values, labels=reliability_counts.index,
                                           autopct='%1.1f%%', colors=['green', 'red'])
-        ax4.set_title('⚖️ Overall Reliability Assessment')
+        ax4.set_title(' Overall Reliability Assessment')
         
         plt.suptitle(' Uncertainty-Aware Model Explanations', fontsize=16, fontweight='bold')
         plt.tight_layout()
@@ -814,7 +814,7 @@ class XAIVisualizationSuite:
             reliability_counts = pd.Series(reliabilities).value_counts()
             ax4.pie(reliability_counts.values, labels=reliability_counts.index,
                    autopct='%1.1f%%', colors=['green', 'red'])
-            ax4.set_title('⚖️ Reliability Distribution', fontweight='bold')
+            ax4.set_title(' Reliability Distribution', fontweight='bold')
         else:
             # Show SHAP statistics as alternative
             if 'shap_analysis' in all_results:
@@ -853,14 +853,14 @@ class XAIVisualizationSuite:
             ax5.set_xticks(range(len(markers)))
             ax5.set_xticklabels(markers, rotation=45, ha='right')
             ax5.set_ylabel('Priority')
-            ax5.set_title('🧪 Suggested Experimental Validations', fontweight='bold')
+            ax5.set_title(' Suggested Experimental Validations', fontweight='bold')
             ax5.set_ylim(0, 1.2)
             
             # Add priority labels
             for i, priority in enumerate(priorities):
                 ax5.text(i, 0.5, priority, ha='center', va='center', fontweight='bold', color='white')
         
-        plt.suptitle('🔬 Comprehensive Explainable AI Dashboard', fontsize=18, fontweight='bold')
+        plt.suptitle(' Comprehensive Explainable AI Dashboard', fontsize=18, fontweight='bold')
         plt.savefig(self.output_dir / f"{save_name}.png", dpi=300, bbox_inches='tight')
         plt.close()
         
@@ -881,7 +881,7 @@ class HybridModelXAI:
         
     def comprehensive_analysis(self, gnn_embeddings, rnn_embeddings, targets=None):
         """Perform comprehensive explainable AI analysis"""
-        logger.info("🔬 Starting comprehensive explainable AI analysis...")
+        logger.info(" Starting comprehensive explainable AI analysis...")
         logger.info("=" * 70)
         
         results = {}
@@ -978,7 +978,7 @@ class HybridModelXAI:
             results['visualizations'] = {}
         
         # 7. Generate Summary Report
-        logger.info("\n📋 Phase 7: Generating Summary Report")
+        logger.info("\n Phase 7: Generating Summary Report")
         summary = self._generate_summary_report(results)
         results['summary_report'] = summary
         
@@ -1112,7 +1112,7 @@ def main_xai_analysis(model, gnn_embeddings, rnn_embeddings, targets=None):
     if results['summary_report']:
         report = results['summary_report']
         print("\n" + "="*80)
-        print("🔬 EXPLAINABLE AI ANALYSIS SUMMARY")
+        print(" EXPLAINABLE AI ANALYSIS SUMMARY")
         print("="*80)
         
         print(f"\n XAI Capabilities Enabled:")
@@ -1131,12 +1131,12 @@ def main_xai_analysis(model, gnn_embeddings, rnn_embeddings, targets=None):
                 print(f"   • {insight}")
         
         if report['experimental_recommendations']:
-            print(f"\n🧪 Experimental Recommendations:")
+            print(f"\n Experimental Recommendations:")
             for rec in report['experimental_recommendations'][:3]:
                 print(f"   • {rec}")
         
         if 'reliability_assessment' in report:
-            print(f"\n⚖️ Reliability Assessment:")
+            print(f"\n Reliability Assessment:")
             print(f"   • {report['reliability_assessment']['high_reliability_predictions']} of predictions are highly reliable")
             print(f"   • {report['reliability_assessment']['total_samples_analyzed']} samples analyzed")
         
@@ -1146,6 +1146,6 @@ def main_xai_analysis(model, gnn_embeddings, rnn_embeddings, targets=None):
 
 if __name__ == "__main__":
     # This would be called after loading a trained model
-    print("🔬 Explainable AI Framework for Hybrid GNN-RNN Model")
+    print(" Explainable AI Framework for Hybrid GNN-RNN Model")
     print("   Load a trained model and embeddings to run XAI analysis")
     print("   Usage: main_xai_analysis(model, gnn_embeddings, rnn_embeddings)")

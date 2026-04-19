@@ -114,7 +114,7 @@ class EmbeddingAligner:
     
     def _align_embeddings(self, gnn_targets, rnn_targets):
         """Align embeddings to ensure they correspond to same samples using sample IDs"""
-        logger.info("🔄 Aligning GNN and RNN embeddings by sample IDs...")
+        logger.info(" Aligning GNN and RNN embeddings by sample IDs...")
         
         # Try to load sample metadata for proper alignment
         gnn_metadata_file = self.gnn_dir / "trained_gnn_embeddings_20250921_193410" / "Fold_3" / "sample_ids.npy"
@@ -154,7 +154,7 @@ class EmbeddingAligner:
     
     def _stratified_alignment(self, gnn_targets, rnn_targets):
         """Fallback: Align by maintaining class distribution proportions"""
-        logger.info("   🔄 Performing class-stratified alignment...")
+        logger.info("    Performing class-stratified alignment...")
         
         # Get unique classes and their counts in both datasets
         gnn_classes, gnn_counts = np.unique(gnn_targets, return_counts=True)
@@ -223,13 +223,13 @@ class EmbeddingAligner:
     def reduce_dimensions(self, gnn_dim=None, rnn_dim=None):
         """Optional dimensionality reduction using PCA"""
         if gnn_dim and gnn_dim < self.gnn_embeddings.shape[1]:
-            logger.info(f"🔄 Reducing GNN dimensions: {self.gnn_embeddings.shape[1]} → {gnn_dim}")
+            logger.info(f" Reducing GNN dimensions: {self.gnn_embeddings.shape[1]} → {gnn_dim}")
             pca_gnn = PCA(n_components=gnn_dim)
             self.gnn_embeddings = pca_gnn.fit_transform(self.gnn_embeddings)
             logger.info(f"    GNN PCA explained variance: {pca_gnn.explained_variance_ratio_.sum():.3f}")
             
         if rnn_dim and rnn_dim < self.rnn_embeddings.shape[1]:
-            logger.info(f"🔄 Reducing RNN dimensions: {self.rnn_embeddings.shape[1]} → {rnn_dim}")
+            logger.info(f" Reducing RNN dimensions: {self.rnn_embeddings.shape[1]} → {rnn_dim}")
             pca_rnn = PCA(n_components=rnn_dim)
             self.rnn_embeddings = pca_rnn.fit_transform(self.rnn_embeddings)
             logger.info(f"    RNN PCA explained variance: {pca_rnn.explained_variance_ratio_.sum():.3f}")
@@ -1204,7 +1204,7 @@ def main_enhanced():
     logger.info("=" * 80)
     
     # Step 1: Load and align embeddings with enhanced method
-    logger.info("\n🔄 Step 1: Loading and aligning embeddings (Enhanced)...")
+    logger.info("\n Step 1: Loading and aligning embeddings (Enhanced)...")
     
     aligner = EmbeddingAligner(
         gnn_dir="analysis/gnn_embeddings",
@@ -1233,7 +1233,7 @@ def main_enhanced():
     
     for strategy in fusion_strategies:
         logger.info(f"\n{'='*60}")
-        logger.info(f"🔬 TESTING ENHANCED {strategy.upper()} FUSION STRATEGY")
+        logger.info(f" TESTING ENHANCED {strategy.upper()} FUSION STRATEGY")
         logger.info(f"{'='*60}")
         
         # Train enhanced model
@@ -1522,7 +1522,7 @@ def main():
     logger.info("=" * 70)
     
     # Step 1: Load and align embeddings
-    logger.info("\n🔄 Step 1: Loading and aligning embeddings...")
+    logger.info("\n Step 1: Loading and aligning embeddings...")
     
     aligner = EmbeddingAligner(
         gnn_dir="analysis/gnn_embeddings",
@@ -1550,7 +1550,7 @@ def main():
     
     for strategy in fusion_strategies:
         logger.info(f"\n{'='*50}")
-        logger.info(f"🔬 TESTING {strategy.upper()} FUSION STRATEGY")
+        logger.info(f" TESTING {strategy.upper()} FUSION STRATEGY")
         logger.info(f"{'='*50}")
         
         # Train model

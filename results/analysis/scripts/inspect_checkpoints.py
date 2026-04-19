@@ -16,7 +16,7 @@ def inspect_checkpoint(checkpoint_path):
         checkpoint = torch.load(checkpoint_path, map_location='cpu', weights_only=False)
         
         if isinstance(checkpoint, dict):
-            print("📋 Checkpoint Structure:")
+            print(" Checkpoint Structure:")
             for key in checkpoint.keys():
                 if key == 'model_state_dict' or key == 'state_dict':
                     print(f"   {key}: Model weights")
@@ -36,7 +36,7 @@ def inspect_checkpoint(checkpoint_path):
         else:
             state_dict = checkpoint
             
-        print("\n🏗️ Model Architecture (Layer shapes):")
+        print("\n Model Architecture (Layer shapes):")
         for name, param in state_dict.items():
             if hasattr(param, 'shape'):
                 print(f"   {name}: {param.shape}")

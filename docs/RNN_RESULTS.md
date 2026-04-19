@@ -35,7 +35,7 @@ This document presents comprehensive results from the Temporal Cardiac RNN model
 - ** Exceptional Accuracy**: 96.88% test accuracy exceeds initial targets
 - ** Strong Generalization**: Minimal overfitting with 0.054 train-val gap
 - **⚡ Efficient Training**: Convergence in 28 epochs (~25 minutes)
-- **🔬 Biological Relevance**: High per-class performance across all differentiation stages
+- ** Biological Relevance**: High per-class performance across all differentiation stages
 - ** Robust Evaluation**: Comprehensive metrics across multiple dimensions
 
 ### 1.3 Model Specifications

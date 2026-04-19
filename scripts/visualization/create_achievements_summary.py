@@ -100,7 +100,7 @@ def create_enhancement_summary():
     ax4.fill(angles, readiness_scores, alpha=0.25, color='#4ECDC4')
     
     ax4.set_ylim(0, 100)
-    ax4.set_title('🔬 Biological Validation Framework Readiness', 
+    ax4.set_title(' Biological Validation Framework Readiness', 
                   fontsize=14, fontweight='bold', pad=20)
     
     # Add labels
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     print(f"   • Confidence: 87.61% average prediction confidence")
     print(f"   • Robustness: Balanced training with uncertainty quantification")
     print(f"   • Biological Alignment: Framework ready for research validation")
-    print("\n💡 READY FOR:")
+    print("\n READY FOR:")
     print("   • Real biological data with sample IDs")
     print("   • Marker gene expression validation")
     print("   • Clinical decision support with uncertainty")
