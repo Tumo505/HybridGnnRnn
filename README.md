@@ -11,7 +11,7 @@
 
 A state-of-the-art deep learning framework that combines Graph Neural Networks (GNN) and Recurrent Neural Networks (RNN) for predicting cardiomyocyte differentiation trajectories. This project integrates **spatial multi-omics data** (spatial transcriptomics) with temporal gene expression patterns to achieve superior classification performance and biological interpretability(**96.67% accuracy**).
 
-## 🎯 Project Overview
+## Project Overview
 
 ### Research Objectives
 
@@ -22,12 +22,12 @@ A state-of-the-art deep learning framework that combines Graph Neural Networks (
 
 ### Key Features
 
-- 🔬 **Multimodal Learning**: Combines spatial (GNN) and temporal (RNN) embeddings from multi-omics datasets
-- 🧬 **Biological Interpretability**: Explainable AI with cardiac gene mapping and pathway analysis
-- 📊 **Comprehensive Evaluation**: Multiple fusion strategies and performance metrics
-- 🎯 **High Performance**: 96.7% hybrid model accuracy with robust statistical validation
-- 🔍 **Uncertainty Analysis**: SHAP-based feature importance and confidence estimation
-- 📈 **Statistical Rigor**: Cross-validation, stratified sampling, and multiple evaluation metrics
+- **Multimodal Learning**: Combines spatial (GNN) and temporal (RNN) embeddings from multi-omics datasets
+- **Biological Interpretability**: Explainable AI with cardiac gene mapping and pathway analysis
+- **Comprehensive Evaluation**: Multiple fusion strategies and performance metrics
+- **High Performance**: 96.7% hybrid model accuracy with robust statistical validation
+- **Uncertainty Analysis**: SHAP-based feature importance and confidence estimation
+- **Statistical Rigor**: Cross-validation, stratified sampling, and multiple evaluation metrics
 
 ### Technical Innovation
 
@@ -36,9 +36,9 @@ A state-of-the-art deep learning framework that combines Graph Neural Networks (
 - **Statistical Validation**: Rigorous cross-validation with class balancing and overfitting prevention
 - **Explainable AI Framework**: SHAP-based interpretability with biological pathway mapping
 
-## 🧬 Datasets and Data Sources
+## Datasets and Data Sources
 
-> **📁 Dataset Repository**: Complete datasets used in this project are available on Zenodo:  
+> **Dataset Repository**: Complete datasets used in this project are available on Zenodo:  
 > **DOI**: [10.5281/zenodo.17196578](https://doi.org/10.5281/zenodo.17196578)
 
 ### Spatial Multi-Omics Data
@@ -76,7 +76,7 @@ The hybrid approach integrates these complementary data types:
 - **Temporal Component (RNN)**: Captures sequential dynamics of differentiation processes
 - **Fusion Strategy**: Combines learned representations from both modalities
 
-## 🔧 Technical Framework and Tools
+## Technical Framework and Tools
 
 ### Core Deep Learning Frameworks
 
@@ -137,7 +137,7 @@ tensorboard==2.14.0             # Training visualization
 wandb>=0.15.0                   # Experiment tracking
 tqdm==4.66.0                    # Progress bars
 ```
-## 📊 Data Preprocessing Pipeline
+## Data Preprocessing Pipeline
 
 ### Spatial Transcriptomics Preprocessing
 
@@ -206,7 +206,7 @@ pca_gnn = PCA(n_components=128, explained_variance_ratio=0.95)
 pca_rnn = PCA(n_components=256, explained_variance_ratio=0.90)
 ```
 
-## 🏗️ Model Architecture and Development
+## Model Architecture and Development
 
 ### Phase 1: Individual Model Development
 

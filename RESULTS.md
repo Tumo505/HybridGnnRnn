@@ -1,14 +1,14 @@
-# 📊 Detailed Results Documentation
+# Detailed Results Documentation
 
 **Hybrid GNN-RNN Model for Cardiomyocyte Differentiation Classification**
 
 ---
 
-## 📋 Executive Summary
+## Executive Summary
 
 This document provides comprehensive results analysis for our hybrid GNN-RNN architecture applied to cardiomyocyte differentiation classification. The model achieves state-of-the-art performance through innovative fusion strategies, uncertainty quantification, and explainable AI integration.
 
-### 🎯 **Key Performance Highlights**
+### **Key Performance Highlights**
 
 - **Best Accuracy**: 96.67% (Ensemble Fusion Strategy)
 - **Robust Performance**: Consistent 80-97% accuracy across all fusion strategies
@@ -17,9 +17,9 @@ This document provides comprehensive results analysis for our hybrid GNN-RNN arc
 
 ---
 
-## 📈 Performance Analysis
+## Performance Analysis
 
-### 🔬 **Fusion Strategy Comparison**
+### **Fusion Strategy Comparison**
 
 | Strategy | Accuracy | F1-Score | Precision | Recall | Avg Confidence |
 |----------|----------|----------|-----------|---------|-----------------|
@@ -27,7 +27,7 @@ This document provides comprehensive results analysis for our hybrid GNN-RNN arc
 | **Attention** | 86.67% | 86.67% | 85.42% | 85.42% | 91.66% |
 | **Concatenation** | 80.00% | 79.11% | 81.25% | 77.08% | 88.23% |
 
-### 🏆 **Best Performing Model: Ensemble Fusion**
+### **Best Performing Model: Ensemble Fusion**
 
 The ensemble fusion strategy achieved the highest performance with:
 
@@ -39,7 +39,7 @@ The ensemble fusion strategy achieved the highest performance with:
   - Class 2 (Late): 100% Precision, 83.3% Recall
   - Class 3 (Mature): 100% Precision, 100% Recall
 
-### 📊 **Confusion Matrix Analysis - Ensemble Strategy**
+### **Confusion Matrix Analysis - Ensemble Strategy**
 
 ```
          Predicted
@@ -60,9 +60,9 @@ l
 
 ---
 
-## 🧠 Temporal RNN Performance
+## Temporal RNN Performance
 
-### 📊 **Training Progression Analysis**
+### **Training Progression Analysis**
 
 **Model Architecture**: 7.34M parameters
 - **Input Dimensions**: 512-dimensional temporal features
@@ -76,7 +76,7 @@ l
 - **Validation Loss**: 0.099 (excellent convergence)
 - **Generalization Gap**: 3.12% (minimal overfitting)
 
-### 📈 **Learning Curve Analysis**
+### **Learning Curve Analysis**
 
 | Epoch Range | Train Acc | Val Acc | Learning Pattern |
 |-------------|-----------|---------|------------------|
@@ -87,9 +87,9 @@ l
 
 ---
 
-## 🔍 Explainable AI Analysis
+## Explainable AI Analysis
 
-### 🧬 **Biological Feature Importance**
+### **Biological Feature Importance**
 
 Our XAI analysis using SHAP and LIME identified key biological markers driving model decisions:
 
@@ -116,7 +116,7 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 - **Pattern Recognition**: Model identifies stage-specific expression trajectories
 - **Biological Relevance**: Features correlate with known cardiogenesis pathways
 
-### 🎯 **Model Decision Interpretation**
+### **Model Decision Interpretation**
 
 **SHAP Analysis Results**:
 - **640 total features** analyzed (128 GNN + 512 RNN)
@@ -126,16 +126,16 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 
 ---
 
-## 📊 Statistical Significance Analysis
+## Statistical Significance Analysis
 
-### 🔬 **Cross-Validation Results**
+### **Cross-Validation Results**
 
 **5-Fold Stratified Cross-Validation**:
 - **Mean Accuracy**: 88.4% ± 4.2%
 - **Stability Score**: 94.3% (low variance across folds)
 - **Confidence Intervals**: 95% CI [86.1%, 90.7%]
 
-### 📈 **Uncertainty Quantification**
+### **Uncertainty Quantification**
 
 **MC Dropout Analysis** (50 forward passes):
 
@@ -152,9 +152,9 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 
 ---
 
-## 🔬 Biological Validation
+## Biological Validation
 
-### 🧬 **Pathway Analysis**
+### **Pathway Analysis**
 
 **Identified Biological Pathways**:
 
@@ -170,7 +170,7 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
    - 154+ temporal features with stage-specific patterns
    - Matches known cardiogenesis timelines
 
-### 🎯 **Experimental Validation Suggestions**
+### **Experimental Validation Suggestions**
 
 **High-Priority Targets**:
 
@@ -188,9 +188,9 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 
 ---
 
-## ⚡ Computational Performance
+## Computational Performance
 
-### 🖥️ **Training Efficiency**
+### **Training Efficiency**
 
 **Hardware Requirements**:
 
@@ -206,7 +206,7 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 - **Batch processing** enables larger datasets
 - **Memory efficiency** through gradient checkpointing
 
-### 📊 **Inference Performance**
+### **Inference Performance**
 
 | Metric | Value | Unit |
 |--------|-------|------|
@@ -217,9 +217,9 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 
 ---
 
-## 📋 Comparative Analysis
+## Comparative Analysis
 
-### 🔄 **Comprehensive Baseline Comparisons**
+### **Comprehensive Baseline Comparisons**
 
 | Method | Domain | Accuracy | F1-Score | Key Features | Reference/Context |
 |--------|--------|----------|----------|--------------|-------------------|
@@ -241,7 +241,7 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 | **Ensemble Fusion (Ours)** | **Hybrid** | **94.71%** | **94.42%** | **Late fusion strategy** | **This work** |
 | **Attention Fusion (Ours)** | **Hybrid** | **95.83%** | **95.61%** | **Dynamic attention weighting** | **This work** |
 
-### 📈 **Performance Tier Analysis**
+### **Performance Tier Analysis**
 
 **State-of-the-Art Performance Tiers**:
 
@@ -251,7 +251,7 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 - **Tier 4 (65-75%)**: Temporal Graph Networks (74.6%), GraphSAINT (72.8%), GraphMixer (69.1%)
 - **Tier 5 (<65%)**: Our Spatial GNN (65.29%) - limited by single modality
 
-### 📊 **Improvement Analysis**
+### **Improvement Analysis**
 
 **Relative Improvements vs State-of-the-Art**:
 
@@ -277,9 +277,9 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 
 ---
 
-## 🧪 Ablation Studies
+## Ablation Studies
 
-### 🔧 **Component Analysis**
+### **Component Analysis**
 
 | Component | Accuracy | Impact | Notes |
 |-----------|----------|---------|--------|
@@ -289,7 +289,7 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 | Without Regularization | 91.3% | -5.37% | Overfitting issues |
 | Single Modality | 88.2% | -8.47% | Information loss |
 
-### 📊 **Fusion Strategy Impact**
+### **Fusion Strategy Impact**
 
 **Strategy Effectiveness**:
 1. **Ensemble**: Best accuracy through complementary predictions
@@ -298,9 +298,9 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 
 ---
 
-## 📐 Model Architecture Analysis
+## Model Architecture Analysis
 
-### 🏗️ **Architecture Components**
+### **Architecture Components**
 
 **GNN Branch**:
 - **Input**: 128-dimensional spatial features
@@ -317,7 +317,7 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 - **Attention**: Cross-modal attention mechanism
 - **Concatenation**: Direct feature combination
 
-### 📊 **Parameter Distribution**
+### **Parameter Distribution**
 
 | Component | Parameters | Percentage |
 |-----------|------------|------------|
@@ -328,9 +328,9 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 
 ---
 
-## 🎯 Clinical Implications
+## Clinical Implications
 
-### 🏥 **Translational Potential**
+### **Translational Potential**
 
 **Drug Development**:
 - **Target Identification**: PLN, FKBP1A as therapeutic targets
@@ -342,7 +342,7 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 - **Process Optimization**: Real-time differentiation monitoring
 - **Standardization**: Consistent classification across laboratories
 
-### 📊 **Validation Pipeline**
+### **Validation Pipeline**
 
 **Recommended Validation Steps**:
 
@@ -360,9 +360,9 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 
 ---
 
-## 📈 Future Directions
+## Future Directions
 
-### 🔬 **Technical Improvements**
+### **Technical Improvements**
 
 **Model Architecture**:
 - **Transformer Integration**: Attention-based temporal modeling
@@ -374,7 +374,7 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 - **Time-course**: Higher temporal resolution analysis
 - **Single-cell**: Cell-level heterogeneity modeling
 
-### 🧬 **Biological Extensions**
+### **Biological Extensions**
 
 **Extended Applications**:
 - **Other Cell Types**: Neuronal, hepatic differentiation
@@ -383,9 +383,9 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 
 ---
 
-## 📊 Summary Statistics
+## Summary Statistics
 
-### 📈 **Overall Performance Summary**
+### **Overall Performance Summary**
 
 | Metric | Value | Standard Deviation |
 |--------|-------|-------------------|
@@ -395,7 +395,7 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 | **F1-Score** | 96.61% | ±3.75% |
 | **AUC-ROC** | 0.987 | ±0.008 |
 
-### 🎯 **Key Success Factors**
+### **Key Success Factors**
 
 1. **Hybrid Architecture**: Optimal fusion of spatial and temporal information
 2. **Uncertainty Quantification**: Robust confidence estimation
@@ -404,9 +404,9 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
 
 ---
 
-## 📄 Citations and References
+## Citations and References
 
-### 📚 **Data Sources**
+### **Data Sources**
 
 1. **Kuppe et al. (2022)** - Spatial transcriptomics data
    - *Nature* - 10X Genomics Visium platform
@@ -416,14 +416,14 @@ Our XAI analysis using SHAP and LIME identified key biological markers driving m
    - *PLoS Genetics* - scRNA-seq differentiation time series
    - 800 samples, cardiomyocyte trajectory
 
-### 🔬 **Methodological References**
+### **Methodological References**
 
 1. **SHAP Analysis**: Lundberg & Lee (2017) - Explainable AI framework
 2. **MC Dropout**: Gal & Ghahramani (2016) - Uncertainty quantification
 3. **Graph Neural Networks**: Kipf & Welling (2017) - Spatial modeling
 4. **Attention Mechanisms**: Vaswani et al. (2017) - Fusion strategies
 
-## 📄 License
+## License
 
 This results documentation is provided under the **Creative Commons Attribution 4.0 International License (CC BY 4.0)**.
 

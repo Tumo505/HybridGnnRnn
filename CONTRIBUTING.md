@@ -544,4 +544,4 @@ For questions or additional guidance, please:
 - Join our discussion forums
 - Contact the maintainers directly
 
-**Happy coding!** 🚀🧬🤖
+**Happy coding!**

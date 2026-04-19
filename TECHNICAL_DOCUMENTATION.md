@@ -619,37 +619,37 @@ class TestHybridModel:
 
 ## Key Features Summary
 
-### 🔬 **Multimodal Learning**
+### **Multimodal Learning**
 
 - **Tools**: PyTorch, PyTorch Geometric, scikit-learn
 - **Methods**: Graph Neural Networks + Recurrent Neural Networks
 - **Data**: Spatial transcriptomics + temporal gene expression
 
-### 🧬 **Biological Interpretability**
+### **Biological Interpretability**
 
 - **Tools**: SHAP (v0.48.0), matplotlib, seaborn
 - **Methods**: Feature importance analysis, cardiac gene mapping
 - **Output**: Pathway analysis and biological validation
 
-### 📊 **Comprehensive Evaluation**
+### **Comprehensive Evaluation**
 
 - **Tools**: scikit-learn metrics, statsmodels
 - **Methods**: K-fold cross-validation, statistical significance testing
 - **Metrics**: Accuracy, F1-score, precision, recall, confidence intervals
 
-### 🎯 **High Performance**
+### **High Performance**
 
 - **Achievement**: 96.67% hybrid model accuracy
 - **Validation**: 5-fold stratified cross-validation
 - **Significance**: Statistical testing with p < 0.001
 
-### 🔍 **Uncertainty Analysis**
+### **Uncertainty Analysis**
 
 - **Tools**: Monte Carlo Dropout, SHAP
 - **Methods**: Epistemic uncertainty quantification
 - **Output**: Confidence estimation and prediction reliability
 
-### 📈 **Statistical Rigor**
+### **Statistical Rigor**
 
 - **Tools**: scikit-learn, statsmodels, scipy.stats
 - **Methods**: Cross-validation, stratified sampling, McNemar's test
