@@ -1,6 +1,36 @@
 # Data folder - contains large datasets
 data/
 
+# Local foundation-model assets, checkpoints, tokenized datasets, and outputs
+models/
+foundation_model_data/
+foundation_geneformer*/
+foundation_geneformer_embeddings/
+foundation_validation/*
+!foundation_validation/VALIDATION_SUMMARY.md
+!foundation_validation/manual_marker_review_CMES_MES_PROG.md
+!foundation_validation/repeated_line_cv_plan/
+foundation_validation/repeated_line_cv_plan/*
+!foundation_validation/repeated_line_cv_plan/run_full_repeated_cv.cmd
+
+# Local Mauron training outputs and caches
+cache/
+mauron_*_case_split*/
+mauron_spatial_gnn_*/
+mauron_spatial_hybrid_*/
+mauron_biological_diagnostics*/
+
+# Generated experiment archives/results
+analysis/
+results/
+visualizations/
+xai_visualizations/
+enhanced_*results*/
+experiments_enhanced_cardiomyocyte/
+temporal_*results*.json
+temporal_rnn_visualizations*/
+test_feature_importance.png
+
 # Python
 __pycache__/
 *.py[cod]
@@ -39,6 +69,8 @@ venv.bak/
 # PyTorch
 *.pth
 *.pkl
+*.safetensors
+*.npy
 
 # Experiments and logs
 experiments/

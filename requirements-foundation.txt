@@ -1,0 +1,15 @@
+# Optional foundation-model stack for Geneformer fine-tuning.
+# Install separately from the lightweight Mauron baseline environment.
+transformers>=4.40,<5
+datasets>=2.18
+accelerate>=0.29
+evaluate>=0.4
+peft>=0.10
+bitsandbytes>=0.43; platform_system != "Windows"
+loompy>=3.0
+anndata>=0.10
+scanpy>=1.10
+numpy<2.4
+pyarrow>=21,<24
+tdigest>=0.5
+tensorboard>=2.20

@@ -1,3 +1,1 @@
-"""
-Models package for Advanced Temporal RNN
-"""
+"""Models for the Mauron Visium spatial GNN project."""

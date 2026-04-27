@@ -1,11 +1,7 @@
-"""
-GNN Models for Spatial Gene Expression Analysis
-"""
+"""GNN models for Mauron Visium spatial analysis."""
 
-from .enhanced_spatial_gnn import EnhancedSpatialGNN
-from .cardiomyocyte_gnn import AdvancedCardiomyocyteGNN
+from .mauron_spatial_gnn import MauronSpatialGNN
 
 __all__ = [
-    'EnhancedSpatialGNN',
-    'AdvancedCardiomyocyteGNN'
+    'MauronSpatialGNN'
 ]

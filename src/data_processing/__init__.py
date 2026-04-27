@@ -1,9 +1,8 @@
-"""
-Data processing package for Advanced Temporal RNN and Spatial GNN Analysis
-"""
+"""Data processing for the Mauron Visium spatial GNN project."""
 
-from .authentic_10x_processor import Authentic10XProcessor
+from .mauron_visium_processor import MauronBuildConfig, MauronVisiumGraphDataset
 
 __all__ = [
-    'Authentic10XProcessor'
+    'MauronBuildConfig',
+    'MauronVisiumGraphDataset'
 ]
