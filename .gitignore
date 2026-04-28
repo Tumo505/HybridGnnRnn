@@ -6,6 +6,11 @@ models/
 foundation_model_data/
 foundation_geneformer*/
 foundation_geneformer_embeddings/
+foundation_multiatlas_baselines*/
+foundation_spatiotemporal_alignment*/
+foundation_spatiotemporal_alignment_inputs*/
+foundation_spatial_geneformer_adapter_inputs*/
+foundation_geneformer_spatial_context_adapter*/
 foundation_validation/*
 !foundation_validation/VALIDATION_SUMMARY.md
 !foundation_validation/manual_marker_review_CMES_MES_PROG.md
