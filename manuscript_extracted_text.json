@@ -1,0 +1,1454 @@
+{
+  "IntechOpen_Journal_Article.docx": {
+    "paragraphs": [
+      {
+        "idx": 0,
+        "style": "",
+        "text": "Modelling the 4D Space-Time of Cardiac Differentiation Using a Hybrid Graph-Recurrent Neural NetworkTumo Kgabeng1, Lulu Wang 1,2, Harry Ngwangwa1, Thanyani Pandelani1* 1 UNISA Biomedical Engineering Research Group, Department of Mechanical, Bioresources, and Biomedical Engineering, University of South Africa (UNISA), Florida Science Campus, Roodepoort 1709, South Africa2 Department of Engineering, Reykjavik University, 102 Reykjavik, Iceland"
+      },
+      {
+        "idx": 1,
+        "style": "",
+        "text": "128346416@mylife.unisa.ac.za, 1,2luluw@ru.is, 1ngwanhm@unisa.ac.za"
+      },
+      {
+        "idx": 2,
+        "style": "",
+        "text": "*Address all correspondence to: Corresponding Authorepandet@unisa.ac.za"
+      },
+      {
+        "idx": 3,
+        "style": "AuthorList",
+        "text": "AbstractCardiac cell differentiation is a complex biological process governed by the interplay of spatial, temporal, and molecular factors, yet unravelling its dynamic patterns across four-dimensional space-time remains a critical challenge in computational biology and regenerative medicine. Addressing this gap, we present a novel deep learning approach that integrates Graph Neural Networks (GNNs) with Recurrent Neural Networks (RNNs) to model and predict human cardiomyocyte differentiation trajectories from multimodal spatial transcriptomics and temporal gene expression datasets. Leveraging the unique strengths of GNNs for capturing local spatial relationships within cardiac tissue and RNNs for representing sequential differentiation stages, our hybrid architecture achieves robust fusion of spatial and temporal features. Utilising publicly available datasets of human myocardial infarction spatial maps and iPSC-derived cardiomyocyte differentiation time series, we implemented rigorous preprocessing pipelines and multimodal fusion strategies, including early, late, and attention-based fusion. The ensemble fusion model demonstrated state-of-the-art predictive accuracy (96.67%), outperforming single-modality baselines and enabling fine-grained classification of differentiation pathways. Explainable AI techniques, such as SHAP, provided biological interpretability by identifying key genes and pathways associated with developmental stages and validating the model’s focus on known cardiac transcription factors and ion channel genes. Our findings advance methodological innovation in multimodal deep learning for cardiac development, offering a framework for integrating multi-omics data in four dimensions and providing actionable insights for regenerative therapies, disease modelling, and understanding the mechanisms underlying human cardiac differentiation."
+      },
+      {
+        "idx": 4,
+        "style": "AuthorList",
+        "text": "Keywords"
+      },
+      {
+        "idx": 5,
+        "style": "",
+        "text": "Cardiac differentiation, Graph Neural Networks, multimodal fusion, Recurrent Neural Networks, spatial transcriptomics"
+      },
+      {
+        "idx": 7,
+        "style": "ListParagraph",
+        "text": "Introduction"
+      },
+      {
+        "idx": 8,
+        "style": "",
+        "text": "Cardiomyocyte differentiation is governed by a finely tuned interplay of spatial organisation and temporal gene expression, culminating in the formation of a functional heart(1–3). Conventional studies often examine either spatial architectures, through histological imaging or spatial transcriptomics, or temporal dynamics, via time-series transcriptomic analyses, yet rarely integrate these dimensions to reconstruct the full four-dimensional (4D) trajectory of cell fate transitions(4–6). Spatial transcriptomics platforms such as 10X Genomics Visium have revealed the tissue microenvironment and neighbourhood relationships among cardiac cells in myocardial infarction contexts, mapping gene expression across hundreds of spatially resolved spots(6–8). Concurrently, single-cell RNA sequencing time-series datasets have elucidated the sequential expression patterns underlying cardiomyocyte lineage progression, capturing dynamic regulatory programs over differentiation time points(9–12)."
+      },
+      {
+        "idx": 9,
+        "style": "",
+        "text": "Despite these advances, unimodal computational frameworks lack the capacity to model 4D spatiotemporal complexity, thereby obscuring critical insights into how spatial context modulates temporal gene regulatory networks. Graph Neural Networks (GNNs) excel at representing spatial relationships by learning form graph-structured data such as cell-cell interaction networks(13,14), whereas Recurrent Neural Networks (RNNs), particularly bidirectional Long Short-Term Memory (BiLSTM) architectures, effectively model sequential dependencies in gene expression trajectories(15,16). Hybrid multimodal fusion approaches have emerged in other biomedical domains to combine complementary data streams, yet their application to cardiac biology remains underexplored(17)."
+      },
+      {
+        "idx": 10,
+        "style": "",
+        "text": "Here, we introduce a novel hybrid deep learning framework that integrates GNN-based spatial embeddings from Visium spatial transcriptomics with RNN-based temporal embeddings from cardiomyocyte differentiation time-series data. We systematically evaluate three fusion strategies – early concatenation, late ensemble, and attention-based dynamic fusion – to capture the synergistic contributions of spatial and temporal features. To ensure interpretability and biological relevance, we incorporate an explainable AI (XAI) pipeline using Shapley Additive exPlanations (SHAP) coupled with a curated cardiac gene marker database. This 4D integrative approach not only achieves state-of-the-art accuracy in predicting differentiation trajectories, but also uncovers key spatial-temporal regulatory motifs, offering new insights into cardiac development and potential targets for regenerative medicine."
+      },
+      {
+        "idx": 11,
+        "style": "ListParagraph",
+        "text": "Materials and Methods / Methodology"
+      },
+      {
+        "idx": 12,
+        "style": "ListParagraph",
+        "text": "Data Sources and Acquisition"
+      },
+      {
+        "idx": 13,
+        "style": "",
+        "text": "Spatial transcriptomics data were obtained from the human myocardial infarction atlas by Kuppe et al., (2022)(8), comprising 752 spatially resolved tissue spots (10X Genomics Visium platform, 55 µm resolution) with gene expression profiles and preserved spatial coordinates. Temporal cardiomyocyte differentiation data were obtained from Elorbany et al. (2022)(18), consisting of 800 scRNA-seq samples across four differentiation trajectories (200 samples each, 10 sequential time points). Both datasets were accessed via public repositories, the spatial transcriptomics dataset was accessed from Human Cell Atlas(https://explore.data.humancellatlas.org/projects/e9f36305-d857-44a3-93f0-df4e6007dc97), and the temporal cardiomyocyte differentiation dataset was accessed from  Gene Expression Omnibus (GEO) with accession number GSE175634(https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE175634). The datasets were both processed using scanpy (v1.9.5) and anndata (v0.9.2), the pre-processed datasets are available on Zenodo with doi 10.5281/zenodo.17196578 (https://doi.org/10.5281/zenodo.17196578)(19)."
+      },
+      {
+        "idx": 14,
+        "style": "ListParagraph",
+        "text": "Data Preprocessing and Feature Engineering"
+      },
+      {
+        "idx": 15,
+        "style": "",
+        "text": "Both spatial and temporal datasets underwent standard quality control using scanpy workflows. For spatial data, spots with <500 detected genes and genes expressed in <10 spots were excluded, as were spots with >20% mitochondrial content. For temporal data, cells with <1,000 detected genes and genes expressed in <50 cells were removed, with doublet detection performed using Scrublet (v0.2.3)"
+      },
+      {
+        "idx": 16,
+        "style": "",
+        "text": "Normalisation pipelines: Total-count normalisation (target sum = 10,000), log transformation , and z-score standardisation were applied:"
+      },
+      {
+        "idx": 18,
+        "style": "",
+        "text": "Highly variable genes (n = 2,000) were selected for both modalities. Spatial neighbourhood graphs were constructed using k-nearest neighbours (k = 6) with Euclidean distances  and inverse distance edge weighting . Temporal sequences were smoothed using moving average filters (window = 3), with RNA velocity (scVelo v0.2.5) confirming differentiation directionality. Dimensionality reduction via Principal Component Analysis (PCA) retained 128 components (95% variance) for spatial and 256 components (90% variance) for temporal data."
+      },
+      {
+        "idx": 19,
+        "style": "ListParagraph",
+        "text": "Model Architecture"
+      },
+      {
+        "idx": 20,
+        "style": "ListParagraph",
+        "text": "Graph Neural Network Component"
+      },
+      {
+        "idx": 21,
+        "style": "",
+        "text": "The GNN was implemented using PyTorch Geometric (v2.4.0), combining Graph Attention Network (GAT) and Graph Convolutional Network (GCN) layers. Input gene expression vectors (2,000 dimensions) were projected through fully connected layers (512 → 256 dimensions. ReLU, dropout p = 0.3), followed by GAT (256 → 128 dimensions, 4 attention heads) and GCN (128 → 64 dimensions) encoding:"
+      },
+      {
+        "idx": 23,
+        "style": "",
+        "text": "Where attention coefficients  are computed via softmax over learned attention scores. Global mean pooling aggregated node representations for classification (64 → 5 cardiomyocyte subtypes). Total parameters: 9.87M."
+      },
+      {
+        "idx": 24,
+        "style": "ListParagraph",
+        "text": "Recurrent Neural Network Component"
+      },
+      {
+        "idx": 25,
+        "style": "",
+        "text": "The RNN component was implemented using PyTorch (version 2.1.0). an embedding layer projected 2,000-dimensional gene expression vectors to 512 dimensions. Three stacked bidirectional LSTM layers were employed: the first layer transformed 512-dimensional inputs to 256-dimensional bidirectional hidden states (512 total with concatenation), followed by two additional BiLSTM layers maintaining 256-dimensional bidirectional representations."
+      },
+      {
+        "idx": 27,
+        "style": "",
+        "text": "A temporal attention mechanism weighted hidden states across time steps, allowing the model to focus on critical differentiation stages. The final classification head mapped 128-dimensional attention-weighted representations to four differentiation trajectory classes:"
+      },
+      {
+        "idx": 29,
+        "style": "",
+        "text": "The final layer classified attention-weighted representations into four differentiation trajectories. Total parameters: 7.34M."
+      },
+      {
+        "idx": 30,
+        "style": "ListParagraph",
+        "text": "Hybrid Fusion Strategies"
+      },
+      {
+        "idx": 31,
+        "style": "",
+        "text": "Three fusion architectures integrated GNN spatial embeddings (128-D) and RNN temporal embeddings (512-D):"
+      },
+      {
+        "idx": 32,
+        "style": "",
+        "text": "Early Fusion (Concatenation): GNN and RNN embeddings were concatenated into 640-dimensional vector and processed through a three-layer fully connected network (640 → 256 → 128 → 4) with ReLU activations and dropout (p = 0.3)."
+      },
+      {
+        "idx": 33,
+        "style": "",
+        "text": "Ensemble Fusion (Ensemble): Separate classification heads were applied to GNN and RNN embeddings independently, generating class probability distributions. Final predictions were computed as weigh averages of the two distributions, with learnable fusion weights initialised to [0.3, 0.7] and optimised during training."
+      },
+      {
+        "idx": 34,
+        "style": "",
+        "text": "Attention Fusion (Dynamic): GNN and RNN embeddings were concatenated and processed through a multi-head attention layer (8 heads, 640 dimensions) implemented using torch.nn.MultiheadAttention, followed by a fully connected classifier (640 → 4)."
+      },
+      {
+        "idx": 35,
+        "style": "",
+        "text": "The complete hybrid architecture container 15.2 million trainable parameters."
+      },
+      {
+        "idx": 36,
+        "style": "ListParagraph",
+        "text": "Training Protocol"
+      },
+      {
+        "idx": 37,
+        "style": "",
+        "text": "Both GNN and RNN models were trained independently before fusion. Training was performed on NVIDIA RTX 5070 Ti GPU (12 GB VRAM) using CUDA 11.8. The Adam optimiser (torch.optim.Adam) was employed with initial learning rates of 0.001 for the GNN and 0.0005 for the RNN. For the GNN, weighted cross-entropy loss was used to address class imbalance across five cardiomyocyte subtypes, with class weights computed as inverse class frequencies. For the RNN, focal loss (γ = 2.0, α = 0.25) was implemented to handle imbalanced differentiation trajectory classes.Training employed stratified 5-fold cross-validation with 70% training, 15% validation, and 15% test splits. Early stopping was implemented with patience = 15 epochs for the GNN and patience = 10 epochs for the RNN, monitoring validation loss. Learning rate scheduling was applied using ReduceLRonPlateau (factor = 0.5, patience = 5) from torch.optim.lr_scheduler. Gradient clipping (max_norm = 1.0) was applied during RNN training to prevent exploding gradients. Batch sizes were set to 32 for the GNN and 64 for the RNN."
+      },
+      {
+        "idx": 38,
+        "style": "",
+        "text": "Following individual model training, pretrained GNN and RNN models were used to extract embeddings from their penultimate layers. These embeddings served as inputs to the fusion architectures. Hybrid models were trained for 35 epochs using the Adam optimiser (learning rate = 0.0001) with cross-entropy loss and class balancing. Stratified 5-fold cross-validation was maintained to ensure consistent evaluation. Dropout regularisation (p = 0.3) and batch normalisation were applied to prevent overfitting."
+      },
+      {
+        "idx": 39,
+        "style": "",
+        "text": "Hyperparameters were optimised using grid search combined with cross-validation. Key parameters included learning rate {0.0001, 0.0001}, dropout rate {0.2, 0.3, 0.5}, number of GNN layers {2, 3}, number of BiLSTM layers {2, 3}, hidden dimensions {128, 256, 512}, and fusion weights for ensemble models. The optimal configuration was selected based on validation accuracy and F1-score."
+      },
+      {
+        "idx": 40,
+        "style": "ListParagraph",
+        "text": "Explainable AI and Biological Validation"
+      },
+      {
+        "idx": 41,
+        "style": "",
+        "text": "To interpret model predictions and identify biologically relevant features, we implemented Shapley Additive exPlanations (SHAP) using the shap Python package (version 0.42.0). TreeExplainer and DeepExplainer modules were applied to compute SHAP values for GNN, RNN, and hybrid model predictions. For each prediction, SHAP values quantified the contribution of individual genes to the model output, enabling both global feature importance rankings and sample-specific explanations."
+      },
+      {
+        "idx": 42,
+        "style": "",
+        "text": "A curated cardiac gene database integrated Gene Ontology terms (GO:0055007, GO:0007507), HGNC nomenclature, and published literature, categorizing genes into transcription factors (NKX2-5, GATA4, MEF2C, TBX5, ISL1), sarcomeric proteins (TNNT2, MYH6, MYH7, ACTN2), ion channels (SCN5A, KCNH2, CACNA1C, RYR2), and calcium handling proteins (PLN, ATP2A2/SERCA2A). SHAP-identified important features were mapped to the cardiac gene database to assess biological relevance. Gene set enrichment analysis was performed using the gseapy Python package (version 1.0.5) with the Kyoto Encyclopedia of Genes and Genomes (KEGG)(20,21) pathway database and Gene Ontology Biological Process terms. Enrichment significance was determined using the hypergeometric test with Benjamin-Hochberg false discovery rate correction (FDR < 0.05)."
+      },
+      {
+        "idx": 43,
+        "style": "",
+        "text": "Prediction confidence was estimated using Monet Carlo dropout (n = 100 forward passes with dropout enabled during inference). For each sample, the standard deviation of predicted class probabilities across dropout iterations quantified prediction uncertainty. Samples with confidence scores below the 10th percentile were flagged as high-uncertainty predictions for further analysis."
+      },
+      {
+        "idx": 44,
+        "style": "ListParagraph",
+        "text": "Performance Evaluation and Statistical Analysis"
+      },
+      {
+        "idx": 45,
+        "style": "",
+        "text": "Model performance was assessed using multiple metrics computed with scikit-learn (version 1.3.0): accuracy, precision, recall, F1-score, and area under the receiver operating characteristic curve (AUROC). Confusion matrices were generated to evaluate per-class performance. Statistical significance between models was assessed using McNemar’s test for paired nominal data (p < 0.05). All experiments were repeated across five random seeds to ensure reproducibility, with mean and standard deviation reported."
+      },
+      {
+        "idx": 46,
+        "style": "ListParagraph",
+        "text": "Computational Environment"
+      },
+      {
+        "idx": 47,
+        "style": "",
+        "text": "Analyses were implemented in Python 3.9.16 using PyTorch 2.1.0, PyTorch Geometric 2.4.0, scanpy 1.9.5, scikit-learn 1.3.0, NumPy 1.24.3, pandas 2.0.3, SciPy 1.11.3, NetworkX 2.6.0, Matplotlib 3.7.2, Seaborn 0.12.2, Plotly 5.14.0, scVelo 0.2.5, Scrublet 0.2.3, TensorBoard 2.14.0, and Weights & Biases (wandb v0.15.8). Training was performed on an MSI 16 HX AI A2XW workstation (Intel Core Ultra 9 275HX, 64GB RAM, 2TB SSD, Windows 11). Complete code is available at https://github.com/Tumo505/HybridGnnRnn."
+      },
+      {
+        "idx": 48,
+        "style": "ListParagraph",
+        "text": "Results"
+      },
+      {
+        "idx": 49,
+        "style": "ListParagraph",
+        "text": "Dataset Characteristics and Preprocessing Outcomes"
+      },
+      {
+        "idx": 50,
+        "style": "",
+        "text": "The spatial transcriptomics dataset comprised 752 tissue spots from human myocardial infarction samples, reduced to 631 high-quality spots after filtering for gene detection (>500 genes/spot) and mitochondrial content (<20%). The spatial neighbourhood graph construction yielded an average of 5.8 neighbours per spot, with the first 128 principal components capturing 95.3% of total variance. UMAP visualization revealed clear separation of five cardiomyocyte subtypes.​"
+      },
+      {
+        "idx": 51,
+        "style": "",
+        "text": "The temporal differentiation dataset contained 800 samples across four trajectories, reduced to 605 high-quality cells after quality control and doublet removal (6.6% doublet rate). RNA velocity analysis confirmed expected temporal progression (Spearman ρ=0.94, p<0.001), with the first 256 principal components capturing 89.7% of variance."
+      },
+      {
+        "idx": 52,
+        "style": "ListParagraph",
+        "text": "Individual Model Performance"
+      },
+      {
+        "idx": 53,
+        "style": "",
+        "text": "The standalone GNN model achieved 65.29% test accuracy after 81 epochs, with best validation accuracy of 69.88%. Performance varied substantially across cardiomyocyte subtypes, with F1-scores ranging from 0.49 (fibroblast-adjacent) to 0.70 (ventricular cardiomyocytes), yielding a macro-averaged F1-score of 0.651. Graph attention analysis revealed biologically meaningful spatial relationships, with ischemic regions showing strong attention to neighbouring fibroblast-adjacent cardiomyocytes.​"
+      },
+      {
+        "idx": 54,
+        "style": "",
+        "text": "The RNN model demonstrated superior performance with 96.88% test accuracy and F1-score of 0.969, converging after 28 epochs. Temporal attention weights focused predominantly on early (time points 1-3) and late (time points 8-10) differentiation stages, aligning with critical lineage specification and terminal differentiation phases."
+      },
+      {
+        "idx": 55,
+        "style": "ListParagraph",
+        "text": "Hybrid Model Fusion Strategy Comparison"
+      },
+      {
+        "idx": 56,
+        "style": "",
+        "text": "Three fusion architectures were evaluated for integrating GNN spatial embeddings (128 dimensions) and RNN temporal embeddings (512 dimensions)."
+      },
+      {
+        "idx": 57,
+        "style": "Caption",
+        "text": "The concatenation fusion achieved 80.0% accuracy (F1=0.791), with feature importance analysis revealing that RNN features were weighted 2.3 times more heavily than GNN features."
+      },
+      {
+        "idx": 59,
+        "style": "Caption",
+        "text": "Figure 1: Performance analysis of the concatenation fusion strategy combining GNN spatial embeddings (128-D) and RNN temporal embeddings (512-D). (A) Confusion matrix showing classification accuracy across four cardiomyocyte differentiation trajectories, with 7/8 correct predictions for Class 0 and perfect classification for Class 3. (B) Overall performance metrics: 80.0% accuracy, 79.1% F1-score, 88.2% average confidence, and 77.1% average uncertainty. Feature importance analysis revealed that RNN temporal features were weighted 2.3-fold more heavily than GNN spatial features in the learned fusion representations."
+      },
+      {
+        "idx": 72,
+        "style": "Caption",
+        "text": "The ensemble fusion strategy achieved the highest performance with 96.67% accuracy (F1=0.966), using learned weighted averaging with optimal weights of 0.28 (GNN) and 0.72 (RNN)."
+      },
+      {
+        "idx": 74,
+        "style": "Caption",
+        "text": "Figure 2: Comprehensive performance analysis of the late fusion ensemble strategy combining independent GNN spatial (128-D) and RNN temporal (512-D) classifiers via learned weighted averaging. (Top-right) Confusion matrix demonstrating near-perfect classification with 96.67% overall accuracy: Class 0 achieved 100% accuracy (8/8), Class 1 showed 100% recall with 89% precision (8/9 true positives), Class 2 achieved 100% precision with 83% recall (5/6 correctly classified), and Class 3 attained 100% accuracy (8/8). (Top-right) Quantitative performance metrics: 96.67% accuracy, 96.6% F1-score, 78.8% average confidence, and 60.7% average uncertainty. (Bottom-left) Uncertainty analysis via Monte Carlo dropout (n=100) showing tight clustering of predictions at high confidence (>0.9) and low predictive entropy (<0.4), indicating robust generalization. (Bottom-right) Per-class confidence analysis revealing balanced confidence across trajectories, with highest average confidence for Class 3 (≈97%) and lowest for Class 1 (≈50%), reflecting trajectory-specific discriminability. The learned fusion weights (GNN: 0.28, RNN: 0.72) adaptively weighted temporal dominance while enabling spatial context to resolve high-uncertainty cases, successfully converting 9/10 low-confidence RNN predictions and 18/22 uncertain GNN predictions into correct classifications."
+      },
+      {
+        "idx": 77,
+        "style": "Caption",
+        "text": "The attention fusion achieved 86.67% accuracy (F1=0.867), showing greater training variability and more dispersed error patterns."
+      },
+      {
+        "idx": 79,
+        "style": "Caption",
+        "text": "Figure 3: Performance analysis of the dynamic attention fusion strategy combining GNN spatial embeddings (128-D) and RNN temporal embeddings (512-D) through multi-head attention mechanisms. (A) Confusion matrix showing classification accuracy across four cardiomyocyte differentiation trajectories, with perfect classification for Class 0 (8/8) and Class 3 (8/8), and notable misclassifications between Classes 1 and 2 (5 off-diagonal entries total). (B) Overall performance metrics: 86.7% accuracy, 86.7% F1-score, 91.7% average confidence, and 81.0% average uncertainty. The multi-head attention mechanism (8 heads) exhibited mixed specialization, with certain attention heads focusing on temporal features while others emphasized spatial relationships, resulting in intermediate performance between concatenation and ensemble approaches."
+      },
+      {
+        "idx": 80,
+        "style": "",
+        "text": "McNemar's test confirmed that ensemble fusion significantly outperformed concatenation (p=0.012) and attention fusion (p<0.001), though the difference from RNN-only was not significant (p=0.89). AUROC scores for ensemble fusion were 0.998 (Trajectory 0), 0.982 (Trajectory 1), 0.988 (Trajectory 2), and 0.999 (Trajectory 3).​"
+      },
+      {
+        "idx": 81,
+        "style": "ListParagraph",
+        "text": "Explainable AI and Biological Interpretation"
+      },
+      {
+        "idx": 82,
+        "style": "",
+        "text": "SHAP analysis identified the top 50 most influential features, with temporal RNN embeddings dominating importance rankings (mean |SHAP| values: 0.234, 0.218, 0.206, 0.197 for top four features)​. The highest-ranked spatial GNN features showed mean |SHAP| values of 0.156, 0.142, 0.138, and 0.131​."
+      },
+      {
+        "idx": 83,
+        "style": "",
+        "text": "Mapping features to biological genes revealed that top RNN-associated genes included cardiac transcription factors NKX2-5 (score 0.187), GATA4 (0.176), MEF2C (0.164), TBX5 (0.152), and ISL1 (0.143), along with structural proteins TNNT2 (0.138), MYH6 (0.129), and MYH7 (0.121). Top GNN-associated genes included ion channels SCN5A (0.142), KCNH2 (0.138), CACNA1C (0.131), calcium handling proteins RYR2 (0.124), PLN (0.119), ATP2A2/SERCA2A (0.112), and gap junction proteins GJA1/CX43 (0.106).​"
+      },
+      {
+        "idx": 84,
+        "style": "",
+        "text": "Gene set enrichment analysis revealed significant enrichment (FDR<0.05) for cardiac biological processes including \"heart development\" (GO:0007507, FDR=1.2×10⁻¹⁸, 42 genes), \"cardiac muscle cell differentiation\" (GO:0055007, FDR=3.4×10⁻¹⁶, 38 genes), and \"regulation of heart contraction\" (GO:0008016, FDR=7.8×10⁻¹³, 28 genes). KEGG pathway analysis identified \"Cardiac muscle contraction\" (FDR=4.3×10⁻¹², 24 genes), \"Calcium signalling pathway\" (FDR=1.7×10⁻⁹, 21 genes), and \"Adrenergic signalling in cardiomyocytes\" (FDR=8.9×10⁻⁸, 18 genes).​"
+      },
+      {
+        "idx": 85,
+        "style": "",
+        "text": "Temporal analysis revealed stage-specific regulatory programs: early time points (0-2) showed elevated importance for pluripotency markers (OCT4, SOX2, NANOG) and mesodermal genes (MESP1, EOMES, T/Brachyury); intermediate stages (3-6) emphasized cardiac progenitor transcription factors (NKX2-5, GATA4, ISL1, TBX5, MEF2C); and late stages (7-10) highlighted structural proteins (TNNT2, MYH6, MYH7, ACTC1) and ion channels (SCN5A, KCNH2, CACNA1C)."
+      },
+      {
+        "idx": 86,
+        "style": "",
+        "text": "Monte Carlo dropout analysis revealed mean prediction confidence of 98.7% (SD=2.3%) for correctly classified samples versus 76.4% (SD=12.8%) for misclassified samples (p<0.001). High-uncertainty samples predominantly corresponded to mid-differentiation stages (time point 5) and spatial tissue boundaries.​"
+      },
+      {
+        "idx": 87,
+        "style": "",
+        "text": "Spatial-temporal integration analysis showed that predictions relied 65-78% on RNN features and 22-35% on GNN features depending on trajectory. Ventricular zone predictions exhibited higher RNN dependence (74%), while atrial zones showed more balanced contributions (62% RNN, 38% GNN). GNN importance increased at tissue boundaries (45% contribution) and during mid-differentiation stages (35-42%), when temporal patterns converged across trajectories.​"
+      },
+      {
+        "idx": 88,
+        "style": "",
+        "text": "Leave-one-trajectory-out cross-validation yielded 94.2% average accuracy (SD=3.1%). Spatial holdout validation achieved 91.3% accuracy on unseen tissue regions, while temporal generalization testing (training on time points 0-7, testing on 8-10) achieved 93.7% accuracy."
+      },
+      {
+        "idx": 89,
+        "style": "ListParagraph",
+        "text": "Discussion"
+      },
+      {
+        "idx": 90,
+        "style": "ListParagraph",
+        "text": "Integration of Spatial and Temporal Dimensions for Cardiomyocyte Differentiation"
+      },
+      {
+        "idx": 91,
+        "style": "",
+        "text": "This study presents a novel computational framework for understanding cardiomyocyte differentiation through the lens of four-dimensional space-time analysis, combining spatial transcriptomics with temporal gene expression dynamics. The ensemble fusion hybrid GNN-RNN model achieved 96.67% accuracy, demonstrating that integrating complementary spatial and temporal modalities captures differentiation complexity more effectively than individual approaches. The RNN-only model’s near-equivalent performance (96.88%) suggests temporal dominance; however, the ensemble’s superior interpretability and adaptive spatial-temporal weighting provide distinct advantages for biological understanding."
+      },
+      {
+        "idx": 92,
+        "style": "",
+        "text": "The observation that spatial GNN features contributed 22-35% to ensemble predictions, despite lower individual performance (65.29%), indicates a synergistic relationship wherein spatial context resolves ambiguities arising from convergent temporal patterns. This pattern is particularly evident at tissue boundaries and during mid-differentiation stages (time point 4-6), where spatial information provided critical discriminative power. This finding aligns with developmental biology principles; wherein cellular fate decisions depend not solely on intrinsic gene expression but also on microenvironmental cues from neighbouring cells."
+      },
+      {
+        "idx": 93,
+        "style": "ListParagraph",
+        "text": "Biological Validation and Mechanistic Insights"
+      },
+      {
+        "idx": 94,
+        "style": "",
+        "text": "The SHAP-based feature importance analysis successfully connected learned embeddings to canonical cardiac developmental biology, validating the model’s capture of genuine biological mechanisms. The identification of NKX2-5, GATA4, MEF2C, TBX5, and top RNN-associated features recapitulates the known hierarchy of cardiac transcription factors driving lineage specification. These master regulators initiate cascades leading to structural protein expression (TNNT2, MYH6, MYH7, ACTC1), consistent with the temporal progression observed in the model’s attention weights."
+      },
+      {
+        "idx": 95,
+        "style": "",
+        "text": "The GNN’s emphasis on ion channels (SCN5A, KCNH2, CACNA1C) and calcium handling proteins (PLN, RYR2, ATP2A2/SERCA2A) reflects their critical roles in establishing electrical and contractile function during late maturation stages. Gap junction proteins (GJA1/CX43, GJA5/CX40) identified through spatial analysis underscore the model’s recognition of cell-cell communication networks essential for synchronised tissue function. These observations suggest that the hybrid model learned spatial organisation principles governing cardiac tissue architecture, not merely statistical patterns in gene expression data."
+      },
+      {
+        "idx": 96,
+        "style": "",
+        "text": "Gene set enrichment analysis further validated biological relevance, with significant enrichment for cardiac-specific pathways including “Cardiac muscle contraction”, “Calcium signalling”, and “Adrenergic signalling in cardiomyocytes”. The enrichment of disease-associated pathways (“Hypertrophic cardiomyopathy”, “Dilated cardiomyopathy”) is particularly noteworthy, suggesting that the model implicitly learned differentiation patterns relevant to pathological states. This capability may enhance applicability to disease modelling and therapeutic target identification."
+      },
+      {
+        "idx": 97,
+        "style": "ListParagraph",
+        "text": "Stage-Specific Regulatory Programs"
+      },
+      {
+        "idx": 98,
+        "style": "",
+        "text": "The temporal analysis of feature importance revealed distinct regulatory programs across differentiation stages, providing computational evidence for established developmental phases. Early-stage (0-2 days) emphasis on pluripotency markers (OCT4, SOX2, NANOG) and mesodermal genes (MESP1, EOMES, T/Brachyury) reflects mesoderm induction and cardiac mesoderm specification phases. This transition, captured explicitly by RNN temporal dynamics, represents a critical developmental bottleneck where alternative fates (neural, skeletal muscle) are suppressed."
+      },
+      {
+        "idx": 99,
+        "style": "",
+        "text": "Intermediate stages (3-6 days) exhibited peak importance for the cardiac progenitor transcription factor module (NKX2-5, GATA4, ISL1, TBX5, MEF2C), corresponding to cardiac lineage commitment and expansion. The observation that GNN that GNN contributions increased during these stages suggests that spatial organisation and cell-cell interactions facilitate synchronised specification within the progenitor pool. This finding implies that computational models capturing spatial context may be particularly valuable for understanding progenitor behaviours in tissues with complex microarchitecture."
+      },
+      {
+        "idx": 100,
+        "style": "",
+        "text": "Late stages (7-10 days) demonstrated elevated importance for structural proteins and ion channels, reflecting terminal differentiation and functional maturation. The shift from transcriptional regulatory proteins to structural and functional proteins aligns with developmental principles wherein differentiation transitions from lineage determination to phenotypic maturation. This progression, captured quantitively through SHAP analysis, provides a computational biomarker system for assessing differentiation state."
+      },
+      {
+        "idx": 101,
+        "style": "ListParagraph",
+        "text": "Spatial Context and Tissue Microarchitecture"
+      },
+      {
+        "idx": 102,
+        "style": "",
+        "text": "The spatial analysis revealed that ischemic regions within myocardial infarction tissue exhibited strong GNN attention to fibroblast-adjacent cardiomyocytes, reflecting known pathophysiological reorganisation. This observation suggests that spatial graph neural networks capture ecologically relevant cell populations and tissues compartments without explicit anatomical annotation, potentially offering an unsupervised approach to tissue regionalisation."
+      },
+      {
+        "idx": 103,
+        "style": "",
+        "text": "The finding that tissue boundary regions demonstrated the highest GNN dependence (45% of ensemble predictions) has important implications for understanding heterogeneity in differentiation processes. In developing cardiac tissue, transition zones between distinct cellular populations represent regions of dynamic cell-cell interaction and potential phenotypic plasticity. Hybrid spatial-temporal models may provide superior resolution for detecting these transitional states compared to temporal models alone. Spatial holdout validation (91.3% accuracy on unseen tissue regions) confirmed that learned spatial representations generalise beyond training locations, indicating that the model captured generalisable tissue organisation principles rather than location-specific features. This finding supports the scalability of the approach to diverse cardiac tissues and potentially other organ systems with complex spatial architecture."
+      },
+      {
+        "idx": 104,
+        "style": "ListParagraph",
+        "text": "Prediction Uncertainty and Model Reliability"
+      },
+      {
+        "idx": 105,
+        "style": "",
+        "text": "Monte Carlo dropout analysis revealed appropriate uncertainty calibration, with misclassified samples exhibiting significantly lower prediction confidence (76.4%) compared to correctly classified samples (98.7%, p < 0.001). This pattern suggests that the model inherently recognises prediction ambiguity, an important characteristic for clinical or research applications where model confidence serves as a reliability indicator. High-uncertainty samples predominantly corresponded to mid-differentiation stages and tissue boundaries, identifying regions where available information proves insufficient for high-confidence predictions. SJAP analysis of high-uncertainty samples revealed conflicting feature contributions, representing genuine biological ambiguity rather than model failure. This observation implies that prediction uncertainty may encode biologically meaningful information about developmental plasticity or heterogeneity during intermediate differentiation stages."
+      },
+      {
+        "idx": 106,
+        "style": "ListParagraph",
+        "text": "Comparison with Alternative Fusion Strategies"
+      },
+      {
+        "idx": 107,
+        "style": "",
+        "text": "The superiority of ensemble fusion (96.67% accuracy) over concatenation fusion (80.0% accuracy) despite greater architectural complexity of the latter reveals important principles about multimodal learning. The concatenation approach forces the model to learn feature combinations at the fusion layer, potentially leading to suboptimal integration when modalities contain redundant information. The ensemble approach, by maintaining independent classification streams and learning fusion weights, exhibits greater robustness to modality-specific noise and bias. The attention fusion approach (86.67% accuracy), despite its theoretical flexibility for adaptive weighting, underperformed both simple alternatives. This result reflects overfitting to the relatively limited hybrid training dataset (631 spatial samples combined with 605 temporal samples). The finding underscores an important principle: architectural complexity does not automatically translate to improved performance, particularly in bioinformatics contexts with limited sample sizes."
+      },
+      {
+        "idx": 108,
+        "style": "ListParagraph",
+        "text": "Methodological Considerations and Limitations"
+      },
+      {
+        "idx": 109,
+        "style": "",
+        "text": "Several methodological aspects warrant discussion. First, the temporal dataset comprises only 10 time points across four differentiation trajectories. While sufficient for capturing gross developmental transitions, higher temporal resolution might reveal fine-grained regulatory dynamics, Second, the spatial transcriptomics dataset derives exclusively from myocardial infarction tissue rather than normal development, potentially biasing learned spatial patterns toward ischemia associated remodelling. Future studies incorporating normal developmental time courses and multiple tissue contexts would strengthen generalisability. Third, while the hybrid model achieved near-RNN performance, the modest spatial contribution might reflect dataset properties rather than inherent limitations of spatial information. Tissue regions with greater spatial heterogeneity, such as developing cardiac valves or conduction system, may exhibit higher spatial information content. Fourth, the current framework focuses on single-cell-derived data integrated with spatial transcriptomics; integration of additional modalities (epigenomics, proteomics, metabolomics) could further enhance predictive and interpretive capacity."
+      },
+      {
+        "idx": 110,
+        "style": "ListParagraph",
+        "text": "Biological and Clinical Implications"
+      },
+      {
+        "idx": 111,
+        "style": "",
+        "text": "The demonstrated capability to predict differentiation trajectories with high accuracy and biological interpretability has implications for regenerative medicine and disease modelling. Accurate trajectory prediction could enable quality assessment of in vitro cardiomyocyte differentiation protocols, a critical challenge in cell therapy development. The model’s identification of critical regulatory genes and pathways provides candidate targets for enhancing differentiation efficiency or purity."
+      },
+      {
+        "idx": 112,
+        "style": "",
+        "text": "For disease modelling, the spatial-temporal framework enables investigation of how disrupted developmental programs contribute to congenital or acquired cardiac pathology. Application to myocardial infarction tissue (the source of the spatial data) could reveal how ischemic stress alters normal developmental trajectories in the infarct border zone, information potentially useful for designing regenerative interventions."
+      },
+      {
+        "idx": 113,
+        "style": "",
+        "text": "The framework’s integration of spatial and temporal dimensions reflects a paradigm shift toward truly multidimensional understanding of biological processes. Rather than treating space and time as independent variables, the hybrid approach recognises their inseparable interplay in developmental biology. This perspective aligns with emerging concepts in systems biology and offers a computational scaffold for integrating diverse multi-omics data streams."
+      },
+      {
+        "idx": 114,
+        "style": "ListParagraph",
+        "text": "Future Directions"
+      },
+      {
+        "idx": 115,
+        "style": "",
+        "text": "Future work should extend this framework to longer time series (weeks to months) capturing late maturation stages, incorporate multiple differentiation protocols to assess generalisability, and integrate additional omics modalities. Application of the model to disease contexts (hypertrophic cardiomyopathy, dilated cardiomyopathy) could validate its ability to detect pathological alterations in developmental programs. Furthermore, adaptation of the hybrid GNN-RNN architecture to other developmental systems would test its broader applicability to spatiotemporal biological processes."
+      },
+      {
+        "idx": 116,
+        "style": "",
+        "text": "Advanced uncertainty quantification methods and Bayesian deep learning approaches could provide probabilistic predictions rather than point estimates, offering richer information for clinical and research applications. Integration of mechanistic prior knowledge through physics-informed neural networks or knowledge graphs could further improve interpretability while maintaining predictive accuracy."
+      },
+      {
+        "idx": 117,
+        "style": "ListParagraph",
+        "text": "Conclusion"
+      },
+      {
+        "idx": 118,
+        "style": "",
+        "text": "This study presents a novel hybrid deep learning framework that successfully integrates Graph Neural Networks and Recurrent Neural Networks to model four-dimensional space-time dynamics of human cardiomyocyte differentiation. By combining spatial transcriptomics data capturing tissue microarchitecture with temporal gene expression sequences reflecting developmental trajectories, the ensemble fusion model achieved 96.67% prediction accuracy while maintaining biological interpretability through explainable AI methods. The key finding that spatial and temporal information provide complementary, synergistic contributions to differentiation prediction – despite temporal dominance in individual performance – demonstrates the value of multimodal integration. The ensemble fusion strategy’s capacity to resolve prediction ambiguities by incorporating spatial context during mid-differentiation stages and at tissue boundaries reveals mechanistic insights into how cellular fate decisions depend on both intrinsic transcriptional programs and microenvironmental cues."
+      },
+      {
+        "idx": 119,
+        "style": "",
+        "text": "The 4D spatiotemporal framework presented here transcends conventional analytical approaches by recognising that cardiomyocyte differentiation cannot be fully understood through isolated examination of either spatial organisation or temporal dynamics. This integrated perspective offers a paradigm for computational biology research seeking to capture the multidimensional complexity of developmental processes. Practical applications include quality assessment of in vitro cardiomyocyte differentiation protocols for regenerative medicine, identification of developmental gene targets for therapeutic intervention, and investigation of how disease alters normal developmental trajectories. The framework’s generalisability, demonstrated through cross-validation, spatial holdout, and temporal transfer tests, suggests broader applicability to other developmental systems and multimodal biological datasets."
+      },
+      {
+        "idx": 120,
+        "style": "ListParagraph",
+        "text": "Author Contributions"
+      },
+      {
+        "idx": 121,
+        "style": "",
+        "text": "Tumo Kgabeng: Conceptualisation, writing – original draft, data curation, formal analysis, investigating, methodology, software, validation, visualization"
+      },
+      {
+        "idx": 122,
+        "style": "",
+        "text": "Lulu Wang: Writing – review & editing, supervision"
+      },
+      {
+        "idx": 123,
+        "style": "",
+        "text": "Harry Ngwangwa: Writing – review & editing, supervision"
+      },
+      {
+        "idx": 124,
+        "style": "",
+        "text": "Thanyani Pandelani: Writing – review & editing, supervision, project administration, funding acquisition"
+      },
+      {
+        "idx": 125,
+        "style": "ListParagraph",
+        "text": "Funding"
+      },
+      {
+        "idx": 126,
+        "style": "",
+        "text": "This research did not receive external funding from any agencies."
+      },
+      {
+        "idx": 127,
+        "style": "ListParagraph",
+        "text": "Ethical Statement"
+      },
+      {
+        "idx": 128,
+        "style": "",
+        "text": "Not applicable"
+      },
+      {
+        "idx": 129,
+        "style": "ListParagraph",
+        "text": "Data availability statement"
+      },
+      {
+        "idx": 130,
+        "style": "",
+        "text": "All datasets utilised in this study are publicly available and can be accessed through established repositories to ensure reproducibility and transparency. The spatial transcriptomics dataset of human myocardial infarction tissue is available from the Human Cell Atlas(https://explore.data.humancellatlas.org/projects/e9f36305-d857-44a3-93f0-df4e6007dc97). This dataset was originally published by Kuppe et al. (2022) and comprises 10X Genomics Visium Spatial Gene Expression data. The temporal cardiomyocyte differentiation dataset is available from Gene Expression Omninus (GEO) under accession number GSE175634 (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE175634). This dataset was originally published by Elorbany et al. (2022) and comprises single-cell RNA sequencing time-series data from human iPSC-derived cardiomyocyte differentiation. Pre-processed datasets used for model training and evaluation, including processed spatial and temporal embeddings, have been deposited to Zenodo with DOI: 10.5281/zenodo.17196578 (https://doi.org/10.5281/zenodo.17196578)(19). All source code, trained model weights, analysis scripts, and documentation for reproducing the hybrid GNN-RNN framework are publicly available on GitHub at https://github.com/Tumo505/HybridGnnRnn."
+      },
+      {
+        "idx": 131,
+        "style": "",
+        "text": "Requests for additional information or assistance with data access should be directed to the corresponding author."
+      },
+      {
+        "idx": 132,
+        "style": "ListParagraph",
+        "text": "Conflict of Interest"
+      },
+      {
+        "idx": 133,
+        "style": "",
+        "text": "The authors declare no conflict of interest."
+      },
+      {
+        "idx": 134,
+        "style": "ListParagraph",
+        "text": "Acknowledgements"
+      },
+      {
+        "idx": 135,
+        "style": "",
+        "text": "We gratefully acknowledge the authors of the primary datasets used in this study. We thank Christoph Kuppe and colleagues for generating and publicly sharing the comprehensive spatial transcriptomics atlas oh human myocardial infarction tissue, which provided the spatial foundation for this work. We also thank Reem Elorbany and colleagues for making available the temporal single-cell RNA sequencing data of human cardiomyocyte differentiation trajectories, which enabled the temporal component of our analysis."
+      },
+      {
+        "idx": 136,
+        "style": "ListParagraph",
+        "text": "References"
+      },
+      {
+        "idx": 137,
+        "style": "",
+        "text": "1.DeLaughter DM, Bick AG, Wakimoto H, McKean D, Gorham JM, Kathiriya IS, et al. Single-Cell Resolution of Temporal Gene Expression during Heart Development. Dev Cell [Internet]. 2016 Nov 21 [cited 2025 Oct 20];39(4):480–90. Available from: https://www.sciencedirect.com/science/article/pii/S1534580716306827"
+      },
+      {
+        "idx": 138,
+        "style": "",
+        "text": "2.Rowton M, Guzzetta A, Rydeen AB, Moskowitz IP. Control of cardiomyocyte differentiation timing by intercellular signaling pathways. Semin Cell Dev Biol [Internet]. 2021 Oct 1 [cited 2025 Oct 20];118:94. Available from: https://pmc.ncbi.nlm.nih.gov/articles/PMC8968240/"
+      },
+      {
+        "idx": 139,
+        "style": "",
+        "text": "3.Liu Y, Lu P, Wang Y, Morrow BE, Zhou B, Zheng D. Spatiotemporal Gene Coexpression and Regulation in Mouse Cardiomyocytes of Early Cardiac Morphogenesis. J Am Heart Assoc [Internet]. 2019 Aug 6 [cited 2025 Oct 20];8(15). Available from: /doi/pdf/10.1161/JAHA.119.012941?download=true"
+      },
+      {
+        "idx": 140,
+        "style": "",
+        "text": "4.Chang A, Wu X, Liu K. Deep learning from latent spatiotemporal information of the heart: Identifying advanced bioimaging markers from echocardiograms. Biophys Rev [Internet]. 2024 Mar 1 [cited 2025 Oct 20];5(1):011304. Available from: https://pmc.ncbi.nlm.nih.gov/articles/PMC10978053/"
+      },
+      {
+        "idx": 141,
+        "style": "",
+        "text": "5.Mojtahedi M, Skupin A, Zhou J, Castaño IG, Leong-Quong RYY, Chang H, et al. Cell Fate Decision as High-Dimensional Critical State Transition. PLoS Biol [Internet]. 2016 Dec 27 [cited 2025 Oct 20];14(12):e2000640. Available from: https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.2000640"
+      },
+      {
+        "idx": 142,
+        "style": "",
+        "text": "6.Lara Hernandez KA, Rienmüller T, Baumgartner D, Baumgartner C. Deep learning in spatiotemporal cardiac imaging: A review of methodologies and clinical usability. Comput Biol Med [Internet]. 2021 Mar 1 [cited 2025 Oct 20];130:104200. Available from: https://www.sciencedirect.com/science/article/pii/S001048252030531X"
+      },
+      {
+        "idx": 143,
+        "style": "",
+        "text": "7.Rao N, Clark S, Habern O. Bridging Genomics and Tissue Pathology. https://home.liebertpub.com/gen [Internet]. 2020 Feb 7 [cited 2025 Oct 20];40(2):50–1. Available from: /doi/pdf/10.1089/gen.40.02.16?download=true"
+      },
+      {
+        "idx": 144,
+        "style": "",
+        "text": "8.Kuppe C, Ramirez Flores RO, Li Z, Hayat S, Levinson RT, Liao X, et al. Spatial multi-omic map of human myocardial infarction. Nature [Internet]. 2022 Aug 25 [cited 2025 Oct 21];608(7924):766–77. Available from: https://www.nature.com/articles/s41586-022-05060-x"
+      },
+      {
+        "idx": 145,
+        "style": "",
+        "text": "9.Yang X, Chen D, Sun Q, Wang Y, Xia Y, Yang J, et al. A live-cell image-based machine learning strategy for reducing variability in PSC differentiation systems. Cell Discov [Internet]. 2023 Dec 1 [cited 2025 Oct 20];9(1):53. Available from: https://pmc.ncbi.nlm.nih.gov/articles/PMC10244346/"
+      },
+      {
+        "idx": 146,
+        "style": "",
+        "text": "10.Chen X, Lin S, Chen X, Li W, Li Y. Timestamp calibration for time-series single cell RNA-seq expression data. J Mol Biol [Internet]. 2025 May 1 [cited 2025 Oct 20];437(9):169021. Available from: https://www.sciencedirect.com/science/article/abs/pii/S0022283625000877"
+      },
+      {
+        "idx": 147,
+        "style": "",
+        "text": "11.Tran TN, Bader GD. Tempora: Cell trajectory inference using time-series single-cell RNA sequencing data. PLoS Comput Biol [Internet]. 2020 Sep 1 [cited 2025 Oct 20];16(9):e1008205. Available from: https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008205"
+      },
+      {
+        "idx": 148,
+        "style": "",
+        "text": "12.Macnair W, Gupta R, Claassen M. psupertime: supervised pseudotime analysis for time-series single-cell RNA-seq data. Bioinformatics [Internet]. 2022 Jun 24 [cited 2025 Oct 20];38(Supplement_1):i290–8. Available from: https://dx.doi.org/10.1093/bioinformatics/btac227"
+      },
+      {
+        "idx": 149,
+        "style": "",
+        "text": "13.Zhang XM, Liang L, Liu L, Tang MJ. Graph Neural Networks and Their Current Applications in Bioinformatics. Front Genet [Internet]. 2021 Jul 29 [cited 2025 Oct 21];12:690049. Available from: https://pmc.ncbi.nlm.nih.gov/articles/PMC8360394/"
+      },
+      {
+        "idx": 150,
+        "style": "",
+        "text": "14.Liu T, Fang ZY, Zhang Z, Yu Y, Li M, Yin MZ. A comprehensive overview of graph neural network-based approaches to clustering for spatial transcriptomics. Comput Struct Biotechnol J [Internet]. 2024 Dec 1 [cited 2025 Oct 21];23:106–28. Available from: https://www.sciencedirect.com/science/article/pii/S2001037023004701"
+      },
+      {
+        "idx": 151,
+        "style": "",
+        "text": "15.Monti M, Fiorentino J, Milanetti E, Gosti G, Tartaglia GG. Prediction of Time Series Gene Expression and Structural Analysis of Gene Regulatory Networks Using Recurrent Neural Networks. Entropy [Internet]. 2022 Feb 1 [cited 2025 Oct 21];24(2):141. Available from: https://www.mdpi.com/1099-4300/24/2/141/htm"
+      },
+      {
+        "idx": 152,
+        "style": "",
+        "text": "16.Zhao Y, Joshi P, Shin DG. Recurrent Neural Network for Gene Regulation Network Construction on Time Series Expression Data. Proceedings - 2019 IEEE International Conference on Bioinformatics and Biomedicine, BIBM 2019. 2019 Nov 1;610–5."
+      },
+      {
+        "idx": 153,
+        "style": "",
+        "text": "17.Gadzicki K, Khamsehashari R, Zetzsche C. Early vs late fusion in multimodal convolutional neural networks. Proceedings of 2020 23rd International Conference on Information Fusion, FUSION 2020. 2020 Jul 1;"
+      },
+      {
+        "idx": 154,
+        "style": "",
+        "text": "18.Elorbany R, Popp JM, Rhodes K, Strober BJ, Barr K, Qi G, et al. Single-cell sequencing reveals lineage-specific dynamic genetic regulation of gene expression during human cardiomyocyte differentiation. PLoS Genet [Internet]. 2022 Jan 21 [cited 2025 Oct 21];18(1):e1009666. Available from: https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1009666"
+      },
+      {
+        "idx": 155,
+        "style": "",
+        "text": "19.Kgabeng T, Wang L, Ngwangwa H, Pandelani T. Hybrid GNN-RNN Model for Cardiomyocyte Differentiation Prediction. [cited 2025 Oct 24]; Available from: https://zenodo.org/records/17196578"
+      },
+      {
+        "idx": 156,
+        "style": "",
+        "text": "20.Kanehisa M, Goto S. KEGG: Kyoto Encyclopedia of Genes and Genomes. Nucleic Acids Res [Internet]. 2000 Jan 1 [cited 2025 Oct 21];28(1):27–30. Available from: https://dx.doi.org/10.1093/nar/28.1.27"
+      },
+      {
+        "idx": 157,
+        "style": "",
+        "text": "21.Kanehisa M, Furumichi M, Sato Y, Matsuura Y, Ishiguro-Watanabe M. KEGG: biological systems database as a model of the real world. Nucleic Acids Res. 2025 Jan 6;53(D1):D672–7."
+      }
+    ],
+    "tables": []
+  },
+  "IntenchOpen Manuscript - supplementary table.docx": {
+    "paragraphs": [
+      {
+        "idx": 0,
+        "style": "Caption",
+        "text": "Table 1: Comparative performance with state-of-the-art computational approaches"
+      },
+      {
+        "idx": 1,
+        "style": "",
+        "text": "Our ensemble hybrid model achieved 96.67% accuracy (F1 = 0.966), demonstrating competitive performance with task-specific specialised models while uniquely addressing the 4D space-time integration challenge. N/R = Not reported in original publication for comparable metrics. Superscript symbols denote task-specific contexts detailed in footnotes below the table."
+      },
+      {
+        "idx": 2,
+        "style": "",
+        "text": "Method"
+      },
+      {
+        "idx": 3,
+        "style": "",
+        "text": "Domain"
+      },
+      {
+        "idx": 4,
+        "style": "",
+        "text": "Accuracy"
+      },
+      {
+        "idx": 5,
+        "style": "",
+        "text": "F1-Score"
+      },
+      {
+        "idx": 6,
+        "style": "",
+        "text": "Key Features"
+      },
+      {
+        "idx": 7,
+        "style": "",
+        "text": "Tasks"
+      },
+      {
+        "idx": 8,
+        "style": "",
+        "text": "Reference"
+      },
+      {
+        "idx": 9,
+        "style": "",
+        "text": "Our Hybrid GNN-RNN (Ensemble)"
+      },
+      {
+        "idx": 10,
+        "style": "",
+        "text": "Hybrid"
+      },
+      {
+        "idx": 11,
+        "style": "",
+        "text": "96.67%"
+      },
+      {
+        "idx": 12,
+        "style": "",
+        "text": "0.966"
+      },
+      {
+        "idx": 13,
+        "style": "",
+        "text": "Spatial-temporal fusion, ensemble weighting"
+      },
+      {
+        "idx": 14,
+        "style": "",
+        "text": "Cardiac trajectory prediction"
+      },
+      {
+        "idx": 15,
+        "style": "",
+        "text": "This work"
+      },
+      {
+        "idx": 16,
+        "style": "",
+        "text": "Our Temporal RNN Only"
+      },
+      {
+        "idx": 17,
+        "style": "",
+        "text": "Temporal"
+      },
+      {
+        "idx": 18,
+        "style": "",
+        "text": "96.88%"
+      },
+      {
+        "idx": 19,
+        "style": "",
+        "text": "0.969"
+      },
+      {
+        "idx": 20,
+        "style": "",
+        "text": "BiLSTM with attention, focal loss"
+      },
+      {
+        "idx": 21,
+        "style": "",
+        "text": "Cardiac trajectory prediction"
+      },
+      {
+        "idx": 22,
+        "style": "",
+        "text": "This work"
+      },
+      {
+        "idx": 23,
+        "style": "",
+        "text": "Our Spatial Only"
+      },
+      {
+        "idx": 24,
+        "style": "",
+        "text": "Spatial"
+      },
+      {
+        "idx": 25,
+        "style": "",
+        "text": "65.29%"
+      },
+      {
+        "idx": 26,
+        "style": "",
+        "text": "0.651"
+      },
+      {
+        "idx": 27,
+        "style": "",
+        "text": "GAT+GCN with attention fusion"
+      },
+      {
+        "idx": 28,
+        "style": "",
+        "text": "Cardiac trajectory prediction"
+      },
+      {
+        "idx": 29,
+        "style": "",
+        "text": "This work"
+      },
+      {
+        "idx": 30,
+        "style": "",
+        "text": "Our Hybrid (Concatenation)"
+      },
+      {
+        "idx": 31,
+        "style": "",
+        "text": "Hybrid"
+      },
+      {
+        "idx": 32,
+        "style": "",
+        "text": "93.33%"
+      },
+      {
+        "idx": 33,
+        "style": "",
+        "text": "0.933"
+      },
+      {
+        "idx": 34,
+        "style": "",
+        "text": "Early fusion strategy"
+      },
+      {
+        "idx": 35,
+        "style": "",
+        "text": "Cardiac trajectory prediction"
+      },
+      {
+        "idx": 36,
+        "style": "",
+        "text": "This work"
+      },
+      {
+        "idx": 37,
+        "style": "",
+        "text": "Our Hybrid (Attention)"
+      },
+      {
+        "idx": 38,
+        "style": "",
+        "text": "Hybrid"
+      },
+      {
+        "idx": 39,
+        "style": "",
+        "text": "90.00%"
+      },
+      {
+        "idx": 40,
+        "style": "",
+        "text": "0.900"
+      },
+      {
+        "idx": 41,
+        "style": "",
+        "text": "Dynamic attention weighting"
+      },
+      {
+        "idx": 42,
+        "style": "",
+        "text": "Cardiac trajectory prediction"
+      },
+      {
+        "idx": 43,
+        "style": "",
+        "text": "This work"
+      },
+      {
+        "idx": 44,
+        "style": "",
+        "text": "GraphSAINT"
+      },
+      {
+        "idx": 45,
+        "style": "",
+        "text": "GNN"
+      },
+      {
+        "idx": 46,
+        "style": "",
+        "text": "99.5%a"
+      },
+      {
+        "idx": 47,
+        "style": "",
+        "text": "0.51-0.99a"
+      },
+      {
+        "idx": 49,
+        "style": "",
+        "text": "Sampling-based GNN training"
+      },
+      {
+        "idx": 50,
+        "style": "",
+        "text": "Node classification, link prediction"
+      },
+      {
+        "idx": 52,
+        "style": "",
+        "text": "[1]"
+      },
+      {
+        "idx": 53,
+        "style": "",
+        "text": "Graph Transformer Networks"
+      },
+      {
+        "idx": 54,
+        "style": "",
+        "text": "GNN"
+      },
+      {
+        "idx": 55,
+        "style": "",
+        "text": "N/R"
+      },
+      {
+        "idx": 56,
+        "style": "",
+        "text": "0.60-0.94b"
+      },
+      {
+        "idx": 57,
+        "style": "",
+        "text": "Transformer attention on graphs"
+      },
+      {
+        "idx": 58,
+        "style": "",
+        "text": "Node classification (heterogeneous)"
+      },
+      {
+        "idx": 60,
+        "style": "",
+        "text": "[2]"
+      },
+      {
+        "idx": 61,
+        "style": "",
+        "text": "PNA (Principal Neighbourhood Aggregation)"
+      },
+      {
+        "idx": 62,
+        "style": "",
+        "text": "GNN"
+      },
+      {
+        "idx": 63,
+        "style": "",
+        "text": "70%-98%c"
+      },
+      {
+        "idx": 64,
+        "style": "",
+        "text": "N/R"
+      },
+      {
+        "idx": 65,
+        "style": "",
+        "text": "Aggregation function learning."
+      },
+      {
+        "idx": 68,
+        "style": "",
+        "text": "Node classification, graph property prediction, link prediction."
+      },
+      {
+        "idx": 70,
+        "style": "",
+        "text": "[3]"
+      },
+      {
+        "idx": 71,
+        "style": "",
+        "text": "GraphMixer"
+      },
+      {
+        "idx": 72,
+        "style": "",
+        "text": "Temporal-GNN"
+      },
+      {
+        "idx": 73,
+        "style": "",
+        "text": "N/R"
+      },
+      {
+        "idx": 74,
+        "style": "",
+        "text": "N/Rd"
+      },
+      {
+        "idx": 75,
+        "style": "",
+        "text": "MLP-based graph processing"
+      },
+      {
+        "idx": 76,
+        "style": "",
+        "text": "Temporal link prediction."
+      },
+      {
+        "idx": 78,
+        "style": "",
+        "text": "[4]"
+      },
+      {
+        "idx": 79,
+        "style": "",
+        "text": "Temporal Graph Network"
+      },
+      {
+        "idx": 80,
+        "style": "",
+        "text": "Temporal-GNN"
+      },
+      {
+        "idx": 81,
+        "style": "",
+        "text": "N/R"
+      },
+      {
+        "idx": 82,
+        "style": "",
+        "text": "N/Re"
+      },
+      {
+        "idx": 83,
+        "style": "",
+        "text": "Dynamic graph evolution"
+      },
+      {
+        "idx": 84,
+        "style": "",
+        "text": "Link prediction, dynamic classification."
+      },
+      {
+        "idx": 85,
+        "style": "",
+        "text": "[5]"
+      },
+      {
+        "idx": 86,
+        "style": "",
+        "text": "BiLSTM + Attention"
+      },
+      {
+        "idx": 87,
+        "style": "",
+        "text": "RNN"
+      },
+      {
+        "idx": 88,
+        "style": "",
+        "text": "88.5%-89.6%f"
+      },
+      {
+        "idx": 89,
+        "style": "",
+        "text": "N/R"
+      },
+      {
+        "idx": 90,
+        "style": "",
+        "text": "Bidirectional with attention"
+      },
+      {
+        "idx": 91,
+        "style": "",
+        "text": "Natural language inference (NLI)"
+      },
+      {
+        "idx": 92,
+        "style": "",
+        "text": "[6]"
+      },
+      {
+        "idx": 93,
+        "style": "",
+        "text": "Transformer (STFTransNet)"
+      },
+      {
+        "idx": 94,
+        "style": "",
+        "text": "Transformer"
+      },
+      {
+        "idx": 95,
+        "style": "",
+        "text": "95.86%-99.65%g"
+      },
+      {
+        "idx": 96,
+        "style": "",
+        "text": "0.936-0.996"
+      },
+      {
+        "idx": 97,
+        "style": "",
+        "text": "Self-attention temporal modelling"
+      },
+      {
+        "idx": 98,
+        "style": "",
+        "text": "Driver drowsiness detection"
+      },
+      {
+        "idx": 99,
+        "style": "",
+        "text": "[7]"
+      },
+      {
+        "idx": 100,
+        "style": "",
+        "text": "scBERT"
+      },
+      {
+        "idx": 101,
+        "style": "",
+        "text": "Bio-Transformer"
+      },
+      {
+        "idx": 102,
+        "style": "",
+        "text": "96.8%h"
+      },
+      {
+        "idx": 104,
+        "style": "",
+        "text": ">0.95h"
+      },
+      {
+        "idx": 105,
+        "style": "",
+        "text": "BERT for single-cell data"
+      },
+      {
+        "idx": 106,
+        "style": "",
+        "text": "Cell type annotation"
+      },
+      {
+        "idx": 107,
+        "style": "",
+        "text": "[8]"
+      },
+      {
+        "idx": 108,
+        "style": "",
+        "text": "scGPT"
+      },
+      {
+        "idx": 109,
+        "style": "",
+        "text": "Bio-LLM"
+      },
+      {
+        "idx": 110,
+        "style": "",
+        "text": "90.7%i"
+      },
+      {
+        "idx": 111,
+        "style": "",
+        "text": "0.859552"
+      },
+      {
+        "idx": 112,
+        "style": "",
+        "text": "GPT for genomics sequences"
+      },
+      {
+        "idx": 113,
+        "style": "",
+        "text": "Cell type annotation, perturbation"
+      },
+      {
+        "idx": 114,
+        "style": "",
+        "text": "[9]"
+      },
+      {
+        "idx": 115,
+        "style": "",
+        "text": "DeepSEA"
+      },
+      {
+        "idx": 116,
+        "style": "",
+        "text": "Bio-CNN"
+      },
+      {
+        "idx": 117,
+        "style": "",
+        "text": ">90%j"
+      },
+      {
+        "idx": 118,
+        "style": "",
+        "text": "N/R"
+      },
+      {
+        "idx": 119,
+        "style": "",
+        "text": "CNN for regulatory sequences"
+      },
+      {
+        "idx": 120,
+        "style": "",
+        "text": "Chromatin feature prediction"
+      },
+      {
+        "idx": 121,
+        "style": "",
+        "text": "[10]"
+      },
+      {
+        "idx": 122,
+        "style": "",
+        "text": "ChromBERT"
+      },
+      {
+        "idx": 123,
+        "style": "",
+        "text": "Bio-Transformer"
+      },
+      {
+        "idx": 124,
+        "style": "",
+        "text": "N/R"
+      },
+      {
+        "idx": 125,
+        "style": "",
+        "text": "0.98k"
+      },
+      {
+        "idx": 126,
+        "style": "",
+        "text": "BERT for chromatin states"
+      },
+      {
+        "idx": 127,
+        "style": "",
+        "text": "Genic region classification"
+      },
+      {
+        "idx": 128,
+        "style": "",
+        "text": "[11]"
+      },
+      {
+        "idx": 129,
+        "style": "",
+        "text": "a GraphSAINT: Micro-averaged F1 across multiple datasets (PPI, Flickr, Reddit)​.b Graph Transformer: F1-score range across DBLP, ACM, IMDB datasets​.c PNA: Accuracy range for node classification on CIFAR10, MNIST; reports ROC-AUC for link prediction (MolHIV) and MAE for graph property prediction (ZINC)​.d GraphMixer: Reports 71.5–99.4% AUROC for temporal link prediction across multiple datasets​.e Temporal Graph Network: Reports 58.4–87.8% AUROC for node classification on dynamic graphs​.f BiLSTM+Attention: Test accuracy on Stanford Natural Language Inference (SNLI) dataset​.g STFTransNet: Accuracy on driver drowsiness/inattention detection across multiple benchmark datasets​.h scBERT: Accuracy on multi-cohort pancreatic cell type annotation; F1>0.95 for most cell types except rare populations​.i scGPT: Performance on human pancreas cell type annotation task​.j DeepSEA: Accuracy for allele-specific histone modification prediction​.k ChromBERT: F1-score for binary genic region classification​."
+      }
+    ],
+    "tables": [
+      {
+        "table": 0,
+        "rows": [
+          [
+            "Method",
+            "Domain",
+            "Accuracy",
+            "F1-Score",
+            "Key Features",
+            "Tasks",
+            "Reference"
+          ],
+          [
+            "Our Hybrid GNN-RNN (Ensemble)",
+            "Hybrid",
+            "96.67%",
+            "0.966",
+            "Spatial-temporal fusion, ensemble weighting",
+            "Cardiac trajectory prediction",
+            "This work"
+          ],
+          [
+            "Our Temporal RNN Only",
+            "Temporal",
+            "96.88%",
+            "0.969",
+            "BiLSTM with attention, focal loss",
+            "Cardiac trajectory prediction",
+            "This work"
+          ],
+          [
+            "Our Spatial Only",
+            "Spatial",
+            "65.29%",
+            "0.651",
+            "GAT+GCN with attention fusion",
+            "Cardiac trajectory prediction",
+            "This work"
+          ],
+          [
+            "Our Hybrid (Concatenation)",
+            "Hybrid",
+            "93.33%",
+            "0.933",
+            "Early fusion strategy",
+            "Cardiac trajectory prediction",
+            "This work"
+          ],
+          [
+            "Our Hybrid (Attention)",
+            "Hybrid",
+            "90.00%",
+            "0.900",
+            "Dynamic attention weighting",
+            "Cardiac trajectory prediction",
+            "This work"
+          ],
+          [
+            "GraphSAINT",
+            "GNN",
+            "99.5%a",
+            "0.51-0.99a",
+            "Sampling-based GNN training",
+            "Node classification, link prediction"
+          ],
+          [
+            "Graph Transformer Networks",
+            "GNN",
+            "N/R",
+            "0.60-0.94b",
+            "Transformer attention on graphs",
+            "Node classification (heterogeneous)"
+          ],
+          [
+            "PNA (Principal Neighbourhood Aggregation)",
+            "GNN",
+            "70%-98%c",
+            "N/R",
+            "Aggregation function learning.",
+            "Node classification, graph property prediction, link prediction."
+          ],
+          [
+            "GraphMixer",
+            "Temporal-GNN",
+            "N/R",
+            "N/Rd",
+            "MLP-based graph processing",
+            "Temporal link prediction."
+          ],
+          [
+            "Temporal Graph Network",
+            "Temporal-GNN",
+            "N/R",
+            "N/Re",
+            "Dynamic graph evolution",
+            "Link prediction, dynamic classification."
+          ],
+          [
+            "BiLSTM + Attention",
+            "RNN",
+            "88.5%-89.6%f",
+            "N/R",
+            "Bidirectional with attention",
+            "Natural language inference (NLI)"
+          ],
+          [
+            "Transformer (STFTransNet)",
+            "Transformer",
+            "95.86%-99.65%g",
+            "0.936-0.996",
+            "Self-attention temporal modelling",
+            "Driver drowsiness detection"
+          ],
+          [
+            "scBERT",
+            "Bio-Transformer",
+            "96.8%h",
+            ">0.95h",
+            "BERT for single-cell data",
+            "Cell type annotation"
+          ],
+          [
+            "scGPT",
+            "Bio-LLM",
+            "90.7%i",
+            "0.859552",
+            "GPT for genomics sequences",
+            "Cell type annotation, perturbation"
+          ],
+          [
+            "DeepSEA",
+            "Bio-CNN",
+            ">90%j",
+            "N/R",
+            "CNN for regulatory sequences",
+            "Chromatin feature prediction"
+          ],
+          [
+            "ChromBERT",
+            "Bio-Transformer",
+            "N/R",
+            "0.98k",
+            "BERT for chromatin states",
+            "Genic region classification",
+            "[11]"
+          ],
+          [
+            "a GraphSAINT: Micro-averaged F1 across multiple datasets (PPI, Flickr, Reddit)​.b Graph Transformer: F1-score range across DBLP, ACM, IMDB datasets​.c PNA: Accuracy range for node classification on CIFAR10, MNIST; reports ROC-AUC for link prediction (MolHIV) and MAE for graph property prediction (ZINC)​.d GraphMixer: Reports 71.5–99.4% AUROC for temporal link prediction across multiple datasets​.e Temporal Graph Network: Reports 58.4–87.8% AUROC for node classification on dynamic graphs​.f BiLSTM+Attention: Test accuracy on Stanford Natural Language Inference (SNLI) dataset​.g STFTransNet: Accuracy on driver drowsiness/inattention detection across multiple benchmark datasets​.h scBERT: Accuracy on multi-cohort pancreatic cell type annotation; F1>0.95 for most cell types except rare populations​.i scGPT: Performance on human pancreas cell type annotation task​.j DeepSEA: Accuracy for allele-specific histone modification prediction​.k ChromBERT: F1-score for binary genic region classification​."
+          ]
+        ]
+      }
+    ]
+  }
+}

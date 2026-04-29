@@ -27,6 +27,8 @@ mauron_biological_diagnostics*/
 
 # Generated experiment archives/results
 analysis/
+!scripts/analysis/
+!scripts/analysis/*.py
 results/
 visualizations/
 xai_visualizations/
