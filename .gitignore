@@ -148,3 +148,6 @@ processed_training_data/
 temp/
 tmp/
 
+# Public release archives and staged upload folders
+release_artifacts/
+
